@@ -1,2 +1,6 @@
 *~
-a.out
+*.o
+*.mod
+*.swp
+*.swo
+my_demo
