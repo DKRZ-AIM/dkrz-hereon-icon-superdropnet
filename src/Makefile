@@ -17,7 +17,7 @@ SOURCES=main.f90 mo_type.f90 mo_function.f90
 OBJECTS=main.o mo_type.o mo_function.o
 
 main: $(OBJECTS)
-	$(FC) -o $(EXEC_NAME) $+
+	$(FC) -o $(EXEC_NAME) -L./ -lplugin $+
 
 %.o %.mod %.smod: %.f90
 	$(COMPILE) -o $*.o $<
