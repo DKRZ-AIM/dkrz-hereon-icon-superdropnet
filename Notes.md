@@ -13,6 +13,10 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:"/work/ka1176/caroline/gitlab/202
 2-03-hereon-python-fortran-bridges/src/"
 ```
 
+Note from `https://cffi.readthedocs.io/en/latest/embedding.html`:
+
+> You can avoid the LD_LIBRARY_PATH issue if you compile libmy_plugin.so with the path hard-coded inside in the first place.
+
 ### Changing functions
 
 Useful blog post: https://www.noahbrenowitz.com/post/calling-fortran-from-python/
