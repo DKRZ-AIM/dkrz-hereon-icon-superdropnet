@@ -12,6 +12,16 @@ PROGRAM routine
   INTERFACE
     SUBROUTINE i_hello_world() bind(c)
     END SUBROUTINE i_hello_world
+    
+    SUBROUTINE i_print_shape(nx) bind(c)
+      USE iso_c_binding
+      INTEGER(c_int) :: nx
+    END SUBROUTINE i_print_shape
+
+    SUBROUTINE i_print_value(x) bind(c)
+      USE iso_c_binding
+      REAL(c_float) :: x
+    END SUBROUTINE i_print_value
 
     SUBROUTINE i_scalar_field_1d(nx, x, phi) bind(c)
       USE iso_c_binding
@@ -32,9 +42,9 @@ PROGRAM routine
   !   calculates something based on the variables
   ! - later replace this function by a python routine
 
-  INTEGER :: i     ! loop idxs
-  INTEGER :: nx    ! grid dimension
-  REAL    :: xmin, xmax ! grid limits
+  INTEGER        :: i     ! loop idxs
+  INTEGER(c_int) :: nx    ! grid dimension
+  REAL           :: xmin, xmax ! grid limits
   
   ! (1) define a 1d scalar field
   TYPE(t_scalar_field_1d) :: sf_1d_fo ! fortran
@@ -47,6 +57,11 @@ PROGRAM routine
   nx = 11
   xmin = -5.0
   xmax = +5.0
+ 
+  ! test for the interface
+  PRINT *, 'shape in fortran', nx
+  CALL i_print_shape(nx)
+  CALL i_print_value(xmin)
 
   ! (3) initialize the arrays
   sf_1d_fo % k = nx

@@ -4,7 +4,9 @@ ffibuilder = cffi.FFI()
 
 header = """
 extern void i_hello_world();
-extern void i_scalar_field_1d(int, float*, float*);
+extern void i_print_shape(int);
+extern void i_print_value(float);
+extern void i_scalar_field_1d(int, float *, float *);
 """
 
 with open("plugin.h", "w") as f:
