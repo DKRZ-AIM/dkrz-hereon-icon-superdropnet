@@ -5,7 +5,7 @@
 
 # module load intel
 FC=ifort
-FCFLAGS=''
+FCFLAGS=-L./ -lplugin
 TARGET_ARCH=''
 COMPILE = $(FC) $(FCFLAGS) $(TARGET_ARCH) -c
 
@@ -17,7 +17,7 @@ SOURCES=main.f90 mo_type.f90 mo_function.f90
 OBJECTS=main.o mo_type.o mo_function.o
 
 main: $(OBJECTS)
-	$(FC) -o $(EXEC_NAME) -L./ -lplugin $+
+	$(FC) -o $(EXEC_NAME) $(FCFLAGS) $+
 
 %.o %.mod %.smod: %.f90
 	$(COMPILE) -o $*.o $<
@@ -25,5 +25,7 @@ main: $(OBJECTS)
 
 .PHONY: clean
 clean:
-	-rm -f *.o *.mod *.smod main
+	-rm -f *.o *.mod *.smod my_demo
+	-rm -f my_plugin.c libplugin.so plugin.h
+	-rm -rf __pycache__
 	#-rm -f src/fortran/*.o src/fortran/*.mod src/fortran/*.smod src/*.o main

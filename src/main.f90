@@ -14,6 +14,9 @@ PROGRAM routine
     END SUBROUTINE i_hello_world
 
     SUBROUTINE i_scalar_field_1d(nx, x, phi) bind(c)
+      USE iso_c_binding
+      INTEGER(c_int) :: nx
+      REAL(c_float) :: x(nx), phi(nx) 
     END SUBROUTINE i_scalar_field_1d
 
   END INTERFACE
@@ -64,7 +67,7 @@ PROGRAM routine
   CALL f_scalar_field_1d(nx, sf_1d_fo % x, sf_1d_fo % phi)
 
   ! (4B) Python implementation
-  ! TODO
+  CALL i_scalar_field_1d(nx, sf_1d_py % x, sf_1d_py % phi)
 
   ! (5) print to stdout
   PRINT *, '   1D scalar field'

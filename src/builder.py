@@ -3,16 +3,8 @@ import cffi
 ffibuilder = cffi.FFI()
 
 header = """
-extern void hello_world();
-"""
-
-module = """
-from my_plugin import ffi
-import numpy as np
-
-@ffi.def_extern()
-def i_hello_world():
-    print("Hello World!")
+extern void i_hello_world();
+extern void i_scalar_field_1d(int, float*, float*);
 """
 
 with open("plugin.h", "w") as f:
@@ -22,6 +14,8 @@ ffibuilder.embedding_api(header)
 ffibuilder.set_source("my_plugin", r'''
     #include "plugin.h"
 ''')
+
+module = open('my_module.py', 'r').read()
 
 ffibuilder.embedding_init_code(module)
 ffibuilder.compile(target="libplugin.so", verbose=True)
