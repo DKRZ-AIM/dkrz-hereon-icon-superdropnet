@@ -76,4 +76,10 @@ PROGRAM routine
     PRINT *, sf_1d_fo % x(i), sf_1d_fo % phi(i), sf_1d_py % phi(i)
   END DO
 
+  ! (6) deallocate
+  DEALLOCATE(sf_1d_fo % x)
+  DEALLOCATE(sf_1d_fo % phi)
+  DEALLOCATE(sf_1d_py % x)
+  DEALLOCATE(sf_1d_py % phi)
+
 END PROGRAM routine
