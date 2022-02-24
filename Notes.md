@@ -12,6 +12,7 @@ module load intel
 make my_demo
 
 # Need to add the current directory to the search path for SOs at runtime
+# change this to your git rooot directory
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:"/work/ka1176/caroline/gitlab/202
 2-03-hereon-python-fortran-bridges/src/"
 
