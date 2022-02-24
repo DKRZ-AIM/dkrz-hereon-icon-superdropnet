@@ -2,7 +2,11 @@
 
 ### Compile
 
-The Makefile compiles the shared object (dynamic library) `libplugin.so` along with the Fortran modules. To run the demo:
+The Makefile compiles the shared object (dynamic library) `libplugin.so` along with the Fortran modules. 
+
+#### Mistral
+
+To run the demo:
 
 ```bash
 cd src
@@ -16,6 +20,10 @@ make my_demo
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:"/work/ka1176/caroline/gitlab/202
 2-03-hereon-python-fortran-bridges/src/"
 
+# need to update the pythonpath
+export PYTHONPATH=$PYTHONPATH:"/work/ka1176/caroline/gitlab/202
+2-03-hereon-python-fortran-bridges/src/"
+
 # execute
 ./my_demo
 ```
@@ -23,6 +31,22 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:"/work/ka1176/caroline/gitlab/202
 Note from `https://cffi.readthedocs.io/en/latest/embedding.html`:
 
 > You can avoid the LD_LIBRARY_PATH issue if you compile libmy_plugin.so with the path hard-coded inside in the first place.
+
+#### Levante
+
+```bash
+module load python3
+module load intel-oneapi-compilers
+
+cd src
+
+make
+
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:"..."
+export PYTHONPATH=$PYTHONPATH:"..."
+
+./my_demo
+```
 
 ### Changing functions
 
