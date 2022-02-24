@@ -9,7 +9,7 @@ The Makefile compiles the shared object (dynamic library) `libplugin.so` along w
 To run the demo:
 
 ```bash
-cd src
+cd first_demo
 
 module load intel
 
@@ -38,7 +38,7 @@ Note from `https://cffi.readthedocs.io/en/latest/embedding.html`:
 module load python3
 module load intel-oneapi-compilers
 
-cd src
+cd first_demo
 
 make
 
