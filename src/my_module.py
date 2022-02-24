@@ -11,17 +11,17 @@ def i_hello_world():
 
 @ffi.def_extern()
 def i_print_shape(nx):
-    print(" shape in python", nx, type(nx))
+    print(" shape in python", nx, type(nx), nx[0])
 
 @ffi.def_extern()
 def i_print_value(x):
-    print(" value in python", x, type(x))
+    print(" value in python", x, type(x), x[0])
 
 @ffi.def_extern()
-def i_scalar_field_1d(nx, ptr_x, ptr_phi):
-    print("Entered the python function: i_scalar_field")
-
+def i_scalar_field_1d(ptr_nx, ptr_x, ptr_phi):
+    nx = ptr_nx[0] # TODO check this
     x = transfer_arrays.asarray(ffi, ptr_x, shape=(nx,))
     phi = transfer_arrays.asarray(ffi, ptr_phi, shape=(nx,))
 
-    phi = 0.5 * x**2
+    # the brackets [:] are important here
+    phi[:] = 0.5 * x**2

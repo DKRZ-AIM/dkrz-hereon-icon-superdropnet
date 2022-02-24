@@ -43,8 +43,13 @@ PROGRAM routine
   ! - later replace this function by a python routine
 
   INTEGER        :: i     ! loop idxs
-  INTEGER(c_int) :: nx    ! grid dimension
+  INTEGER        :: nx    ! grid dimension # TODO check
   REAL           :: xmin, xmax ! grid limits
+  ! wall-time measurements
+  INTEGER        :: ic1, ic2, cmax ! system clock
+  REAL           :: crate
+  INTEGER        :: repeats
+
   
   ! (1) define a 1d scalar field
   TYPE(t_scalar_field_1d) :: sf_1d_fo ! fortran
@@ -54,9 +59,11 @@ PROGRAM routine
   CALL i_hello_world()
 
   ! (2) set default values
-  nx = 11
+  nx = 100
   xmin = -5.0
   xmax = +5.0
+
+  repeats = 1000
  
   ! test for the interface
   PRINT *, 'shape in fortran', nx
@@ -79,19 +86,40 @@ PROGRAM routine
 
   ! (4) calculate the field value by a function
   ! (4A) Fortran implementation
-  CALL f_scalar_field_1d(nx, sf_1d_fo % x, sf_1d_fo % phi)
+  CALL system_clock(count=ic1, count_rate=crate, count_max=cmax)
+  DO i=1, repeats
+    CALL f_scalar_field_1d(nx, sf_1d_fo % x, sf_1d_fo % phi)
+  END DO
+  CALL system_clock(count=ic2, count_rate=crate, count_max=cmax)
+
+  PRINT *, 'Time per Fortran function call (seconds)', (ic2 - ic1) /crate  / repeats
 
   ! (4B) Python implementation
-  CALL i_scalar_field_1d(nx, sf_1d_py % x, sf_1d_py % phi)
+  sf_1d_py % phi(:) = 0.0 ! initialize to zero
+  CALL system_clock(count=ic1, count_rate=crate, count_max=cmax)
+  DO i=1, repeats
+    CALL i_scalar_field_1d(nx, sf_1d_py % x, sf_1d_py % phi)
+  END DO
+  CALL system_clock(count=ic2, count_rate=crate, count_max=cmax)
+
+  PRINT *, 'Time per Python function call  (seconds)', (ic2 - ic1) /crate  / repeats
 
   ! (5) print to stdout
-  PRINT *, '   1D scalar field'
+  PRINT *, '   1D scalar field (head)'
   PRINT *, '     (X)', '  Fortran (PHI)', '  Python (PHI)'
-  DO i=1, nx
+  DO i=1, 10
     PRINT *, sf_1d_fo % x(i), sf_1d_fo % phi(i), sf_1d_py % phi(i)
   END DO
 
-  ! (6) deallocate
+  ! (6) check the arrays are equal
+  IF(ALL(sf_1d_fo % phi .EQ. sf_1d_py % phi)) THEN
+    PRINT *, ' Fortran and Python scalar field are equal'
+  ELSE
+    PRINT *, ' Fortran and Python scalar field are **NOT** equal'
+  ENDIF
+
+
+  ! (7) deallocate
   DEALLOCATE(sf_1d_fo % x)
   DEALLOCATE(sf_1d_fo % phi)
   DEALLOCATE(sf_1d_py % x)
