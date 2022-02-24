@@ -2,13 +2,16 @@
 
 ### Compile
 
-TODO: All this goes in the Makefile
-
-1. Compile the shared object (dynamic library): `python builder.py`
-2. Execute the current Makefile
-3. Need to add the current directory to the search path for SOs at runtime:
+The Makefile compiles the shared object (dynamic library) `libplugin.so` along with the Fortran modules. To run the demo:
 
 ```bash
+cd src
+
+module load intel
+
+make my_demo
+
+# Need to add the current directory to the search path for SOs at runtime
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:"/work/ka1176/caroline/gitlab/202
 2-03-hereon-python-fortran-bridges/src/"
 ```
