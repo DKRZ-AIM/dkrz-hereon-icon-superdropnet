@@ -35,7 +35,7 @@ Alternatively using MPI on the Fortran side:
 make my_demo_mpi
 
 # alternatively execute using MPI with 4 processes
-mpirun -np 4 ./my_demo
+mpirun -np 4 ./my_demo_mpi
 ```
 
 Note from `https://cffi.readthedocs.io/en/latest/embedding.html`:
