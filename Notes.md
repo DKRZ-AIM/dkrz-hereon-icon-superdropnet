@@ -11,8 +11,9 @@ To run the demo:
 ```bash
 cd first_demo
 
-module load intel
+module load intel intelmpi
 
+make clean
 make my_demo
 
 # Need to add the current directory to the search path for SOs at runtime
@@ -20,12 +21,15 @@ make my_demo
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:"/work/ka1176/caroline/gitlab/202
 2-03-hereon-python-fortran-bridges/src/"
 
-# need to update the pythonpath
+# need to update the pythonpath (?)
 export PYTHONPATH=$PYTHONPATH:"/work/ka1176/caroline/gitlab/202
 2-03-hereon-python-fortran-bridges/src/"
 
 # execute
 ./my_demo
+
+# alternatively execute using MPI with 4 processes
+mpirun -np 4 ./my_demo
 ```
 
 Note from `https://cffi.readthedocs.io/en/latest/embedding.html`:
