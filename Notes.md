@@ -27,6 +27,12 @@ export PYTHONPATH=$PYTHONPATH:"/work/ka1176/caroline/gitlab/202
 
 # execute
 ./my_demo
+```
+
+Alternatively using MPI on the Fortran side:
+
+```bash
+make my_demo_mpi
 
 # alternatively execute using MPI with 4 processes
 mpirun -np 4 ./my_demo
