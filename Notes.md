@@ -9,10 +9,11 @@ The Makefile compiles the shared object (dynamic library) `libplugin.so` along w
 To run the demo:
 
 ```bash
-cd src
+cd first_demo
 
-module load intel
+module load intel intelmpi
 
+make clean
 make my_demo
 
 # Need to add the current directory to the search path for SOs at runtime
@@ -20,12 +21,21 @@ make my_demo
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:"/work/ka1176/caroline/gitlab/202
 2-03-hereon-python-fortran-bridges/src/"
 
-# need to update the pythonpath
+# need to update the pythonpath (?)
 export PYTHONPATH=$PYTHONPATH:"/work/ka1176/caroline/gitlab/202
 2-03-hereon-python-fortran-bridges/src/"
 
 # execute
 ./my_demo
+```
+
+Alternatively using MPI on the Fortran side:
+
+```bash
+make my_demo_mpi
+
+# alternatively execute using MPI with 4 processes
+mpirun -np 4 ./my_demo_mpi
 ```
 
 Note from `https://cffi.readthedocs.io/en/latest/embedding.html`:
@@ -38,7 +48,7 @@ Note from `https://cffi.readthedocs.io/en/latest/embedding.html`:
 module load python3
 module load intel-oneapi-compilers
 
-cd src
+cd first_demo
 
 make
 
