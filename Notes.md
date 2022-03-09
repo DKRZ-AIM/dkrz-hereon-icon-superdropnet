@@ -38,13 +38,22 @@ make my_demo_mpi
 mpirun -np 4 ./my_demo_mpi
 ```
 
-Using MPI with multiple nodes in an interactive session:
+Using MPI with multiple nodes in a job script:
 
 ```bash
-salloc --partition=compute -A ka1176 --time=00:20:00 --nodes=2
+#!/bin/sh
 
-# change m11496,m11497 to your nodes
-mpirun -np 12 -host m11496,m11497 ./my_demo_mpi
+#SBATCH -A ka1176
+#SBATCH --partition=compute
+#SBATCH --time=00:10:00
+#SBATCH --nodes=2
+#SBATCH --tasks-per-node=6
+
+module load intel intelmpi
+
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:"/work/ka1176/caroline/gitlab/2022-03-hereon-python-fortran-bridges/first_demo"
+
+mpirun -np 12 ./my_demo_mpi
 ```
 
 Note from `https://cffi.readthedocs.io/en/latest/embedding.html`:
