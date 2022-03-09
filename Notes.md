@@ -41,7 +41,7 @@ mpirun -np 4 ./my_demo_mpi
 Using MPI with multiple nodes in an interactive session:
 
 ```bash
-salloc TODO
+salloc --partition=compute -A ka1176 --time=00:20:00 --nodes=2
 
 # change m11496,m11497 to your nodes
 mpirun -np 12 -host m11496,m11497 ./my_demo_mpi
