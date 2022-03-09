@@ -2,6 +2,7 @@ PROGRAM routine
 
   USE, INTRINSIC :: iso_c_binding ! for cffi
   USE mpi
+  USE IFPORT
 
   USE mo_type, ONLY: t_scalar_field_1d, t_scalar_field_2d
   USE mo_function, ONLY: f_scalar_field_1d, f_linspace, &
@@ -64,6 +65,10 @@ PROGRAM routine
   INTEGER(KIND=4) :: mpi_rank
   INTEGER(KIND=4) :: mpi_size
 
+  ! useful helpers
+  CHARACTER(MAX_HOSTNAM_LENGTH + 1) :: hostname
+  INTEGER(4) :: istat
+
   ! Derived types
   TYPE(t_scalar_field_1d) :: sf_1d_fo ! fortran
   TYPE(t_scalar_field_1d) :: sf_1d_py ! python
@@ -93,10 +98,13 @@ PROGRAM routine
   ENDIF
   CALL i_hello_world()
 
+  istat = HOSTNAM (hostname)
+  PRINT *, 'rank', mpi_rank, 'running on ', hostname
+
   CALL MPI_BARRIER(MPI_COMM_WORLD, error);
 
   ! (2) set default values
-  nx1 = 10000
+  nx1 = 10000000
   x1min = -5.0
   x1max = +5.0
 
@@ -181,6 +189,7 @@ PROGRAM routine
   ENDIF
 
   ! (2) set default values
+  nx1 = 150
   nx2 = 150
   x2min = -7.0
   x2max = +5.0
