@@ -38,6 +38,15 @@ make my_demo_mpi
 mpirun -np 4 ./my_demo_mpi
 ```
 
+Using MPI with multiple nodes in an interactive session:
+
+```bash
+salloc TODO
+
+# change m11496,m11497 to your nodes
+mpirun -np 12 -host m11496,m11497 ./my_demo_mpi
+```
+
 Note from `https://cffi.readthedocs.io/en/latest/embedding.html`:
 
 > You can avoid the LD_LIBRARY_PATH issue if you compile libmy_plugin.so with the path hard-coded inside in the first place.
