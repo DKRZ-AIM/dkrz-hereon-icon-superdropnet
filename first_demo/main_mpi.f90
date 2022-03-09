@@ -73,100 +73,27 @@ PROGRAM routine
 
   ! ------------------------------------------------------------
   !
-  ! Demo: 1D scalar field
-  !
-  ! ------------------------------------------------------------
-   
-  PRINT *, '--------------------------------------------'
-  PRINT *, '       DEMO 1D Scalar Field                 '
-  PRINT *, '--------------------------------------------'
-  
-  ! (1) test for the interface
-  CALL i_hello_world()
-
-  ! (2) set default values
-  nx1 = 10000
-  x1min = -5.0
-  x1max = +5.0
-
-  repeats = 3
- 
-  ! test for the interface
-  PRINT *, 'shape in fortran', nx1
-  CALL i_print_shape(nx1)
-  CALL i_print_value(x1min)
-
-  ! (3) initialize the arrays
-  sf_1d_fo % k = nx1
-
-  ! allocate them here
-  ! later we want to have allocated arrays to
-  ! share with the python routines
-  ALLOCATE(sf_1d_fo % x(nx1))
-  ALLOCATE(sf_1d_fo % phi(nx1))
-  ALLOCATE(sf_1d_py % x(nx1))
-  ALLOCATE(sf_1d_py % phi(nx1))
-
-  CALL f_linspace(nx1, x1min, x1max, sf_1d_fo % x)
-  CALL f_linspace(nx1, x1min, x1max, sf_1d_py % x)
-
-  ! (4) calculate the field value by a function
-  ! (4A) Fortran implementation
-  CALL system_clock(count=ic1, count_rate=crate, count_max=cmax)
-  DO i=1, repeats
-    CALL f_scalar_field_1d(nx1, sf_1d_fo % x, sf_1d_fo % phi)
-  END DO
-  CALL system_clock(count=ic2, count_rate=crate, count_max=cmax)
-
-  PRINT *, 'Time per Fortran function call (seconds)', (ic2 - ic1) /crate  / repeats
-
-  ! (4B) Python implementation
-  sf_1d_py % phi(:) = 0.0 ! initialize to zero
-  CALL system_clock(count=ic1, count_rate=crate, count_max=cmax)
-  DO i=1, repeats
-    CALL i_scalar_field_1d(nx1, sf_1d_py % x, sf_1d_py % phi)
-  END DO
-  CALL system_clock(count=ic2, count_rate=crate, count_max=cmax)
-
-  PRINT *, 'Time per Python  function call (seconds)', (ic2 - ic1) /crate  / repeats
-
-  ! (5) print to stdout
-  PRINT *, '   1D scalar field (head)'
-  PRINT *, '     (X)', '  Fortran (PHI)', '  Python (PHI)'
-  DO i=1, 10
-    PRINT *, sf_1d_fo % x(i), sf_1d_fo % phi(i), sf_1d_py % phi(i)
-  END DO
-
-  ! (6) check the arrays are equal
-  IF(ALL(sf_1d_fo % phi .EQ. sf_1d_py % phi)) THEN
-    PRINT *, ' Fortran and Python scalar field are equal'
-  ELSE
-    PRINT *, ' Fortran and Python scalar field are **NOT** equal'
-  ENDIF
-
-
-  ! (7) deallocate
-  DEALLOCATE(sf_1d_fo % x)
-  DEALLOCATE(sf_1d_fo % phi)
-  DEALLOCATE(sf_1d_py % x)
-  DEALLOCATE(sf_1d_py % phi)
-
-  ! ------------------------------------------------------------
-  !
   ! Demo: 1D scalar field, using MPI
   !
   ! ------------------------------------------------------------
    
-  PRINT *, '--------------------------------------------'
-  PRINT *, '       DEMO 1D Scalar Field  -- MPI         '
-  PRINT *, '--------------------------------------------'
-
   CALL MPI_Init(error)
   CALL MPI_Comm_rank(MPI_COMM_WORLD, mpi_rank, error);
   CALL MPI_Comm_size(MPI_COMM_WORLD, mpi_size, error);
   
+  IF (mpi_rank .eq. 0) THEN
+      PRINT *, '--------------------------------------------'
+      PRINT *, '       DEMO 1D Scalar Field  -- MPI         '
+      PRINT *, '--------------------------------------------'
+  ENDIF
+
   ! (1) test for the interface
+  IF (mpi_rank .eq. 0) THEN
+    PRINT *, '--- hello world statement ---'
+  ENDIF
   CALL i_hello_world()
+
+  CALL MPI_BARRIER(MPI_COMM_WORLD, error);
 
   ! (2) set default values
   nx1 = 10000
@@ -178,8 +105,10 @@ PROGRAM routine
   ! test for the interface
   PRINT *, 'shape in fortran', nx1
   CALL i_print_shape(nx1)
-  CALL i_print_value(x1min)
+  PRINT *, 'current rank', mpi_rank
+  CALL i_print_value(FLOAT(mpi_rank))
 
+  CALL MPI_BARRIER(MPI_COMM_WORLD, error);
   ! (3) initialize the arrays
   sf_1d_fo % k = nx1
 
@@ -204,6 +133,7 @@ PROGRAM routine
 
   PRINT *, 'Time per Fortran function call (seconds)', (ic2 - ic1) /crate  / repeats
 
+  CALL MPI_BARRIER(MPI_COMM_WORLD, error);
   ! (4B) Python implementation
   sf_1d_py % phi(:) = 0.0 ! initialize to zero
   CALL system_clock(count=ic1, count_rate=crate, count_max=cmax)
@@ -214,18 +144,19 @@ PROGRAM routine
 
   PRINT *, 'Time per Python  function call (seconds)', (ic2 - ic1) /crate  / repeats
 
+  CALL MPI_BARRIER(MPI_COMM_WORLD, error);
   ! (5) print to stdout
-  PRINT *, '   1D scalar field (head)'
-  PRINT *, '     (X)', '  Fortran (PHI)', '  Python (PHI)'
-  DO i=1, 10
-    PRINT *, sf_1d_fo % x(i), sf_1d_fo % phi(i), sf_1d_py % phi(i)
-  END DO
+  ! PRINT *, '   1D scalar field (head)'
+  ! PRINT *, '     (X)', '  Fortran (PHI)', '  Python (PHI)'
+  ! DO i=1, 10
+  !   PRINT *, sf_1d_fo % x(i), sf_1d_fo % phi(i), sf_1d_py % phi(i)
+  ! END DO
 
   ! (6) check the arrays are equal
   IF(ALL(sf_1d_fo % phi .EQ. sf_1d_py % phi)) THEN
-    PRINT *, ' Fortran and Python scalar field are equal'
+    PRINT *, ' Fortran and Python scalar field are equal in rank', mpi_rank
   ELSE
-    PRINT *, ' Fortran and Python scalar field are **NOT** equal'
+    PRINT *, ' Fortran and Python scalar field are **NOT** equal in rank', mpi_rank
   ENDIF
 
 
@@ -235,7 +166,7 @@ PROGRAM routine
   DEALLOCATE(sf_1d_py % x)
   DEALLOCATE(sf_1d_py % phi)
 
-  CALL MPI_Finalize(error)
+  CALL MPI_BARRIER(MPI_COMM_WORLD, error);
 
   ! ------------------------------------------------------------
   !
@@ -243,9 +174,11 @@ PROGRAM routine
   !
   ! ------------------------------------------------------------
   
-  PRINT *, '--------------------------------------------'
-  PRINT *, '       DEMO 2D Scalar Field                 '
-  PRINT *, '--------------------------------------------'
+  IF (mpi_rank .eq. 0) THEN
+      PRINT *, '--------------------------------------------'
+      PRINT *, '       DEMO 2D Scalar Field                 '
+      PRINT *, '--------------------------------------------'
+  ENDIF
 
   ! (2) set default values
   nx2 = 150
@@ -294,13 +227,13 @@ PROGRAM routine
   PRINT *, 'Time per Python  function call (seconds)', (ic2 - ic1) /crate  / repeats
 
   ! (5) print to stdout
-  PRINT *, '   2D scalar field (head)'
-  PRINT *, '     (X1)', '          (X2)', '  Fortran (PHI)', '  Python (PHI)'
-  DO i=1, 3
-    DO j=1, 3
-      PRINT *, sf_2d_fo % x1(i, j), sf_2d_fo % x2(i, j), sf_2d_fo % phi(i, j), sf_2d_py % phi(i, j)
-    END DO
-  END DO
+  ! PRINT *, '   2D scalar field (head)'
+  ! PRINT *, '     (X1)', '          (X2)', '  Fortran (PHI)', '  Python (PHI)'
+  ! DO i=1, 3
+  !   DO j=1, 3
+  !     PRINT *, sf_2d_fo % x1(i, j), sf_2d_fo % x2(i, j), sf_2d_fo % phi(i, j), sf_2d_py % phi(i, j)
+  !   END DO
+  ! END DO
 
   ! (6) check the arrays are equal
   IF(ALL(sf_2d_fo % phi .EQ. sf_2d_py % phi)) THEN
@@ -317,5 +250,7 @@ PROGRAM routine
   DEALLOCATE(sf_2d_py % x1)
   DEALLOCATE(sf_2d_py % x2)
   DEALLOCATE(sf_2d_py % phi)
+
+  CALL MPI_Finalize(error)
 
 END PROGRAM routine
