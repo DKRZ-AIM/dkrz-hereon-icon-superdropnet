@@ -64,7 +64,7 @@ Note from `https://cffi.readthedocs.io/en/latest/embedding.html`:
 
 ```bash
 module load python3
-module load intel-oneapi-compilers
+module load intel-oneapi-compilers intel-oneapi-mpi
 
 cd first_demo
 
