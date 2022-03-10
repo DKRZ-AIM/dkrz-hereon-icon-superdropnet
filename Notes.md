@@ -103,9 +103,15 @@ export PYTHONPATH=$PYTHONPATH:"..."
 
 #### MPI
 
-TODO
+Like in the previous section, but add
 
+```bash
+export I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
 
+srun --pty -A ka1176 --partition=shared --mem=1024 --cpu_bind=verbose --hint=nomultithread --distribution=block:cyclic --nodes=1 --tasks-per-node=2 ./my_demo_mpi
+```
+
+TODO: Fails, figure out.
 
 ### Changing functions
 
