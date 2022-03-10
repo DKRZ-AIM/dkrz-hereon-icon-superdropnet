@@ -32,10 +32,4 @@ def asarray(ffi, ptr, shape, **kwargs):
     a = np.frombuffer(ffi.buffer(ptr, length * ffi.sizeof(T)), ctype2dtype[T])
     a = a.reshape(shape, **kwargs)
 
-    print('******************** will print array')
-    print(ctype2dtype[T])
-    print(a)
-
-    print('******************** printed array')
-
     return a

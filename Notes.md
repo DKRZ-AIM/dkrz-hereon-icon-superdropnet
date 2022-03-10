@@ -2,15 +2,78 @@
 
 ### Compile
 
-TODO: All this goes in the Makefile
+The Makefile compiles the shared object (dynamic library) `libplugin.so` along with the Fortran modules. 
 
-1. Compile the shared object (dynamic library): `python builder.py`
-2. Execute the current Makefile
-3. Need to add the current directory to the search path for SOs at runtime:
+#### Mistral
+
+To run the demo:
 
 ```bash
+cd first_demo
+
+module load intel intelmpi
+
+make clean
+make my_demo
+
+# Need to add the current directory to the search path for SOs at runtime
+# change this to your git root directory
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:"/work/ka1176/caroline/gitlab/202
 2-03-hereon-python-fortran-bridges/src/"
+
+# need to update the pythonpath (?)
+export PYTHONPATH=$PYTHONPATH:"/work/ka1176/caroline/gitlab/202
+2-03-hereon-python-fortran-bridges/src/"
+
+# execute
+./my_demo
+```
+
+Alternatively using MPI on the Fortran side:
+
+```bash
+make my_demo_mpi
+
+# alternatively execute using MPI with 4 processes
+mpirun -np 4 ./my_demo_mpi
+```
+
+Using MPI with multiple nodes in a job script:
+
+```bash
+#!/bin/sh
+
+#SBATCH -A ka1176
+#SBATCH --partition=compute
+#SBATCH --time=00:10:00
+#SBATCH --nodes=2
+#SBATCH --tasks-per-node=6
+
+module load intel intelmpi
+
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:"/work/ka1176/caroline/gitlab/2022-03-hereon-python-fortran-bridges/first_demo"
+
+mpirun -np 12 ./my_demo_mpi
+```
+
+Note from `https://cffi.readthedocs.io/en/latest/embedding.html`:
+
+> You can avoid the LD_LIBRARY_PATH issue if you compile libmy_plugin.so with the path hard-coded inside in the first place.
+
+#### Levante
+
+```bash
+module load python3
+module load intel-oneapi-compilers intel-oneapi-mpi
+
+cd first_demo
+
+make
+
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:"..."
+export PYTHONPATH=$PYTHONPATH:"..."
+
+./my_demo
 ```
 
 ### Changing functions
