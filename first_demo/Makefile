@@ -3,9 +3,12 @@
 # following https://aoterodelaroza.github.io/devnotes/modern-fortran-makefiles/
 #
 
+
 # module load intel intelmpi
 FC=mpiifort
-FCFLAGS=-L./ -lplugin
+
+# -g debug option
+FCFLAGS=-L./ -lplugin -g
 TARGET_ARCH=''
 COMPILE = $(FC) $(FCFLAGS) $(TARGET_ARCH) -c
 
