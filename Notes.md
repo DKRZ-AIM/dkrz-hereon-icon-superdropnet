@@ -1,10 +1,10 @@
-## Notes
+# Notes
 
-### Compile
+## Compile
 
 The Makefile compiles the shared object (dynamic library) `libplugin.so` along with the Fortran modules. 
 
-#### Mistral
+### Mistral
 
 To run the demo:
 
@@ -60,21 +60,52 @@ Note from `https://cffi.readthedocs.io/en/latest/embedding.html`:
 
 > You can avoid the LD_LIBRARY_PATH issue if you compile libmy_plugin.so with the path hard-coded inside in the first place.
 
-#### Levante
+
+
+### Levante
+
+##### Conda environment
 
 ```bash
+module load python3
+
+# yes it was not so clever to copy paste now the env on levante is called iconml_mistral
+conda create -n iconml_mistral
+conda activate iconml_mistral
+conda install pytorch cpuonly -c pytorch
+conda install cffi
+```
+
+#### Run the demo
+
+```bash
+# load the required modules
 module load python3
 module load intel-oneapi-compilers intel-oneapi-mpi
 
 cd first_demo
 
+# activate the conda environment
+conda init 
+source ~/.bashrc
+conda activate iconml_mistral
+
+# make builds everything
 make
 
+# need to set both these variables to include the current directory
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:"..."
 export PYTHONPATH=$PYTHONPATH:"..."
 
+# execute
 ./my_demo
 ```
+
+#### MPI
+
+TODO
+
+
 
 ### Changing functions
 
