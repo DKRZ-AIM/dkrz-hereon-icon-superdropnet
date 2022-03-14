@@ -1,5 +1,9 @@
 # Notes
 
+## Info
+
+ICON version: 2.6.1
+
 ## Compile
 
 The Makefile compiles the shared object (dynamic library) `libplugin.so` along with the Fortran modules. 
