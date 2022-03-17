@@ -186,3 +186,20 @@ Now try to compile ICON including the dynamic library:
 ```
 make -j 8 # on shared node
 ```
+
+#### Hello world from ICON
+
+Make a runscript that calls the ECHAM test tracer print function and submit:
+
+```
+./make_runscripts -s atm_amip_test_caroline
+
+cd run
+sbatch -A ka1176 --partition=compute --time=00:10:00 exp.atm_amip_caroline_test.run
+```
+
+In the ECHAM test tracer configuration print routine, there is a call to `i_hello_world` that calls the corresponding Python function. In the log file, you should find the line 
+
+```bash
+Hello from the Python world!
+```
