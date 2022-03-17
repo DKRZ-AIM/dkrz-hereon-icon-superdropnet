@@ -155,7 +155,16 @@ For now, manually compile the shared object
 
 ```bash
 cd src/ml_interface
+module purge gcc # conflicting gcc
 python builder.py
+```
+
+There seems to be a conflict in gcc, during the compilation of the ICON executable, the following modules are loaded:
+
+```
+module load gcc/6.4.0
+module load intel/17.0.6
+module load openmpi/2.0.2p1_hpcx-intel14
 ```
 
 Need to figure out how to get this into the config, for now editing the `icon.mk` file manually (`icon.mk.backup` is the original version):
