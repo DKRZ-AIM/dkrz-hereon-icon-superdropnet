@@ -1,10 +1,12 @@
 # Notes
 
+Caroline Arnold, DKRZ, 2022
+
 ## Info
 
 ICON version: 2.6.1
 
-## Compile
+## Demo using CFFI
 
 The Makefile compiles the shared object (dynamic library) `libplugin.so` along with the Fortran modules. 
 
@@ -124,3 +126,28 @@ Useful blog post: https://www.noahbrenowitz.com/post/calling-fortran-from-python
 Using CFFI: https://cffi.readthedocs.io/en/release-0.6/
 
 > Any python function that we want to expose to fortran must be defined in 3 places. First, its C header declaration must be put in header.h. Second, its implementation must be defined in the module string of builder.py—or in an external module as described above. Finally, the fortran code must contain an interface block defining the subroutine.
+
+## CFFI in ICON-AES
+
+Trying to plug cffi into ICON-AES (branch icon_course_2020, the branch we used in the ICON course). Forked the icon-aes git repo to a local copy.
+
+TODO: Push the project to personal git - it is too large and was rejected
+
+```bash
+# settings
+(base) k202141:~/rootgit/icon-aes\ git remote -v
+origin  git@gitlab.dkrz.de:k202141/icon-aes-fork.git (fetch)
+origin  git@gitlab.dkrz.de:k202141/icon-aes-fork.git (push)
+upstream        git@gitlab.dkrz.de:icon/icon-aes.git (fetch)
+upstream        NO-PUSH-TO-UPSTREAM (push)
+
+# ----------------------------
+# configure
+# ----------------------------
+
+# these were missing - copied from ICON course directory
+rsync -rvtu /work/mh1049/icon_course_2020/b380623/icon-aes/externals/ externals/
+
+config/dkrz/mistral.intel
+make -j 8 # on shared node
+```
