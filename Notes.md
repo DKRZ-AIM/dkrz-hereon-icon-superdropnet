@@ -203,3 +203,5 @@ In the ECHAM test tracer configuration print routine, there is a call to `i_hell
 ```bash
 Hello from the Python world!
 ```
+
+executed once per MPI thread.
