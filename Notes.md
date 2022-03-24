@@ -24,12 +24,11 @@ make my_demo
 
 # Need to add the current directory to the search path for SOs at runtime
 # change this to your git root directory
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:"/work/ka1176/caroline/gitlab/202
-2-03-hereon-python-fortran-bridges/src/"
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:"$PWD"
+
 
 # need to update the pythonpath (?)
-export PYTHONPATH=$PYTHONPATH:"/work/ka1176/caroline/gitlab/202
-2-03-hereon-python-fortran-bridges/src/"
+export PYTHONPATH=$PYTHONPATH:"$PWD"
 
 # execute
 ./my_demo
@@ -57,7 +56,7 @@ Using MPI with multiple nodes in a job script:
 
 module load intel intelmpi
 
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:"/work/ka1176/caroline/gitlab/2022-03-hereon-python-fortran-bridges/first_demo"
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:"$PWD"
 
 mpirun -np 12 ./my_demo_mpi
 ```
@@ -100,8 +99,8 @@ conda activate iconml_mistral
 make
 
 # need to set both these variables to include the current directory
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:"..."
-export PYTHONPATH=$PYTHONPATH:"..."
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:"$PWD"
+export PYTHONPATH=$PYTHONPATH:"$PWD"
 
 # execute
 ./my_demo
