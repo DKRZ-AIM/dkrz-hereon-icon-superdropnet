@@ -8,7 +8,7 @@ srun --pty -A ka1176 --partition=compute --time=00:10:00 ./my_demo
 
 ## Mistral
 
-Architecture:
+Architecture: Haswell (partition compute)
 
 ### 1D scalar field
 
