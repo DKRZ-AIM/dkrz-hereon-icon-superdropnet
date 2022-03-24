@@ -10,5 +10,8 @@ srun --pty -A ka1176 --partition=compute --time=00:10:00 ./my_demo
 
 ### 1D scalar field
 
-|  nx  |  CFFI  | Pipes | MPI
-------------------------------
+|  nx  |  CFFI  | Pipes | MPI  |
+|------|--------|-------|------|
+| 10   ||||
+| 100  ||||
+| 1000 ||||
