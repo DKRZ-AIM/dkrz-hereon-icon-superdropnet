@@ -33,7 +33,7 @@ Architecture: Haswell (partition compute)
 
 ## Trial
 
-Architecture:
+Architecture: AMD EPYC 7742
 
 ### 1D scalar field
 
@@ -59,7 +59,7 @@ Architecture:
 
 ## Levante
 
-Architecture:
+Architecture: AMD 7763
 
 ### 1D scalar field
 
