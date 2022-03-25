@@ -57,6 +57,8 @@ PROGRAM routine
   INTEGER        :: ic1, ic2, cmax ! system clock
   REAL           :: crate
   INTEGER        :: repeats
+  ! command line arguments
+  CHARACTER(len=32) :: arg
 
   ! Derived types
   TYPE(t_scalar_field_1d) :: sf_1d_fo ! fortran
@@ -64,6 +66,43 @@ PROGRAM routine
     
   TYPE(t_scalar_field_2d) :: sf_2d_fo ! fortran
   TYPE(t_scalar_field_2d) :: sf_2d_py ! python
+
+  ! get command line arguments
+  PRINT *, '------------------------------'
+  PRINT *, ' Processing command line args '
+  PRINT *, '  pass them as                '
+  PRINT *, '   ./my_demo nx1 nx2          '
+  PRINT *, ' WARNING any unintended usage '
+  PRINT *, '  may result in unpredictable behaviour'
+  PRINT *, '------------------------------'
+
+  ! assign default values
+
+  IF (COMMAND_ARGUMENT_COUNT() .EQ. 0) THEN 
+    nx1 = 100 ! default for nx1
+    nx2 = 100 ! default for nx2
+  ELSEIF (COMMAND_ARGUMENT_COUNT() .EQ. 1) THEN
+    nx2 = 100 ! default for nx2
+  ELSEIF (COMMAND_ARGUMENT_COUNT() .GT. 2) THEN
+    PRINT *, 'Too many command line arguments'
+    STOP
+  ENDIF
+
+  DO i=1, COMMAND_ARGUMENT_COUNT()
+    CALL GET_COMMAND_ARGUMENT(i, arg)
+    PRINT *, 'command line argument', i, arg
+    
+    IF (i.EQ.1) THEN
+      READ(arg,*)nx1
+    ELSEIF (i.EQ.2) THEN
+      READ(arg,*)nx2
+    ENDIF
+
+  ENDDO
+
+
+  PRINT *, nx1, nx2
+
 
   ! ------------------------------------------------------------
   !
@@ -79,7 +118,6 @@ PROGRAM routine
   CALL i_hello_world()
 
   ! (2) set default values
-  nx1 = 10000
   x1min = -5.0
   x1max = +5.0
 
@@ -157,7 +195,6 @@ PROGRAM routine
   PRINT *, '--------------------------------------------'
 
   ! (2) set default values
-  nx2 = 150
   x2min = -7.0
   x2max = +5.0
 
