@@ -76,8 +76,8 @@ CONTAINS
 
     phi(:,:) = 0.0
 
-    DO i=1, nx1
-      DO j=1, nx2
+    DO j=1, nx2
+      DO i=1, nx1
         phi(i, j) = 0.5 * (x1(i, j) - 1.0) * (x1(i, j) - 1.0) + &
         &           x2(i, j) * x2(i, j) + 2 * x2(i, j)
       END DO
