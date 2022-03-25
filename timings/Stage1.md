@@ -3,7 +3,7 @@
 Stage 1 refers to the first stage of the demo, where Fortran and Python communicate while Fortran is running in a single thread. The benchmark is executed using the following:
 
 ```bash
-srun --pty -A ka1176 --partition=compute --time=00:10:00 ./my_demo
+srun --pty -A ka1176 --partition=compute --exclusive --nodes=1 --tasks-per-node=1 --time=00:10:00 ./my_demo <nx1> <nx2>
 ```
 
 ## Mistral
