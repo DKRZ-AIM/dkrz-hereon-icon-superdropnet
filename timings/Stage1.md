@@ -14,7 +14,7 @@ Architecture: Haswell (partition compute)
 
 |  nx     | Fortran |  CFFI  | Pipes | MPI (same node)  | MPI (cross node)
 |------   |---------|--------|-------|------------------|------------------
-| 10      |  -- |||||
+| 10      |  --     |   $1.67 \times 10^{-4}$ ||||
 | 100     ||||||
 | 1000    ||||||
 | 10000   ||||||
