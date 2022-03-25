@@ -14,7 +14,7 @@ Architecture: Haswell (partition compute)
 
 |  nx     | Fortran |  CFFI  | Pipes | MPI (same node)  | MPI (cross node)
 |------   |---------|--------|-------|------------------|------------------
-| 10      |  --     |   $1.67 \times 10^{-4}$ ||||
+| 10      |  --     |   1.67E-04 ||||
 | 100     ||||||
 | 1000    ||||||
 | 10000   ||||||
@@ -23,9 +23,9 @@ Architecture: Haswell (partition compute)
 
 ### 2D scalar field
 
-|  nx1    |  nx2    | Fortran |  CFFI  | Pipes | MPI (same node) | MPI (cross node)
-|------   |---------|---------|--------|-------|-----------------|------------------
-| 10      | 10      ||||||
+|  nx1    |  nx2    | Fortran |  CFFI    | Pipes | MPI (same node) | MPI (cross node)
+|------   |---------|---------|--------  |-------|-----------------|------------------
+| 10      | 10      | --      | 1.33E-04 ||||
 | 100     | 100     ||||||
 | 1000    | 1000    ||||||
 | 10000   | 10000   ||||||
