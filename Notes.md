@@ -30,8 +30,13 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:"$PWD"
 # need to update the pythonpath (?)
 export PYTHONPATH=$PYTHONPATH:"$PWD"
 
-# execute
+# execute locally
 ./my_demo
+
+# -- or --
+
+# submit as a job
+srun --pty -A ka1176 --partition=compute --exclusive --nodes=1 --tasks-per-node=1 --time=00:10:00 ./my_demo <nx1> <nx2>
 ```
 
 Alternatively using MPI on the Fortran side:
