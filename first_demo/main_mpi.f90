@@ -7,6 +7,8 @@ PROGRAM routine
   USE mo_type, ONLY: t_scalar_field_1d, t_scalar_field_2d
   USE mo_function, ONLY: f_scalar_field_1d, f_linspace, &
   &                      f_scalar_field_2d, f_meshgrid
+  USE mo_pipes, ONLY: ip_init_pipes, ip_close_pipes, ip_scalar_field_1d, ip_scalar_field_2d
+
 
   IMPLICIT NONE 
 
@@ -72,11 +74,13 @@ PROGRAM routine
   INTEGER(4) :: istat
 
   ! Derived types
-  TYPE(t_scalar_field_1d) :: sf_1d_fo ! fortran
-  TYPE(t_scalar_field_1d) :: sf_1d_py ! python
+  TYPE(t_scalar_field_1d) :: sf_1d_fo    ! fortran
+  TYPE(t_scalar_field_1d) :: sf_1d_py    ! python cffi
+  TYPE(t_scalar_field_1d) :: sf_1d_pipes ! python pipes
     
-  TYPE(t_scalar_field_2d) :: sf_2d_fo ! fortran
-  TYPE(t_scalar_field_2d) :: sf_2d_py ! python
+  TYPE(t_scalar_field_2d) :: sf_2d_fo    ! fortran
+  TYPE(t_scalar_field_2d) :: sf_2d_py    ! python cffi
+  TYPE(t_scalar_field_2d) :: sf_2d_pipes ! python pipes
 
   ! get command line arguments
   PRINT *, '------------------------------'
@@ -140,6 +144,8 @@ PROGRAM routine
   istat = HOSTNAM (hostname)
   PRINT *, 'rank', mpi_rank, 'running on ', hostname
 
+  CALL ip_init_pipes(mpi_rank)
+
   CALL MPI_BARRIER(MPI_COMM_WORLD, error);
 
   ! (2) set default values
@@ -165,9 +171,12 @@ PROGRAM routine
   ALLOCATE(sf_1d_fo % phi(nx1))
   ALLOCATE(sf_1d_py % x(nx1))
   ALLOCATE(sf_1d_py % phi(nx1))
+  ALLOCATE(sf_1d_pipes % x(nx1))
+  ALLOCATE(sf_1d_pipes % phi(nx1))
 
   CALL f_linspace(nx1, x1min, x1max, sf_1d_fo % x)
   CALL f_linspace(nx1, x1min, x1max, sf_1d_py % x)
+  CALL f_linspace(nx1, x1min, x1max, sf_1d_pipes % x)
 
   ! (4) calculate the field value by a function
   ! (4A) Fortran implementation
@@ -180,7 +189,7 @@ PROGRAM routine
   PRINT *, 'Time per Fortran function call (seconds)', (ic2 - ic1) /crate  / repeats
 
   CALL MPI_BARRIER(MPI_COMM_WORLD, error);
-  ! (4B) Python implementation
+  ! (4B) Python cffi implementation
   sf_1d_py % phi(:) = 0.0 ! initialize to zero
   CALL system_clock(count=ic1, count_rate=crate, count_max=cmax)
   DO i=1, repeats
@@ -188,9 +197,22 @@ PROGRAM routine
   END DO
   CALL system_clock(count=ic2, count_rate=crate, count_max=cmax)
 
-  PRINT *, 'Time per Python  function call (seconds)', (ic2 - ic1) /crate  / repeats
+  PRINT *, 'Time per Py-cffi  function call (seconds)', (ic2 - ic1) /crate  / repeats
 
   CALL MPI_BARRIER(MPI_COMM_WORLD, error);
+  
+  ! (4C) Python pipes implementation
+  sf_1d_pipes % phi(:) = 0.0 ! initialize to zero
+  CALL system_clock(count=ic1, count_rate=crate, count_max=cmax)
+  DO i=1, repeats
+    CALL ip_scalar_field_1d(nx1, sf_1d_pipes % x, sf_1d_pipes % phi)
+  END DO
+  CALL system_clock(count=ic2, count_rate=crate, count_max=cmax)
+
+  PRINT *, 'Time per Py-pipes function call (seconds)', (ic2 - ic1) /crate  / repeats
+
+  CALL MPI_BARRIER(MPI_COMM_WORLD, error);
+  
   ! (5) print to stdout
   ! PRINT *, '   1D scalar field (head)'
   ! PRINT *, '     (X)', '  Fortran (PHI)', '  Python (PHI)'
@@ -200,17 +222,23 @@ PROGRAM routine
 
   ! (6) check the arrays are equal
   IF(ALL(sf_1d_fo % phi .EQ. sf_1d_py % phi)) THEN
-    PRINT *, ' Fortran and Python scalar field are equal in rank', mpi_rank
+    PRINT *, ' Fortran and Py-cffi scalar field are equal in rank', mpi_rank
   ELSE
-    PRINT *, ' Fortran and Python scalar field are **NOT** equal in rank', mpi_rank
+    PRINT *, ' Fortran and Py-cffi scalar field are **NOT** equal in rank', mpi_rank
   ENDIF
-
+  IF(ALL(sf_1d_fo % phi .EQ. sf_1d_pipes % phi)) THEN
+    PRINT *, ' Fortran and Py-pipes scalar field are equal in rank', mpi_rank
+  ELSE
+    PRINT *, ' Fortran and Py-pipes scalar field are **NOT** equal in rank', mpi_rank
+  ENDIF
 
   ! (7) deallocate
   DEALLOCATE(sf_1d_fo % x)
   DEALLOCATE(sf_1d_fo % phi)
   DEALLOCATE(sf_1d_py % x)
   DEALLOCATE(sf_1d_py % phi)
+  DEALLOCATE(sf_1d_pipes % x)
+  DEALLOCATE(sf_1d_pipes % phi)
 
   CALL MPI_BARRIER(MPI_COMM_WORLD, error);
 
@@ -235,6 +263,8 @@ PROGRAM routine
   sf_2d_fo % k2 = nx2
   sf_2d_py % k1 = nx1
   sf_2d_py % k2 = nx2
+  sf_2d_pipes % k1 = nx1
+  sf_2d_pipes % k2 = nx2
 
   ! allocate them here
   ! later we want to have allocated arrays to
@@ -245,11 +275,16 @@ PROGRAM routine
   ALLOCATE(sf_2d_py % x1(nx1, nx2))
   ALLOCATE(sf_2d_py % x2(nx1, nx2))
   ALLOCATE(sf_2d_py % phi(nx1, nx2))
+  ALLOCATE(sf_2d_pipes % x1(nx1, nx2))
+  ALLOCATE(sf_2d_pipes % x2(nx1, nx2))
+  ALLOCATE(sf_2d_pipes % phi(nx1, nx2))
 
   CALL f_meshgrid(nx1, nx2, x1min, x1max, x2min, x2max, &
   &               sf_2d_fo % x1, sf_2d_fo % x2)
   CALL f_meshgrid(nx1, nx2, x1min, x1max, x2min, x2max, &
   &               sf_2d_py % x1, sf_2d_py % x2)
+  CALL f_meshgrid(nx1, nx2, x1min, x1max, x2min, x2max, &
+  &               sf_2d_pipes % x1, sf_2d_pipes % x2)
 
   ! (4) calculate the field value by a function
   ! (4A) Fortran implementation
@@ -261,7 +296,8 @@ PROGRAM routine
 
   PRINT *, 'Time per Fortran function call (seconds)', (ic2 - ic1) /crate  / repeats
 
-  ! (4B) Python implementation
+  CALL MPI_BARRIER(MPI_COMM_WORLD, error);
+  ! (4B) Python cffi implementation
   sf_2d_py % phi(:, :) = 0.0 ! initialize to zero
   CALL system_clock(count=ic1, count_rate=crate, count_max=cmax)
   DO i=1, repeats
@@ -270,6 +306,19 @@ PROGRAM routine
   CALL system_clock(count=ic2, count_rate=crate, count_max=cmax)
 
   PRINT *, 'Time per Python  function call (seconds)', (ic2 - ic1) /crate  / repeats
+
+  CALL MPI_BARRIER(MPI_COMM_WORLD, error);
+  ! (4C) Python pipes implementation
+  sf_2d_pipes % phi(:, :) = 0.0 ! initialize to zero
+  CALL system_clock(count=ic1, count_rate=crate, count_max=cmax)
+  DO i=1, repeats
+    CALL ip_scalar_field_2d(nx1, nx2, sf_2d_pipes % x1, sf_2d_pipes % x2, sf_2d_pipes % phi)
+  END DO
+  CALL system_clock(count=ic2, count_rate=crate, count_max=cmax)
+
+  PRINT *, 'Time per Py-pipes function call (seconds)', (ic2 - ic1) /crate  / repeats
+
+  CALL MPI_BARRIER(MPI_COMM_WORLD, error);
 
   ! (5) print to stdout
   ! PRINT *, '   2D scalar field (head)'
@@ -282,9 +331,14 @@ PROGRAM routine
 
   ! (6) check the arrays are equal
   IF(ALL(sf_2d_fo % phi .EQ. sf_2d_py % phi)) THEN
-    PRINT *, ' Fortran and Python scalar field are equal'
+    PRINT *, ' Fortran and Py-cffi 2D scalar field are equal in rank', mpi_rank
   ELSE
-    PRINT *, ' Fortran and Python scalar field are **NOT** equal'
+    PRINT *, ' Fortran and Py-cffi 2D scalar field are **NOT** equal in rank', mpi_rank
+  ENDIF
+  IF(ALL(sf_2d_fo % phi .EQ. sf_2d_pipes % phi)) THEN
+    PRINT *, ' Fortran and Py-pipes 2D scalar field are equal in rank', mpi_rank
+  ELSE
+    PRINT *, ' Fortran and Py-pipes 2D scalar field are **NOT** equal in rank', mpi_rank
   ENDIF
 
 
@@ -295,7 +349,11 @@ PROGRAM routine
   DEALLOCATE(sf_2d_py % x1)
   DEALLOCATE(sf_2d_py % x2)
   DEALLOCATE(sf_2d_py % phi)
+  DEALLOCATE(sf_2d_pipes % x1)
+  DEALLOCATE(sf_2d_pipes % x2)
+  DEALLOCATE(sf_2d_pipes % phi)
 
+  CALL ip_close_pipes()
   CALL MPI_Finalize(error)
-
+  
 END PROGRAM routine

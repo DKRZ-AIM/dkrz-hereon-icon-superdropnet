@@ -8,7 +8,7 @@
 FC=mpiifort
 
 # -g debug option
-FCFLAGS=-L./ -lplugin -g
+FCFLAGS=-L./ -lplugin -g0 -O3
 TARGET_ARCH=''
 COMPILE = $(FC) $(FCFLAGS) $(TARGET_ARCH) -c
 
@@ -16,10 +16,10 @@ EXEC_NAME=my_demo
 EXEC_NAME_MPI=my_demo_mpi
 
 #SOURCES=src/main.f90 src/fortran/mo_type.f90
-SOURCES=mo_type.f90 mo_function.f90 main.f90
+SOURCES=mo_type.f90 mo_function.f90 mo_pipes.f90 main.f90
 #OBJECTS=${SOURCES:.f90=.o}
-OBJECTS=mo_type.o mo_function.o libplugin.so main.o
-OBJECTS_MPI=mo_type.o mo_function.o libplugin.so main_mpi.o
+OBJECTS=mo_type.o mo_function.o mo_pipes.o libplugin.so main.o mo_pipes_c.so
+OBJECTS_MPI=mo_type.o mo_function.o mo_pipes.o libplugin.so main_mpi.o mo_pipes_c.so
 
 my_demo: $(OBJECTS)
 	$(FC) -o $(EXEC_NAME) $(FCFLAGS) $+
@@ -34,9 +34,13 @@ my_demo_mpi: $(OBJECTS_MPI)
 libplugin.so: builder.py transfer_arrays.py my_module.py
 	python builder.py
 
+mo_pipes_c.so:
+	cc -fpic -shared -o mo_pipes_c.so mo_pipes_c.c
+
+
 .PHONY: clean
 clean:
 	-rm -f *.o *.mod *.smod my_demo my_demo_mpi
-	-rm -f my_plugin.c libplugin.so plugin.h
+	-rm -f my_plugin.c libplugin.so plugin.h mo_pipes_c.so
 	-rm -rf __pycache__
 	#-rm -f src/fortran/*.o src/fortran/*.mod src/fortran/*.smod src/*.o main
