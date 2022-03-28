@@ -7,3 +7,5 @@ my_demo
 *.so
 my_plugin.c
 plugin.h
+/env
+__pycache__
