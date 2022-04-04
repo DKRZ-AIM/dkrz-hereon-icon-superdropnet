@@ -9,3 +9,10 @@ my_plugin.c
 plugin.h
 /env
 __pycache__
+*.sh
+*.log
+*.o*
+*.e*
+slurm*out
+*.pyc
+_*

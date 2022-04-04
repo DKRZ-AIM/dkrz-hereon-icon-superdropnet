@@ -107,7 +107,8 @@ PROGRAM routine
   ENDDO
 
 
-  PRINT *, nx1, nx2
+  PRINT *, 'nx1_value', nx1
+  PRINT *, 'nx2_value', nx2
 
 
   ! ------------------------------------------------------------
@@ -127,7 +128,6 @@ PROGRAM routine
   CALL ip_init_pipes(1)
   
   ! (2) set default values
-  nx1 = 100000
   x1min = -5.0
   x1max = +5.0
 
