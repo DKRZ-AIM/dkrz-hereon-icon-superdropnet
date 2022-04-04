@@ -78,7 +78,7 @@ TODO
 ## Demo using MPI
 Python-Fortran bridge via MPI
 
-How this bridge works. Let's first look at the sbatch script that runs the bridge. There are three lines in this script that are important to us. The line with the command `#SBATCH --nodes=2` reserves two nodes for computation. The line #SBATCH --tasks-per-node=1 allocates one task per node. The command mpirun -np 1 ./my_demo_mpi : -np 1python3 python_main.py forces my_demo_mpi and python_main.py code run together, with the -np 1 command requiring 1 CPU for each code.
+How this bridge works. Let's first look at the sbatch script that runs the bridge. There are three lines in this script that are important to us. The line with the command `#SBATCH --nodes=2` reserves two nodes for computation. The line #SBATCH --tasks-per-node=1 allocates one task per node. The command `mpirun -np 1 ./my_demo_mpi : -np 1 python3 python_main.py` forces my_demo_mpi and python_main.py code run together, with the -np 1 command requiring 1 CPU for each code.
 
 In Fortran and Python, we declare a common _MPI_Comm_WORLD_ communicator. Note that we have only two nodes, each with one job. Hence, we have only two processes. The process associated with Fortran gets rank 0, and with Python, it gets rank 1, respectively. Then the communication between the processes will be the same as in MPI within one communicator. Fortran sends a message indicating the address of process 1 (python), and python as an addressee indicates the address of process 0 (Fortran). The tags in _MPI_SEND/RECV_ are specified to keep the order of the outgoing/incoming messages.
 
