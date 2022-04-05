@@ -31,7 +31,7 @@ config/dkrz/mistral.intel
 For now, manually compile the shared object
 
 ```bash
-cd src/ml_interface
+cd ml_interface
 module purge gcc # conflicting gcc
 python builder.py
 ```
@@ -49,8 +49,8 @@ Need to figure out how to get this into the config, for now editing the `icon.mk
 ```bash
 (base) k202141:~/rootgit/icon-aes\ diff icon.mk icon.mk.backup
 55,56c55,56
-< LDFLAGS= -L/sw/rhel6-x64/hdf5/hdf5-1.8.18-parallel-openmpi2-intel14/lib -L/sw/rhel6-x64/netcdf/netcdf_c-4.4.0-parallel-openmpi2-intel14/lib -L/sw/rhel6-x64/netcdf/netcdf_fortran-4.4.3-parallel-openmpi2-intel14/lib -L/sw/rhel6-x64/grib_api/grib_api-1.15.0-gcc48/lib -mkl=sequential -Wl,-rpath -Wl,/sw/rhel6-x64/hdf5/hdf5-1.8.18-parallel-openmpi2-intel14/lib -Wl,-rpath -Wl,/sw/rhel6-x64/netcdf/netcdf_c-4.4.0-parallel-openmpi2-intel14/lib -Wl,-rpath -Wl,/sw/rhel6-x64/netcdf/netcdf_fortran-4.4.3-parallel-openmpi2-intel14/lib -Wl,-rpath -Wl,/sw/rhel6-x64/grib_api/grib_api-1.15.0-gcc48/lib -L/work/ka1176/caroline/gitlab/icon-aes/src/ml_interface
-< BUNDLED_LIBFILES= externals/self/src/libself.a externals/yac/src/libyac.a externals/mtime/src/.libs/libmtime.a externals/cdi/src/.libs/libcdi_f2003.a externals/cdi/src/.libs/libcdi.a  /work/ka1176/caroline/gitlab/icon-aes/src/ml_interface/libplugin.so
+< LDFLAGS= -L/sw/rhel6-x64/hdf5/hdf5-1.8.18-parallel-openmpi2-intel14/lib -L/sw/rhel6-x64/netcdf/netcdf_c-4.4.0-parallel-openmpi2-intel14/lib -L/sw/rhel6-x64/netcdf/netcdf_fortran-4.4.3-parallel-openmpi2-intel14/lib -L/sw/rhel6-x64/grib_api/grib_api-1.15.0-gcc48/lib -mkl=sequential -Wl,-rpath -Wl,/sw/rhel6-x64/hdf5/hdf5-1.8.18-parallel-openmpi2-intel14/lib -Wl,-rpath -Wl,/sw/rhel6-x64/netcdf/netcdf_c-4.4.0-parallel-openmpi2-intel14/lib -Wl,-rpath -Wl,/sw/rhel6-x64/netcdf/netcdf_fortran-4.4.3-parallel-openmpi2-intel14/lib -Wl,-rpath -Wl,/sw/rhel6-x64/grib_api/grib_api-1.15.0-gcc48/lib -L/work/ka1176/caroline/gitlab/icon-aes/ml_interface
+< BUNDLED_LIBFILES= externals/self/src/libself.a externals/yac/src/libyac.a externals/mtime/src/.libs/libmtime.a externals/cdi/src/.libs/libcdi_f2003.a externals/cdi/src/.libs/libcdi.a  /work/ka1176/caroline/gitlab/icon-aes/ml_interface/libplugin.so
 ---
 > LDFLAGS= -L/sw/rhel6-x64/hdf5/hdf5-1.8.18-parallel-openmpi2-intel14/lib -L/sw/rhel6-x64/netcdf/netcdf_c-4.4.0-parallel-openmpi2-intel14/lib -L/sw/rhel6-x64/netcdf/netcdf_fortran-4.4.3-parallel-openmpi2-intel14/lib -L/sw/rhel6-x64/grib_api/grib_api-1.15.0-gcc48/lib -mkl=sequential -Wl,-rpath -Wl,/sw/rhel6-x64/hdf5/hdf5-1.8.18-parallel-openmpi2-intel14/lib -Wl,-rpath -Wl,/sw/rhel6-x64/netcdf/netcdf_c-4.4.0-parallel-openmpi2-intel14/lib -Wl,-rpath -Wl,/sw/rhel6-x64/netcdf/netcdf_fortran-4.4.3-parallel-openmpi2-intel14/lib -Wl,-rpath -Wl,/sw/rhel6-x64/grib_api/grib_api-1.15.0-gcc48/lib
 > BUNDLED_LIBFILES= externals/self/src/libself.a externals/yac/src/libyac.a externals/mtime/src/.libs/libmtime.a externals/cdi/src/.libs/libcdi_f2003.a externals/cdi/src/.libs/libcdi.a
@@ -85,4 +85,11 @@ executed once per MPI thread.
 
 ### Test tracer tendency from ICON
 
-TODO 
+We replace the call to `add_emi_echam_ttr` with a call to the corresonding Python function via the interface.
+
+TODO add description here
+
+
+```bash
+sbatch -A ka1176 --nodes=8 --tasks-per-node=24 --partition=compute --time=00:60:00 exp.atm_amip_emission_caroline_month_med.run
+```
