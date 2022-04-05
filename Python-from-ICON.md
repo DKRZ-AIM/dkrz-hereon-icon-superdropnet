@@ -71,6 +71,8 @@ Make a runscript that calls the ECHAM test tracer print function and submit:
 ```
 ./make_runscripts -s atm_amip_test_caroline
 
+export PYTHONPATH=$PYTHONPATH:"$PWD/ml_interface"
+
 cd run
 sbatch -A ka1176 --partition=compute --time=00:10:00 exp.atm_amip_caroline_test.run
 ```
