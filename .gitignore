@@ -16,3 +16,4 @@ __pycache__
 slurm*out
 *.pyc
 _*
+*.csv
