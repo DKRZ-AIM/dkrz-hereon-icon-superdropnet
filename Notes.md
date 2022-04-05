@@ -153,7 +153,7 @@ cd first_demo
 
 module load intelmpi/2018.5.288 intel/18.0.4 python3/unstable
 
-source activate # any conda env with mpi4py in it
+conda activate activate icon_mpi # replace with your conda environment
 
 make clean
 
