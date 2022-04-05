@@ -89,8 +89,15 @@ executed once per MPI thread.
 
 We replace the call to `add_emi_echam_ttr` with a call to the corresonding Python function via the interface.
 
-TODO add description here
+Required changes
+1. Create a new module in `src/atm_phy_echam/mo_echam_ttr_cffi.f90`
+1. In there, create an interface to an external subroutine `i_add_emi_echam_ttr` with the same arguments as `add_emi_echam_ttr` in `mo_echam_ttr.f90`
+1. In addition, pass the values of the `echam_ttr_config` type, as nonstandard datatypes currently not supported in CFFI's `transfer_arrays` module
+1. Add a function `add_emi_echam_ttr` in the new module that does the call to the interface function
+1. Define the appropriate counterparts on the Python side and in the C header
+1. In `src/atm_phy_echam/mo_interface_echam_ttr`, use the new module
 
+Demo run for one month with emission turned on:
 
 ```bash
 sbatch -A ka1176 --nodes=8 --tasks-per-node=24 --partition=compute --time=00:60:00 exp.atm_amip_emission_caroline_month_med.run
