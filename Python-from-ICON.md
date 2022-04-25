@@ -4,11 +4,11 @@ Second project milestone. The aim is to run a Python function from within ICON. 
 
 ## CFFI in ICON-AES
 
-### Setup
+### Repository
 
 Trying to plug cffi into ICON-AES (branch icon_course_2020, the branch we used in the ICON course). Forked the icon-aes git repo to a local copy.
 
-TODO: Push the project to personal git - it is too large and was rejected
+Cleaned the history and push the project to personal git - otherwise it is too large and was rejected
 
 ```bash
 # settings
@@ -17,7 +17,11 @@ origin  git@gitlab.dkrz.de:k202141/icon-aes-fork.git (fetch)
 origin  git@gitlab.dkrz.de:k202141/icon-aes-fork.git (push)
 upstream        git@gitlab.dkrz.de:icon/icon-aes.git (fetch)
 upstream        NO-PUSH-TO-UPSTREAM (push)
+```
 
+### Compile on mistral
+
+```bash
 # ----------------------------
 # configure
 # ----------------------------
@@ -63,6 +67,10 @@ Now try to compile ICON including the dynamic library:
 ```
 make -j 8 # on shared node
 ```
+
+### Compile on Levante
+
+TODO
 
 ### Hello world from ICON
 
