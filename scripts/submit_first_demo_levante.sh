@@ -18,5 +18,6 @@ export I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
 # change this to your git directory
 cd ../first_demo
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:"${PWD}"
+export PYTHONPATH=$PYTHONPATH:"${PWD}"
 
-srun -l --cpu_bind=verbose --hint=nomultithread --distribution=block:cyclic ./my_demo_mpi
+srun -l ./my_demo_mpi 1000 1000
