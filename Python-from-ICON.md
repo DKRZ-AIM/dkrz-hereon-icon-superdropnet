@@ -6,7 +6,9 @@ Second project milestone. The aim is to run a Python function from within ICON. 
 
 ### Repository
 
-Trying to plug cffi into ICON-AES (branch icon_course_2020, the branch we used in the ICON course). Forked the icon-aes git repo to a local copy.
+Trying to plug cffi into ICON-AES (branch icon_course_2020, the branch we used in the ICON course). Forked the icon-aes git repo to a local copy:
+
+https://gitlab.dkrz.de/k202141/icon-aes-fork
 
 Cleaned the history and push the project to personal git - otherwise it is too large and was rejected
 
