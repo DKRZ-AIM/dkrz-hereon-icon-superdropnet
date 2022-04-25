@@ -72,7 +72,14 @@ make -j 8 # on shared node
 
 ### Compile on Levante
 
-TODO
+Copied the configuration file `config/dkrz/kamikaze.intel-2021.5.0-rttov` from an `icon-aes` development branch.
+
+These are the modules that were loaded:
+
+```bash
+module load intel-oneapi-compilers
+module load openmpi/4.1.2-intel-2021.5.0
+```
 
 ### Hello world from ICON
 
