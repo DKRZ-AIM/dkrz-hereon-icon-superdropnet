@@ -1,16 +1,22 @@
 import os, sys, time, io
 import numpy as np
 import argparse
+import subprocess
+import socket
 
 pipe_in_name_prefix = "/tmp/esmdemopipe_out"
 pipe_out_name_prefix = "/tmp/esmdemopipe_in"
 
 class PipeWorker(object):
 
-    def __init__(self, mpi_rank):
-        self.mpi_rank = mpi_rank
-        self.pipe_in_name = "%s_%s.tmp" % (pipe_in_name_prefix, mpi_rank)
-        self.pipe_out_name = "%s_%s.tmp" % (pipe_out_name_prefix, mpi_rank)
+    def __init__(self, suffix):
+        self.suffix = suffix
+        self.pipe_in_name = "%s_%s.tmp" % (pipe_in_name_prefix, suffix)
+        self.pipe_out_name = "%s_%s.tmp" % (pipe_out_name_prefix, suffix)
+        self.pipe_in = None
+        self.pipe_out = None
+        
+    def open_pipes(self):
         self.pipe_in = io.open(self.pipe_in_name, 'rb') #os.O_RDONLY)
         self.pipe_out = io.open(self.pipe_out_name,'wb') # os.O_WRONLY)
     
@@ -19,6 +25,11 @@ class PipeWorker(object):
             self.pipe_in.close()
         if self.pipe_out:
             self.pipe_out.close()
+            
+    def create_pipes(self):
+        print("PWK: Creating pipes");
+        for pn in (self.pipe_in_name, self.pipe_out_name):
+            subprocess.run(["mkfifo", pn])
 
     def work(self):
         while True:
@@ -31,10 +42,10 @@ class PipeWorker(object):
             elif case == 2:
                 self.exec_scalar_field_2d()
             elif case == 0:
-                print("--- Worker received stop command ---")
+                print("PWK: --- Worker received stop command ---")
                 return # end worker
             else:
-                raise Exception("Bad case indicator: %s" % case)
+                raise Exception("PWK: Bad case indicator: %s" % case)
         
     def exec_scalar_field_1d(self):
         # We should read the whole record in one read attempt.
@@ -77,11 +88,21 @@ class PipeWorker(object):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Pipe worker")
-    parser.add_argument("-r", "--rank", help="MPI rank", default=0, type=int)
+    parser.add_argument("-s", "--suffix", help="Suffix for pipe files", default="")
+    parser.add_argument("--create-pipes", help="Create pipes on startup", action="store_true", default=False)
     args = parser.parse_args()
-    pw = PipeWorker(args.rank)
-    print("Pipes opened.")
+    print("PWK: Pipe worker running on host %s" % socket.gethostname())
+    print("PWK: Creating PipeWorker object")
+    pw = PipeWorker(args.suffix)
+    print("PWK: Entering main try")
     try:
+        if args.create_pipes:
+            print("PWK: Creating pipes...")
+            pw.create_pipes()
+            print("PWK: Pipes created by pipes worker.")
+        print("PWK: Opening pipes...")
+        pw.open_pipes()
+        print("PWK: Pipes opened by pipes worker.")
         pw.work()
     finally:
         pw.close_pipes()
