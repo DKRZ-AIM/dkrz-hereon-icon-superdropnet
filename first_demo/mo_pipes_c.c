@@ -22,7 +22,7 @@ void ip_init_pipes(int* mpi_rank) {
 	mkfifo(pipe_in_fn, 0666);
 	mkfifo(pipe_out_fn, 0666);
 	// fork python worker script
-	snprintf(cmd, 200, "python ./pipe_worker.py -r %i &", mpi_rank);
+	snprintf(cmd, 200, "python ./pipe_worker.py -s %i &", mpi_rank);
 	system(cmd);
 	pipe_out = open(pipe_out_fn, O_WRONLY);
 	pipe_in = open(pipe_in_fn, O_RDONLY);
