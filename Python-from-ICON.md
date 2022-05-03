@@ -21,6 +21,47 @@ upstream        git@gitlab.dkrz.de:icon/icon-aes.git (fetch)
 upstream        NO-PUSH-TO-UPSTREAM (push)
 ```
 
+### Compile the external library
+
+All CFFI related code is compiled into a dynamic library `cffi_plugin.so`. This is done in *this* repository here. Check out the repository 
+
+```bash
+# TODO git clone here
+# TODO mention specific commit
+```
+
+and run 
+
+```
+make
+```
+
+which will create the dynamic library in `./lib`.
+
+### Configure ICON
+
+Configure ICON to run on Levante and using the dynamic library
+
+```bash
+cd TODO (the icon aes repo)
+```
+
+### Compile ICON
+
+Now, ICON compilation should work immediately
+
+```bash
+make -j8
+```
+
+### Run the test experiment
+
+TODO add the test experiment
+
+## OLD STUFF BELOW
+
+TODO: Edit this out
+
 ### Compile on mistral
 
 ```bash
