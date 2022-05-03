@@ -21,4 +21,4 @@ ffibuilder.set_source("my_plugin", r'''
 module = open('my_module.py', 'r').read()
 
 ffibuilder.embedding_init_code(module)
-ffibuilder.compile(target="libplugin.so", verbose=True)
+ffibuilder.compile(target="../lib/cffi_plugin.so", verbose=True)
