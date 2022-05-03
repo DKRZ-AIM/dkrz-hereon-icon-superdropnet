@@ -2,7 +2,24 @@
 
 Second project milestone. The aim is to run a Python function from within ICON. The test scenario is the emission tracer tendency introduced in the ICON course.
 
-## CFFI in ICON-AES
+## Compile CFFI library
+
+All CFFI related code is compiled into a dynamic library `cffi_plugin.so`. This is done in *this* repository here. Check out the repository 
+
+```bash
+# TODO git clone here
+# TODO mention specific commit
+```
+
+and run 
+
+```
+make
+```
+
+which will create the dynamic library in `./lib`.
+
+## ICON-AES
 
 ### Repository
 
@@ -21,22 +38,7 @@ upstream        git@gitlab.dkrz.de:icon/icon-aes.git (fetch)
 upstream        NO-PUSH-TO-UPSTREAM (push)
 ```
 
-### Compile the external library
 
-All CFFI related code is compiled into a dynamic library `cffi_plugin.so`. This is done in *this* repository here. Check out the repository 
-
-```bash
-# TODO git clone here
-# TODO mention specific commit
-```
-
-and run 
-
-```
-make
-```
-
-which will create the dynamic library in `./lib`.
 
 ### Configure ICON
 
