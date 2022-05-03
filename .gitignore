@@ -4,6 +4,7 @@
 *.swp
 *.swo
 my_demo
+my_demo_mpi
 *.so
 my_plugin.c
 plugin.h
@@ -19,3 +20,6 @@ _*
 *.csv
 *.nc
 *.png
+cffi_interface/cffi_plugin.c
+lib/
+.ipynb_checkpoints
