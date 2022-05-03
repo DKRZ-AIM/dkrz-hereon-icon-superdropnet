@@ -2,7 +2,9 @@
 
 Second project milestone. The aim is to run a Python function from within ICON. The test scenario is the emission tracer tendency introduced in the ICON course.
 
-## Compile CFFI library
+## Prepare the Python code
+
+### Compile CFFI library
 
 All CFFI related code is compiled into a dynamic library `cffi_plugin.so`. This is done in *this* repository here. Check out the repository 
 
@@ -19,15 +21,27 @@ make
 
 which will create the dynamic library in `./lib`.
 
+### Pipes
+
+TODO
+
+### MPI
+
+TODO
+
 ## ICON-AES
 
 ### Repository
 
-Trying to plug cffi into ICON-AES (branch icon_course_2020, the branch we used in the ICON course). Forked the icon-aes git repo to a local copy:
+We are currently working in ICON-AES (branch icon_course_2020, the branch we used in the ICON course). 
+
+#### Forking ICON-AES
+
+Forked the icon-aes git repo to a local copy:
 
 https://gitlab.dkrz.de/k202141/icon-aes-fork
 
-Cleaned the history and push the project to personal git - otherwise it is too large and was rejected
+Cleaned the history and push the project to personal git - otherwise it is too large and was rejected.
 
 ```bash
 # settings
@@ -38,11 +52,13 @@ upstream        git@gitlab.dkrz.de:icon/icon-aes.git (fetch)
 upstream        NO-PUSH-TO-UPSTREAM (push)
 ```
 
+#### Working with our fork
 
+TODO just check out the icon-aes-fork or clone from my repo on Levante.
 
-### Configure ICON
+### Configure ICON-AES
 
-Configure ICON to run on Levante and using the dynamic library
+Configure ICON-AES to run on Levante and using the dynamic library
 
 ```bash
 cd TODO (the icon aes repo)
