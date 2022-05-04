@@ -100,6 +100,7 @@ Set the python path to include the library path (TODO: add this to the runscript
 
 ```bash
 export PYTHONPATH="$PYTHONPATH:/work/ka1176/caroline/gitlab/2022-03-hereon-python-fortran-bridges/lib/"
+export PYTHONPATH="$PYTHONPATH:/work/ka1176/caroline/gitlab/2022-03-hereon-python-fortran-bridges/cffi_interface/"
 ```
 
 Submit the scripts
@@ -111,6 +112,8 @@ sbatch -A ka1176 --partition=compute --time=00:10:00 exp.atm_amip_iconml_emissio
 sbatch -A ka1176 --partition=compute --time=00:10:00 exp.atm_amip_iconml_emission_pipes.run
 sbatch -A ka1176 --partition=compute --time=00:10:00 exp.atm_amip_iconml_emission_mpi.run
 ```
+
+This should produce exactly the same output for all bridges. Check out the Jupyter notebook in `notebooks/TestScenario.ipynb` for a comparison.
 
 ## Background information
 
