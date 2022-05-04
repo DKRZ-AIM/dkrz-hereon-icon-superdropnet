@@ -28,7 +28,7 @@ TODO
 
 TODO
 
-## ICON-AES
+## Prepare the Fortran code (ICON-AES)
 
 ### Repository
 
@@ -82,12 +82,18 @@ Now, ICON compilation should work immediately
 make -j8
 ```
 
-### Run the test experiment
+### Run the test experiments
 
-Generate the runscript for the emission test experiment:
+Test experiment scripts have been prepared for all working versions of the Python Fortran bridge. The switch is done via the configuration option `echam_ttr_config(:)%icon_ml_bridge='cffi'` with permissible values `fortran, cffi, pipes, mpi`. Note that the latter two are not yet implemented.
+
+Generate the runscripts for the emission test experiments:
 
 ```bash
-./make_runscripts -s atm_amip_emission_test
+./make_runscripts -s atm_amip_iconml_emission_fortran
+./make_runscripts -s atm_amip_iconml_emission_cffi
+./make_runscripts -s atm_amip_iconml_emission_pipes # not implemented
+./make_runscripts -s atm_amip_iconml_emission_mpi   # not implemented
+
 ```
 
 Set the python path to include the library path (TODO: add this to the runscript):
@@ -96,11 +102,14 @@ Set the python path to include the library path (TODO: add this to the runscript
 export PYTHONPATH="$PYTHONPATH:/work/ka1176/caroline/gitlab/2022-03-hereon-python-fortran-bridges/lib/"
 ```
 
-Submit the script
+Submit the scripts
 
 ```bash
 cd run
-sbatch -A ka1176 --partition=compute --time=00:10:00 exp.atm_amip_emission_test.run
+sbatch -A ka1176 --partition=compute --time=00:10:00 exp.atm_amip_iconml_emission_fortran.run
+sbatch -A ka1176 --partition=compute --time=00:10:00 exp.atm_amip_iconml_emission_cffi.run
+sbatch -A ka1176 --partition=compute --time=00:10:00 exp.atm_amip_iconml_emission_pipes.run
+sbatch -A ka1176 --partition=compute --time=00:10:00 exp.atm_amip_iconml_emission_mpi.run
 ```
 
 ## Background information
@@ -122,11 +131,11 @@ Required changes
 1. Create a new module in `src/atm_phy_echam/mo_echam_ttr_cffi.f90`
 1. In there, create an interface to an external subroutine `i_add_emi_echam_ttr` with the same arguments as `add_emi_echam_ttr` in `mo_echam_ttr.f90`
 1. In addition, pass the values of the `echam_ttr_config` type, as nonstandard datatypes currently not supported in CFFI's `transfer_arrays` module
-1. Add a function `add_emi_echam_ttr` in the new module that does the call to the interface function
+1. Add a function `add_emi_echam_ttr_cffi` in the new module that does the call to the interface function
 1. Define the appropriate counterparts on the Python side and in the C header
-1. In `src/atm_phy_echam/mo_interface_echam_ttr`, use the new module
+1. In `src/atm_phy_echam/mo_interface_echam_ttr`, there is a `SELECT` statement for the `icon_ml_bridge`. Place the call to the new function in the appropriate `CASE`.
 
-Demo run for one month with emission turned on:
+Demo run for one month with emission turned on - for using one of the implemented Python Fortran bridges, use the switch in experiment config file:
 
 ```bash
 sbatch -A ka1176 --nodes=8 --tasks-per-node=24 --partition=compute --time=00:60:00 exp.atm_amip_emission_caroline_month_med.run
