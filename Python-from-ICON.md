@@ -54,14 +54,25 @@ upstream        NO-PUSH-TO-UPSTREAM (push)
 
 #### Working with our fork
 
-TODO just check out the icon-aes-fork or clone from my repo on Levante.
+Clone from gitlab or directly from my repo on Levante.
+
+```bash
+# Option 1
+git clone git@gitlab.dkrz.de:k202141/icon-aes-fork.git
+# Option 2
+git clone /work/ka1176/caroline/gitlab/icon-aes/
+```
+
+If any of the external components are missing (like `yaxt`) etc, copy them from directly from my repo (``/work/ka1176/caroline/gitlab/icon-aes/externals`)
 
 ### Configure ICON-AES
 
 Configure ICON-AES to run on Levante and using the dynamic library
 
 ```bash
-cd TODO (the icon aes repo)
+cd icon-aes
+
+config/dkrz/levante_dev_ml-interface.intel-2021.5.0
 ```
 
 ### Compile ICON
@@ -74,64 +85,26 @@ make -j8
 
 ### Run the test experiment
 
-TODO add the test experiment
+Generate the runscript for the emission test experiment:
+
+```bash
+./make_runscripts -s atm_amip_emission_test
+```
+
+Set the python path to include the library path (TODO: add this to the runscript):
+
+```bash
+export PYTHONPATH="$PYTHONPATH:/work/ka1176/caroline/gitlab/2022-03-hereon-python-fortran-bridges/lib/"
+```
+
+Submit the script
+
+```bash
+cd run
+sbatch -A ka1176 --partition=compute --time=00:10:00 exp.atm_amip_emission_test.run
+```
 
 ## OLD STUFF BELOW
-
-TODO: Edit this out
-
-### Compile on mistral
-
-```bash
-# ----------------------------
-# configure
-# ----------------------------
-
-# these were missing - copied from ICON course directory
-rsync -rvtu /work/mh1049/icon_course_2020/b380623/icon-aes/externals/ externals/
-
-config/dkrz/mistral.intel
-```
-
-For now, manually compile the shared object
-
-```bash
-cd ml_interface
-module purge gcc # conflicting gcc
-python builder.py
-```
-
-There seems to be a conflict in gcc, during the compilation of the ICON executable, the following modules are loaded:
-
-```
-module load gcc/6.4.0
-module load intel/17.0.6
-module load openmpi/2.0.2p1_hpcx-intel14
-```
-
-Need to figure out how to get this into the config, for now editing the `icon.mk` file manually (`icon.mk.backup` is the original version):
-
-```bash
-(base) k202141:~/rootgit/icon-aes\ diff icon.mk icon.mk.backup
-55,56c55,56
-< LDFLAGS= -L/sw/rhel6-x64/hdf5/hdf5-1.8.18-parallel-openmpi2-intel14/lib -L/sw/rhel6-x64/netcdf/netcdf_c-4.4.0-parallel-openmpi2-intel14/lib -L/sw/rhel6-x64/netcdf/netcdf_fortran-4.4.3-parallel-openmpi2-intel14/lib -L/sw/rhel6-x64/grib_api/grib_api-1.15.0-gcc48/lib -mkl=sequential -Wl,-rpath -Wl,/sw/rhel6-x64/hdf5/hdf5-1.8.18-parallel-openmpi2-intel14/lib -Wl,-rpath -Wl,/sw/rhel6-x64/netcdf/netcdf_c-4.4.0-parallel-openmpi2-intel14/lib -Wl,-rpath -Wl,/sw/rhel6-x64/netcdf/netcdf_fortran-4.4.3-parallel-openmpi2-intel14/lib -Wl,-rpath -Wl,/sw/rhel6-x64/grib_api/grib_api-1.15.0-gcc48/lib -L/work/ka1176/caroline/gitlab/icon-aes/ml_interface
-< BUNDLED_LIBFILES= externals/self/src/libself.a externals/yac/src/libyac.a externals/mtime/src/.libs/libmtime.a externals/cdi/src/.libs/libcdi_f2003.a externals/cdi/src/.libs/libcdi.a  /work/ka1176/caroline/gitlab/icon-aes/ml_interface/libplugin.so
----
-> LDFLAGS= -L/sw/rhel6-x64/hdf5/hdf5-1.8.18-parallel-openmpi2-intel14/lib -L/sw/rhel6-x64/netcdf/netcdf_c-4.4.0-parallel-openmpi2-intel14/lib -L/sw/rhel6-x64/netcdf/netcdf_fortran-4.4.3-parallel-openmpi2-intel14/lib -L/sw/rhel6-x64/grib_api/grib_api-1.15.0-gcc48/lib -mkl=sequential -Wl,-rpath -Wl,/sw/rhel6-x64/hdf5/hdf5-1.8.18-parallel-openmpi2-intel14/lib -Wl,-rpath -Wl,/sw/rhel6-x64/netcdf/netcdf_c-4.4.0-parallel-openmpi2-intel14/lib -Wl,-rpath -Wl,/sw/rhel6-x64/netcdf/netcdf_fortran-4.4.3-parallel-openmpi2-intel14/lib -Wl,-rpath -Wl,/sw/rhel6-x64/grib_api/grib_api-1.15.0-gcc48/lib
-> BUNDLED_LIBFILES= externals/self/src/libself.a externals/yac/src/libyac.a externals/mtime/src/.libs/libmtime.a externals/cdi/src/.libs/libcdi_f2003.a externals/cdi/src/.libs/libcdi.a
-
-
-```
-
-Now try to compile ICON including the dynamic library:
-
-```
-make -j 8 # on shared node
-```
-
-### Compile on Levante
-
-Copied the configuration file `config/dkrz/kamikaze.intel-2021.5.0-rttov` from an `icon-aes` development branch.
 
 These are the modules that were loaded:
 
@@ -139,27 +112,6 @@ These are the modules that were loaded:
 module load intel-oneapi-compilers
 module load openmpi/4.1.2-intel-2021.5.0
 ```
-
-### Hello world from ICON
-
-Make a runscript that calls the ECHAM test tracer print function and submit:
-
-```
-./make_runscripts -s atm_amip_test_caroline
-
-export PYTHONPATH=$PYTHONPATH:"$PWD/ml_interface"
-
-cd run
-sbatch -A ka1176 --partition=compute --time=00:10:00 exp.atm_amip_caroline_test.run
-```
-
-In the ECHAM test tracer configuration print routine, there is a call to `i_hello_world` that calls the corresponding Python function. In the log file, you should find the line 
-
-```bash
-Hello from the Python world!
-```
-
-executed once per MPI thread.
 
 ### Test tracer tendency from ICON
 
