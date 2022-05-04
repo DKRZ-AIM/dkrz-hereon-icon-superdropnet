@@ -9,17 +9,16 @@ Second project milestone. The aim is to run a Python function from within ICON. 
 All CFFI related code is compiled into a dynamic library `cffi_plugin.so`. This is done in *this* repository here. Check out the repository 
 
 ```bash
-# TODO git clone here
-# TODO mention specific commit
+git clone git@gitlab.dkrz.de:aim/2022-03-hereon-python-fortran-bridges.git
 ```
 
-and run 
+where the latest version of the library can be compiled from the main branch. Run 
 
 ```
 make
 ```
 
-which will create the dynamic library in `./lib`.
+which will create the dynamic library in `./lib/cffi_plugin.so`.
 
 ### Pipes
 
@@ -104,7 +103,9 @@ cd run
 sbatch -A ka1176 --partition=compute --time=00:10:00 exp.atm_amip_emission_test.run
 ```
 
-## OLD STUFF BELOW
+## Background information
+
+### Modules on Levante
 
 These are the modules that were loaded:
 
@@ -113,7 +114,7 @@ module load intel-oneapi-compilers
 module load openmpi/4.1.2-intel-2021.5.0
 ```
 
-### Test tracer tendency from ICON
+### Test tracer tendency from ICON (CFFI)
 
 We replace the call to `add_emi_echam_ttr` with a call to the corresonding Python function via the interface.
 
