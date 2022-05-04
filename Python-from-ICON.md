@@ -62,7 +62,7 @@ git clone git@gitlab.dkrz.de:k202141/icon-aes-fork.git
 git clone /work/ka1176/caroline/gitlab/icon-aes/
 ```
 
-If any of the external components are missing (like `yaxt`) etc, copy them from directly from my repo (``/work/ka1176/caroline/gitlab/icon-aes/externals`)
+If any of the external components are missing (like `yaxt`) etc, copy them from directly from my repo (`/work/ka1176/caroline/gitlab/icon-aes/externals`)
 
 ### Configure ICON-AES
 
