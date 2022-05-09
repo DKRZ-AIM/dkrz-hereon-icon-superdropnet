@@ -125,7 +125,7 @@ PROGRAM routine
   CALL i_hello_world()
   
   ! open pipe
-  CALL ip_init_pipes(1)
+  CALL ip_init_pipes(0, 1)
   
   ! (2) set default values
   x1min = -5.0

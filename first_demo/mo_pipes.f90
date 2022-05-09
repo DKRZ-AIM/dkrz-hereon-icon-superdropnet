@@ -7,9 +7,10 @@ IMPLICIT NONE
 
 INTERFACE 
   
-  SUBROUTINE ip_init_pipes(mpi_rank) bind(C, NAME='ip_init_pipes')
+  SUBROUTINE ip_init_pipes(mpi_rank, mpi_world_size) bind(C, NAME='ip_init_pipes')
     USE iso_c_binding
     INTEGER(c_int) :: mpi_rank
+    INTEGER(c_int) :: mpi_world_size
   END SUBROUTINE ip_init_pipes
   
   SUBROUTINE ip_close_pipes() bind(C, NAME='ip_close_pipes')

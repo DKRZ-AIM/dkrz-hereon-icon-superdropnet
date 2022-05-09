@@ -14,16 +14,19 @@ int pipe_in, pipe_out;
 char pipe_in_fn[200], pipe_out_fn[200];
 char cmd[200];
 
-void ip_init_pipes(int* mpi_rank) {
+void ip_init_pipes(int* mpi_rank, int* mpi_world_size) {
 	// create file (fifo) names from MPI rank
-	snprintf(pipe_in_fn, 200, "%s_%i.tmp", PIPE_IN_PATH_PREFIX, mpi_rank);
-	snprintf(pipe_out_fn, 200, "%s_%i.tmp", PIPE_OUT_PATH_PREFIX, mpi_rank);
+	snprintf(pipe_in_fn, 200, "%s_0_%i.tmp", PIPE_IN_PATH_PREFIX, *mpi_rank);
+	snprintf(pipe_out_fn, 200, "%s_0_%i.tmp", PIPE_OUT_PATH_PREFIX, *mpi_rank);
+	printf("MPI rank: %i, MPI world size: %i\n", *mpi_rank, *mpi_world_size);
+	if (*mpi_rank == 0) {
+		// fork python worker script
+		snprintf(cmd, 200, "python ./pipe_worker.py -s 0 -n %i --create-pipes --remove-pipes &", *mpi_world_size);
+		system(cmd);
+	}
 	// create fifos
-	mkfifo(pipe_in_fn, 0666);
-	mkfifo(pipe_out_fn, 0666);
-	// fork python worker script
-	snprintf(cmd, 200, "python ./pipe_worker.py -s %i &", mpi_rank);
-	system(cmd);
+	//mkfifo(pipe_in_fn, 0666);
+	//mkfifo(pipe_out_fn, 0666);
 	pipe_out = open(pipe_out_fn, O_WRONLY);
 	pipe_in = open(pipe_in_fn, O_RDONLY);
 	printf("Pipes opened.\n");
@@ -35,9 +38,9 @@ void ip_close_pipes() {
 	close(pipe_out);
 	close(pipe_in);
 	printf("Pipes closed.\n");
-	unlink(pipe_out_fn);
-	unlink(pipe_in_fn);
-	printf("Pipes removed.\n");
+	//unlink(pipe_out_fn);
+	//unlink(pipe_in_fn);
+	//printf("Pipes removed.\n");
 }
 
 	
