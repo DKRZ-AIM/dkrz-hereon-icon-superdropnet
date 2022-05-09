@@ -144,7 +144,7 @@ PROGRAM routine
   istat = HOSTNAM (hostname)
   PRINT *, 'rank', mpi_rank, 'running on ', hostname
 
-  CALL ip_init_pipes(mpi_rank)
+  CALL ip_init_pipes(mpi_rank, mpi_size)
 
   CALL MPI_BARRIER(MPI_COMM_WORLD, error);
 
