@@ -1,18 +1,36 @@
 import os, sys, time, io
 import numpy as np
 import argparse
+import subprocess
+import socket
 
 pipe_in_name_prefix = "/tmp/esmdemopipe_out"
 pipe_out_name_prefix = "/tmp/esmdemopipe_in"
 
-class PipeWorker(object):
-
-    def __init__(self, mpi_rank):
-        self.mpi_rank = mpi_rank
-        self.pipe_in_name = "%s_%s.tmp" % (pipe_in_name_prefix, mpi_rank)
-        self.pipe_out_name = "%s_%s.tmp" % (pipe_out_name_prefix, mpi_rank)
+class PipeContext(object):
+    """
+    Wraps a set of (in, out) pipes with additional context info.
+    A single context represents the ability to communicate from/to a foreign MPI process.
+    """
+    
+    def __init__(self, index, pipe_in_name, pipe_out_name):
+        self.pipe_index = index
+        self.pipe_in_name = pipe_in_name
+        self.pipe_out_name = pipe_out_name
+        self.pipe_in = None
+        self.pipe_out = None
+        self.pipes_created = False
+        
+    def open_pipes(self):
+        print("PWK: opening pipe_in %s: %s" % (self.pipe_index, self.pipe_in_name))
+        sys.stdout.flush()
         self.pipe_in = io.open(self.pipe_in_name, 'rb') #os.O_RDONLY)
+        print("PWK: pipe_in %s opened" % self.pipe_index)
+        print("PWK: opening pipe_out %s: %s" % (self.pipe_index, self.pipe_out_name))
+        sys.stdout.flush()
         self.pipe_out = io.open(self.pipe_out_name,'wb') # os.O_WRONLY)
+        print("PWK: pipe_out %s opened" % self.pipe_index)
+        sys.stdout.flush()
     
     def close_pipes(self):
         if self.pipe_in:
@@ -20,22 +38,21 @@ class PipeWorker(object):
         if self.pipe_out:
             self.pipe_out.close()
 
-    def work(self):
-        while True:
-            raw = self.pipe_in.read(4)
-            if not raw:
-                continue
-            case = int.from_bytes(raw, sys.byteorder)
-            if case == 1:
-                self.exec_scalar_field_1d()
-            elif case == 2:
-                self.exec_scalar_field_2d()
-            elif case == 0:
-                print("--- Worker received stop command ---")
-                return # end worker
-            else:
-                raise Exception("Bad case indicator: %s" % case)
-        
+    def create_pipes(self):
+        print("PWK: Creating pipes %s" % self.pipe_index);
+        sys.stdout.flush()
+        for pn in (self.pipe_in_name, self.pipe_out_name):
+            subprocess.run(["mkfifo", pn])
+            print("Pipes %s created: %s" % (self.pipe_index, pn))
+        self.pipes_created = True
+
+    def remove_pipes(self):
+        if self.pipes_created:
+            os.remove(self.pipe_in_name)
+            os.remove(self.pipe_out_name)
+            print("PWK: Pipes %s removed." % self.pipe_index)
+            sys.stdout.flush()
+
     def exec_scalar_field_1d(self):
         # We should read the whole record in one read attempt.
         # If we only read parts, and pipe it back, the Fortran code will 
@@ -73,15 +90,86 @@ class PipeWorker(object):
         raw_out = phi.tobytes()
         self.pipe_out.write(raw_out)
         self.pipe_out.flush()
-        
+
+class PipeWorker(object):
+
+    def __init__(self, suffix, num_pipes):
+        self.suffix = suffix
+        self.pipes = []
+        assert(num_pipes < 100)
+        for i in range(num_pipes):
+            pc = PipeContext(i, "%s_%s_%s.tmp" % (pipe_in_name_prefix, suffix, i), "%s_%s_%s.tmp" % (pipe_out_name_prefix, suffix, i))
+            self.pipes.append(pc)
+    
+    def work(self):
+        while True:
+            for pc in self.pipes:
+                raw = pc.pipe_in.read(4)
+                if not raw:
+                    continue
+                case = int.from_bytes(raw, sys.byteorder)
+                if case == 1:
+                    pc.exec_scalar_field_1d()
+                elif case == 2:
+                    pc.exec_scalar_field_2d()
+                elif case == 0:
+                    print("PWK: --- Worker received stop command ---")
+                    sys.stdout.flush()
+                    return # end worker
+                else:
+                    raise Exception("PWK: Bad case indicator on pipe %s: %s" % (pc.pipe_index, case))
+
+    def create_pipes(self):
+        for pipe in self.pipes:
+            pipe.create_pipes()
+    
+    def open_pipes(self):
+        for pipe in self.pipes:
+            pipe.open_pipes()
+    
+    def close_pipes(self):
+        for pipe in self.pipes:
+            pipe.close_pipes()
+
+    def remove_pipes(self):
+        for pipe in self.pipes:
+            pipe.remove_pipes()
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Pipe worker")
-    parser.add_argument("-r", "--rank", help="MPI rank", default=0, type=int)
+    parser.add_argument("-s", "--suffix", help="Suffix for pipe files", default="")
+    parser.add_argument("-n", "--num-pipes", help="Number of pipes; index starts with 0", type=int, default=1)
+    parser.add_argument("--create-pipes", help="Create pipes on startup", action="store_true", default=False)
+    parser.add_argument("--dry-run", help="Dry run - do not creat or listen to pipes", action="store_true", default=False)
+    parser.add_argument("--remove-pipes", help="Remove pipes on shutdown", action="store_true", default=False)
     args = parser.parse_args()
-    pw = PipeWorker(args.rank)
-    print("Pipes opened.")
+    print("PWK: Pipe worker running on host %s" % socket.gethostname())
+    if args.dry_run:
+        print("PWK: dry run!")
+    print("PWK: Using suffix %s" % args.suffix)
+    print("PWK: Creating PipeWorker object")
+    pw = PipeWorker(args.suffix, args.num_pipes)
+    print("PWK: Entering main try")
+    sys.stdout.flush()
     try:
-        pw.work()
+        if args.create_pipes:
+            print("PWK: Creating pipes...")
+            sys.stdout.flush()
+            if not args.dry_run:
+                pw.create_pipes()
+            print("PWK: Pipes created by pipes worker.")
+        print("PWK: Opening pipes...")
+        sys.stdout.flush()
+        if not args.dry_run:
+            pw.open_pipes()
+        print("PWK: Pipes opened by pipes worker.")
+        sys.stdout.flush()
+        if not args.dry_run:
+            pw.work()
     finally:
-        pw.close_pipes()
+        if not args.dry_run:
+            pw.close_pipes()
+            if args.remove_pipes:
+                pw.remove_pipes()
+    print("PWK: Terminated normally.")
+    sys.stdout.flush()
