@@ -68,6 +68,10 @@ PROGRAM routine
   INTEGER(KIND=4) :: error
   INTEGER(KIND=4) :: mpi_rank
   INTEGER(KIND=4) :: mpi_size
+	INTEGER(KIND=4) :: mpi_shmcomm
+  INTEGER(KIND=4) :: mpi_shmrank
+  INTEGER(KIND=4) :: mpi_shmsize
+
 
   ! useful helpers
   CHARACTER(MAX_HOSTNAM_LENGTH + 1) :: hostname
@@ -144,7 +148,14 @@ PROGRAM routine
   istat = HOSTNAM (hostname)
   PRINT *, 'rank', mpi_rank, 'running on ', hostname
 
-  CALL ip_init_pipes(mpi_rank, mpi_size)
+
+  ! For pipes, we need rank and size only for the local node
+  ! This can be determined by splitting the communicator
+	CALL MPI_Comm_split_type(MPI_COMM_WORLD, MPI_COMM_TYPE_SHARED, 0, MPI_INFO_NULL, mpi_shmcomm, error);
+	CALL MPI_Comm_rank(mpi_shmcomm, mpi_shmrank, error);
+  CALL MPI_Comm_size(mpi_shmcomm, mpi_shmsize, error);
+
+  CALL ip_init_pipes(mpi_shmrank, mpi_shmsize)
 
   CALL MPI_BARRIER(MPI_COMM_WORLD, error);
 
