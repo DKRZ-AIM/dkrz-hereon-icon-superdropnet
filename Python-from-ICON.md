@@ -133,7 +133,13 @@ This should produce exactly the same output for all bridges. Check out the Jupyt
 
 The pipes worker needs to be run once on every node that has an ICON process. I.e., in the simplest case, ICON runs with just a handful of processes on a single node, and the pipes worker runs on the same node.
 
-Since ICON assumes that every process in MPI_COMM_WORLD runs the ICON executable, getting the Python pipe worker (which does not communicate via MPI at all) to run is difficult. On Mistral, the following setup ultimately worked: A script (run_hybrid.sh) submits two sbatch jobs to the exact same node. The pipe worker is given the slurm JOB ID of the ICON job runnin in parallel (so it can name the pipe files correctly). The pipe worker client in ICON blocks in all its processes until it has communicated successfully back and forth once with the pipe worker.
+ICON assumes that all MPI tasks run its executable, which makes running the pipe_worker python script a bit hard. Current best solution: Modify the experiment .run script directly by adding a non-blocking call to the pipe_worker right before the ICON executable is called:
+
+```
+python ${basedir}/src/atm_phy_echam/pipe_worker.py -s ${SLURM_JOB_ID} -n ${mpi_total_procs} --create-pipes --remove-pipes &
+```
+
+The drawback of this solution is that the python process will run in parallel to all other processes without having a process of its own, which can affect performance and/or benchmarking reliability.
 
 ## Background information
 
