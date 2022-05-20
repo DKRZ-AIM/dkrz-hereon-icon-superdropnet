@@ -22,7 +22,21 @@ which will create the dynamic library in `./lib/cffi_plugin.so`.
 
 ### Pipes
 
-TODO
+In order to include the C module that serves the pipe worker on ICON's end, it must be added manually as dependency to the build process of ICON. This is done by adding it to icon.mk.in, under "Dependency generation rule for Fortran-to-C-bindings":
+
+```
+c_binding.d: icon.mk
+	$(silent_DEPGEN):;{ \
+	  echo '$(src_prefix)src/io/restart/mo_c_restart_util.@OBJEXT@:| support/util_multifile_restart.@OBJEXT@' && \
+	  echo '$(src_prefix)src/io/shared/mo_util_file.@OBJEXT@:| support/util_file.@OBJEXT@' && \
+
+(...)
+
+	  echo '$(src_prefix)src/atm_phy_echam/mo_python_pipes_worker.@OBJEXT@:| $(src_prefix)src/atm_phy_echam/mo_pipes_c.@OBJEXT@'; \
+	} >$@
+```
+
+You need to run configuration and then make again to have it added.
 
 ### MPI
 
@@ -114,6 +128,12 @@ sbatch -A ka1176 --partition=compute --time=00:10:00 exp.atm_amip_iconml_emissio
 ```
 
 This should produce exactly the same output for all bridges. Check out the Jupyter notebook in `notebooks/TestScenario.ipynb` for a comparison.
+
+## Running the pipes bridge with ICON
+
+The pipes worker needs to be run once on every node that has an ICON process. I.e., in the simplest case, ICON runs with just a handful of processes on a single node, and the pipes worker runs on the same node.
+
+Since ICON assumes that every process in MPI_COMM_WORLD runs the ICON executable, getting the Python pipe worker (which does not communicate via MPI at all) to run is difficult. On Mistral, the following setup ultimately worked: A script (run_hybrid.sh) submits two sbatch jobs to the exact same node. The pipe worker is given the slurm JOB ID of the ICON job runnin in parallel (so it can name the pipe files correctly). The pipe worker client in ICON blocks in all its processes until it has communicated successfully back and forth once with the pipe worker.
 
 ## Background information
 
