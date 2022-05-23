@@ -22,7 +22,21 @@ which will create the dynamic library in `./lib/cffi_plugin.so`.
 
 ### Pipes
 
-TODO
+In order to include the C module that serves the pipe worker on ICON's end, it must be added manually as dependency to the build process of ICON. This is done by adding it to icon.mk.in, under "Dependency generation rule for Fortran-to-C-bindings":
+
+```
+c_binding.d: icon.mk
+	$(silent_DEPGEN):;{ \
+	  echo '$(src_prefix)src/io/restart/mo_c_restart_util.@OBJEXT@:| support/util_multifile_restart.@OBJEXT@' && \
+	  echo '$(src_prefix)src/io/shared/mo_util_file.@OBJEXT@:| support/util_file.@OBJEXT@' && \
+
+(...)
+
+	  echo '$(src_prefix)src/atm_phy_echam/mo_python_pipes_worker.@OBJEXT@:| $(src_prefix)src/atm_phy_echam/mo_pipes_c.@OBJEXT@'; \
+	} >$@
+```
+
+You need to run configuration and then make again to have it added.
 
 ### MPI
 
@@ -114,6 +128,18 @@ sbatch -A ka1176 --partition=compute --time=00:10:00 exp.atm_amip_iconml_emissio
 ```
 
 This should produce exactly the same output for all bridges. Check out the Jupyter notebook in `notebooks/TestScenario.ipynb` for a comparison.
+
+## Running the pipes bridge with ICON
+
+The pipes worker needs to be run once on every node that has an ICON process. I.e., in the simplest case, ICON runs with just a handful of processes on a single node, and the pipes worker runs on the same node.
+
+ICON assumes that all MPI tasks run its executable, which makes running the pipe_worker python script a bit hard. Current best solution: Modify the experiment .run script directly by adding a non-blocking call to the pipe_worker right before the ICON executable is called:
+
+```
+python ${basedir}/src/atm_phy_echam/pipe_worker.py -s ${SLURM_JOB_ID} -n ${mpi_total_procs} --create-pipes --remove-pipes &
+```
+
+The drawback of this solution is that the python process will run in parallel to all other processes without having a process of its own, which can affect performance and/or benchmarking reliability.
 
 ## Background information
 
