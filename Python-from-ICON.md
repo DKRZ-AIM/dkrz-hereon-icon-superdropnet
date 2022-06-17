@@ -73,18 +73,22 @@ Clone from gitlab or directly from my repo on Levante.
 # Option 1
 git clone git@gitlab.dkrz.de:k202141/icon-aes-fork.git
 # Option 2
-git clone /work/ka1176/caroline/gitlab/icon-aes/
+git clone /work/ka1176/caroline/gitlab/icon-aes-fork/
 ```
 
-If any of the external components are missing (like `yaxt`) etc, copy them from directly from my repo (`/work/ka1176/caroline/gitlab/icon-aes-fork/externals`)
+If any of the external components are missing (like `yaxt`) etc, copy them from directly from my repo - this may be a bit slow:
+
+```bash
+cd icon-aes-fork
+
+rsync -rvtu /work/ka1176/caroline/gitlab/icon-aes-fork/externals/ ./externals
+```
 
 ### Configure ICON-AES
 
-Configure ICON-AES to run on Levante and using the dynamic library
+Configure the ICON-AES fork to run on Levante and using the dynamic library
 
 ```bash
-cd icon-aes
-
 config/dkrz/levante_dev_ml-interface.intel-2021.5.0
 ```
 
