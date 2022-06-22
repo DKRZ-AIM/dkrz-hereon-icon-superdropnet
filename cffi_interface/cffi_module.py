@@ -6,6 +6,11 @@ import numpy as np
 import transfer_arrays
 
 @ffi.def_extern()
+def i_check_interface():
+    '''function to check the interface functionality (stub)'''
+    print("Check interface")
+
+@ffi.def_extern()
 def i_get_emi_number(n):
     n[0] = 17
 
