@@ -17,10 +17,10 @@ class simulation_forecast:
         self.inputs_mean = inputs_mean
         self.inputs_std = inputs_std
         self.model = new_model
-        self.moments_out = self.moments_out
+        self.moments_out = None
         self.nu = 1
         self.rm = 13e-6
-        self.lo = self.moments_in[0]+ self.moments_in[2]
+        self.lo = moments_in[0]+ moments_in[2]
         
         
 
@@ -33,8 +33,8 @@ class simulation_forecast:
         self.create_input()
         self.preds = self.model.test_step(torch.from_numpy(self.inputs))
         self.moments_out = (
-            self.preds * self.inputs_std[:4]
-        ) + self.inputs_mean [:4]
+            self.preds * self.inputs_std[:, :4]
+        ) + self.inputs_mean[:, :4]
         
         self.check_preds()
 

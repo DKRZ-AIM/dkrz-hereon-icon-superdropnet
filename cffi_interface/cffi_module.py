@@ -18,6 +18,11 @@ import models.plModel as plm
 
 
 @ffi.def_extern()
+def i_check_interface():
+    '''function to check the interface functionality (stub)'''
+    print("Check interface")
+
+@ffi.def_extern()
 def i_get_emi_number(n):
     n[0] = 17
 
@@ -97,8 +102,9 @@ def i_warm_rain_nn(ptr_ik_slice,ptr_n_cloud_t0, ptr_q_cloud_t0,
     ik_slice: Spatial information
     all_fortran_moments: Should contain the value of two moments with dimensions [i,k,4]
     """
-    ik_slice = transfer_arrays.asarray(ffi, ptr_ik_slice,shape = (4,))
-    shape = ((ik_slice[1]-ik_slice[0]),(ik_slice[3]-ik_slice[2]))
+    #ik_slice = transfer_arrays.asarray(ffi, ptr_ik_slice,shape = (4,))
+    #shape = ((ik_slice[1]-ik_slice[0]),(ik_slice[3]-ik_slice[2]))
+    shape = (4, 3)
     n_cloud_t0 = transfer_arrays.asarray(ffi, ptr_n_cloud_t0, shape = shape)
     q_cloud_t0 = transfer_arrays.asarray(ffi,ptr_q_cloud_t0, shape = shape)
     n_rain_t0 = transfer_arrays.asarray(ffi,ptr_n_rain_t0, shape = shape)
@@ -111,11 +117,11 @@ def i_warm_rain_nn(ptr_ik_slice,ptr_n_cloud_t0, ptr_q_cloud_t0,
     
     all_fortran_moments = np.stack((q_cloud_t0,n_cloud_t0,q_rain_t0,n_rain_t0),axis =-1)
     
-    inputs_mean = np.asarray([0.0002621447787797809, 51128093.51524663,
+    inputs_mean = np.asarray([[0.0002621447787797809, 51128093.51524663,
                     0.0003302890736022656, 5194.251154308974,
                     0.5566250557023539, 4.8690682855354596e-12,
                     0.0005924338523807814, 1.0848856769219835e-05,
-                    2.0193905073168525])
+                    2.0193905073168525]])
 
     inputs_std = np.asarray([[0.0003865559774857862, 86503916.13808665,
                     0.00041369562655559327, 19127.947970150628,
@@ -133,7 +139,8 @@ def i_warm_rain_nn(ptr_ik_slice,ptr_n_cloud_t0, ptr_q_cloud_t0,
     pl_model = plm.LightningModel(inputs_mean=inputs_mean, inputs_std=inputs_std,
                             updates_mean=updates_mean, updates_std=updates_std) 
 
-    trained_model = pl_model.load_from_checkpoint("./trained_models/best_model.ckpt")
+    hard_coded_path = '/work/ka1176/caroline/gitlab/2022-03-hereon-python-fortran-bridges/cffi_interface'
+    trained_model = pl_model.load_from_checkpoint(hard_coded_path + "/trained_models/best_model.ckpt")
 
     #Loop starts here 
     for i in range (0,shape[0]):
@@ -145,10 +152,10 @@ def i_warm_rain_nn(ptr_ik_slice,ptr_n_cloud_t0, ptr_q_cloud_t0,
         )
             new_forecast.test()
 
-            q_cloud_t1[i,k] = new_forecast.moments_out[0]
-            n_cloud_t1[i,k] = new_forecast.moments_out[1]
-            q_rain_t1[i,k]  = new_forecast.moments_out[2]
-            n_rain_t1[i,k]  = new_forecast.moments_out[3]
+            q_cloud_t1[i,k] = new_forecast.moments_out[0, 0]
+            n_cloud_t1[i,k] = new_forecast.moments_out[0, 1]
+            q_rain_t1[i,k]  = new_forecast.moments_out[0, 2]
+            n_rain_t1[i,k]  = new_forecast.moments_out[0, 3]
            
            
 

@@ -15,7 +15,7 @@ class LightningModel(pl.LightningModule):
         updates_std,
         inputs_mean,
         inputs_std,
-        save_dir="/gpfs/work/sharmas/mc-snow-data/new_exp",
+        save_dir=None,
         batch_size=256,
         beta=0.35,
         learning_rate=2e-4,
@@ -44,7 +44,6 @@ class LightningModel(pl.LightningModule):
         super().__init__()
         self.moment_scheme = moment_scheme
         self.out_features = moment_scheme * 2
-        self.save_dir = save_dir
         self.lr = learning_rate
         self.loss_func = loss_func
         self.beta = beta
@@ -67,10 +66,10 @@ class LightningModel(pl.LightningModule):
         self.avg_dataloader = avg_dataloader
         self.save_hyperparameters()
 
-        self.updates_std = torch.from_numpy(updates_std).float().to("cuda")
-        self.updates_mean = torch.from_numpy(updates_mean).float().to("cuda")
-        self.inputs_mean = torch.from_numpy(inputs_mean).float().to("cuda")
-        self.inputs_std = torch.from_numpy(inputs_std).float().to("cuda")
+        self.updates_std = torch.from_numpy(updates_std).float().to("cpu")
+        self.updates_mean = torch.from_numpy(updates_mean).float().to("cpu")
+        self.inputs_mean = torch.from_numpy(inputs_mean).float().to("cpu")
+        self.inputs_std = torch.from_numpy(inputs_std).float().to("cpu")
 
         # Some plotting stuff
         self.color = ["#26235b", "#bc473a", "#812878", "#f69824"]
@@ -102,21 +101,9 @@ class LightningModel(pl.LightningModule):
         save_dir,
         pretrained_path,
     ):
-        os.chdir(save_dir)
         model = plNetwork(
             act, n_layers, ns, out_features, depth, p, use_batch_norm, use_dropout
         )
-        if pretrained_path is not None:
-            pretrained_dict = torch.load(pretrained_path,map_location='cpu')
-            new_dict = {}
-
-            for (k, _), (_, v) in zip(
-                model.state_dict().items(), pretrained_dict["state_dict"].items()
-            ):
-                new_dict[k] = v
-            model.load_state_dict(
-                dict([(n, p) for n, p in new_dict.items()]), strict=False
-            )
         model.train()
         return model
 
