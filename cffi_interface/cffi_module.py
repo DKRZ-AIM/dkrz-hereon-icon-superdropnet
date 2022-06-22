@@ -80,12 +80,30 @@ def i_add_emi_echam_ttr(ptr_jg, ptr_jcs, ptr_jce,
     dxdt[jcs:jce][~cond] = 0.0
 
 @ffi.def_extern()
-def i_warm_rain_nn(ik_slice,all_fortran_moments):
+def i_warm_rain_nn(ptr_ik_slice,ptr_n_cloud_t0, ptr_q_cloud_t0,
+                  ptr_n_rain_t0,  ptr_q_rain_t0,  
+                 ptr_n_cloud_t1, ptr_q_cloud_t1, 
+                  ptr_n_rain_t1,  ptr_q_rain_t1
+):
     """
     Parameters:
     ik_slice: Spatial information
     all_fortran_moments: Should contain the value of two moments with dimensions [i,k,4]
     """
+    ik_slice = transfer_arrays.asarray(ffi, ptr_ik_slice,shape = (4,))
+    shape = ((ik_slice[1]-ik_slice[0]),(ik_slice[3]-ik_slice[2]))
+    n_cloud_t0 = transfer_arrays.asarray(ffi, ptr_n_cloud_t0, shape = shape)
+    q_cloud_t0 = transfer_arrays.asarray(ffi,ptr_q_cloud_t0, shape = shape)
+    n_rain_t0 = transfer_arrays.asarray(ffi,ptr_n_rain_t0, shape = shape)
+    q_rain_t0 = transfer_arrays.asarray(ffi,ptr_q_rain_t0, shape = shape)
+
+    n_cloud_t1 = transfer_arrays.asarray(ffi,ptr_n_cloud_t1, shape=shape)
+    q_cloud_t1 = transfer_arrays.asarray(ffi,ptr_q_cloud_t1, shape = shape)
+    n_rain_t1 = transfer_arrays.asarray(ffi,ptr_n_rain_t1, shape=shape)
+    q_rain_t1 = transfer_arrays.asarray(ffi,ptr_q_rain_t1, shape = shape)
+    
+    all_fortran_moments = np.concatenate((q_cloud_t0,n_cloud_t0,q_rain_t0,n_rain_t0),axis =-1)
+    
     inputs_mean = np.asarray([0.0002621447787797809, 51128093.51524663,
                     0.0003302890736022656, 5194.251154308974,
                     0.5566250557023539, 4.8690682855354596e-12,
@@ -108,20 +126,25 @@ def i_warm_rain_nn(ik_slice,all_fortran_moments):
     pl_model = LightningModel(inputs_mean=inputs_mean, inputs_std=inputs_std,
                             updates_mean=updates_mean, updates_std=updates_std) 
 
-    trained_model = pl_model.load_from_checkpoint(os.path.expanduser('~')+"/micro-param/trained_models/best_model.ckpt")
+    trained_model = pl_model.load_from_checkpoint("./trained_models/best_model.ckpt")
 
     #Loop starts here 
-    for i in range (ik_slice[0],ik_slice[1]):
-        for k in range ((ik_slice[2],ik_slice[3])):
-            fortran_moments = all_fortran_moments[i,k,:] # todo: fortran_moments should be numpy array  
+    for i in range (0,shape[0]):
+        for k in range (0,shape[1]):
+            fortran_moments = all_fortran_moments[i,k,:]  
             #Solver class initalized and new moment calculated
             new_forecast = simulation_forecast(
         fortran_moments, trained_model,inputs_mean, inputs_std
         )
             new_forecast.test()
-            #New moment to be passed to fortran
-            print(new_forecast.moments_out)
-            #todo: Set all_fortran_moments[i,k,:]= new_forecast.moments_out
+
+            q_cloud_t1[i,k] = new_forecast.moments_out[0]
+            n_cloud_t1[i,k] = new_forecast.moments_out[1]
+            q_rain_t1[i,k]  = new_forecast.moments_out[2]
+            n_rain_t1[i,k]  = new_forecast.moments_out[3]
+           
+           
+
 #@ffi.def_extern()
 #def i_print_shape(nx):
 #    print(" shape in python", nx, type(nx), nx[0])

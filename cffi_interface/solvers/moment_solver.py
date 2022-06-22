@@ -38,7 +38,8 @@ class simulation_forecast:
         
         self.check_preds()
 
-      
+        self.moments_out = self.moments_out.numpy()
+        self.moments_out = self.moments_out.astype(np.float64)
 
     # For Calculation of Moments
     def calc_mean(self, no_norm, means, stds):
