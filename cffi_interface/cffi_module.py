@@ -1,13 +1,20 @@
 # module.py
 # contents of this file are written in builder.py
 # as argument of ffibuilder.embedding_init_code
+
 from cffi_plugin import ffi
 import numpy as np
 import os
 import transfer_arrays
 import pytorch_lightning as pl
-from models.plModel import LightningModule
+
+import sys
+sys.path.append('/work/ka1176/caroline/gitlab/2022-03-hereon-python-fortran-bridges/cffi_interface')
 from solvers.moment_solver import simulation_forecast
+sys.path.append('/work/ka1176/caroline/gitlab/2022-03-hereon-python-fortran-bridges/cffi_interface/models')
+sys.path.append('/work/ka1176/caroline/gitlab/2022-03-hereon-python-fortran-bridges/cffi_interface')
+
+import models.plModel as plm
 
 
 @ffi.def_extern()
@@ -123,7 +130,7 @@ def i_warm_rain_nn(ptr_ik_slice,ptr_n_cloud_t0, ptr_q_cloud_t0,
                     3.6008419243808887e-07, 68.6678997504877]])
 
     #NN Model initalization
-    pl_model = LightningModel(inputs_mean=inputs_mean, inputs_std=inputs_std,
+    pl_model = plm.LightningModel(inputs_mean=inputs_mean, inputs_std=inputs_std,
                             updates_mean=updates_mean, updates_std=updates_std) 
 
     trained_model = pl_model.load_from_checkpoint("./trained_models/best_model.ckpt")

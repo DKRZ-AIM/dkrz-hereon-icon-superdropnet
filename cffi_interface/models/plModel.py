@@ -3,11 +3,10 @@ import numpy as np
 import pytorch_lightning as pl
 import torch
 import torch.nn as nn
-from src.models.nnmodel import plNetwork
-from matplotlib import pyplot as plt
-import seaborn as sns
-from src.helpers.normalizer import normalizer
 
+import sys
+sys.path.append('/work/ka1176/caroline/gitlab/2022-03-hereon-python-fortran-bridges/cffi_interface/models')
+from nnmodel import plNetwork
 
 class LightningModel(pl.LightningModule):
     def __init__(
