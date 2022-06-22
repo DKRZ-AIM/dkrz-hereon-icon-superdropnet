@@ -3,7 +3,12 @@
 # as argument of ffibuilder.embedding_init_code
 from cffi_plugin import ffi
 import numpy as np
+import os
 import transfer_arrays
+import pytorch_lightning as pl
+from models.plModel import LightningModule
+from solvers.moment_solver import simulation_forecast
+
 
 @ffi.def_extern()
 def i_get_emi_number(n):
@@ -74,6 +79,49 @@ def i_add_emi_echam_ttr(ptr_jg, ptr_jcs, ptr_jce,
     dxdt[jcs:jce][cond] = emi_flux / air_mass[jcs:jce][cond]
     dxdt[jcs:jce][~cond] = 0.0
 
+@ffi.def_extern()
+def i_warm_rain_nn(ik_slice,all_fortran_moments):
+    """
+    Parameters:
+    ik_slice: Spatial information
+    all_fortran_moments: Should contain the value of two moments with dimensions [i,k,4]
+    """
+    inputs_mean = np.asarray([0.0002621447787797809, 51128093.51524663,
+                    0.0003302890736022656, 5194.251154308974,
+                    0.5566250557023539, 4.8690682855354596e-12,
+                    0.0005924338523807814, 1.0848856769219835e-05,
+                    2.0193905073168525])
+
+    inputs_std = np.asarray([[0.0003865559774857862, 86503916.13808665,
+                    0.00041369562655559327, 19127.947970150628,
+                    0.46107363560819126, 3.873092422358367e-12,
+                    0.00042887039563850967, 1.920461805101116e-06,
+                    1.3098055608321857]])
+
+    updates_mean = np.asarray([[-8.527820407019667e-08, -13961.459867976775,
+                    8.527678028525988e-08, 0.010221931180955181]])
+
+    updates_std = np.asarray([[3.600841676033818e-07, 55095.904252313965,
+                    3.6008419243808887e-07, 68.6678997504877]])
+
+    #NN Model initalization
+    pl_model = LightningModel(inputs_mean=inputs_mean, inputs_std=inputs_std,
+                            updates_mean=updates_mean, updates_std=updates_std) 
+
+    trained_model = pl_model.load_from_checkpoint(os.path.expanduser('~')+"/micro-param/trained_models/best_model.ckpt")
+
+    #Loop starts here 
+    for i in range (ik_slice[0],ik_slice[1]):
+        for k in range ((ik_slice[2],ik_slice[3])):
+            fortran_moments = all_fortran_moments[i,k,:] # todo: fortran_moments should be numpy array  
+            #Solver class initalized and new moment calculated
+            new_forecast = simulation_forecast(
+        fortran_moments, trained_model,inputs_mean, inputs_std
+        )
+            new_forecast.test()
+            #New moment to be passed to fortran
+            print(new_forecast.moments_out)
+            #todo: Set all_fortran_moments[i,k,:]= new_forecast.moments_out
 #@ffi.def_extern()
 #def i_print_shape(nx):
 #    print(" shape in python", nx, type(nx), nx[0])
