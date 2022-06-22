@@ -92,9 +92,10 @@ def i_add_emi_echam_ttr(ptr_jg, ptr_jcs, ptr_jce,
     dxdt[jcs:jce][~cond] = 0.0
 
 @ffi.def_extern()
-def i_warm_rain_nn(ptr_ik_slice,ptr_n_cloud_t0, ptr_q_cloud_t0,
+def i_warm_rain_nn(ptr_istart, ptr_iend, ptr_kstart, ptr_kend,
+                  ptr_n_cloud_t0, ptr_q_cloud_t0,
                   ptr_n_rain_t0,  ptr_q_rain_t0,  
-                 ptr_n_cloud_t1, ptr_q_cloud_t1, 
+                  ptr_n_cloud_t1, ptr_q_cloud_t1, 
                   ptr_n_rain_t1,  ptr_q_rain_t1
 ):
     """
@@ -102,9 +103,12 @@ def i_warm_rain_nn(ptr_ik_slice,ptr_n_cloud_t0, ptr_q_cloud_t0,
     ik_slice: Spatial information
     all_fortran_moments: Should contain the value of two moments with dimensions [i,k,4]
     """
+    istart = ptr_istart[0]
+    iend = ptr_iend[0]
+    kstart = ptr_kstart[0]
+    kend = ptr_kend[0]
     #ik_slice = transfer_arrays.asarray(ffi, ptr_ik_slice,shape = (4,))
-    #shape = ((ik_slice[1]-ik_slice[0]),(ik_slice[3]-ik_slice[2]))
-    shape = (4, 3)
+    shape = ((iend-istart),(kend-kstart))
     n_cloud_t0 = transfer_arrays.asarray(ffi, ptr_n_cloud_t0, shape = shape)
     q_cloud_t0 = transfer_arrays.asarray(ffi,ptr_q_cloud_t0, shape = shape)
     n_rain_t0 = transfer_arrays.asarray(ffi,ptr_n_rain_t0, shape = shape)
