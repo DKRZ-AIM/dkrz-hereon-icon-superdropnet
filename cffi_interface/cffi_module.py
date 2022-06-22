@@ -109,7 +109,7 @@ def i_warm_rain_nn(ptr_ik_slice,ptr_n_cloud_t0, ptr_q_cloud_t0,
     n_rain_t1 = transfer_arrays.asarray(ffi,ptr_n_rain_t1, shape=shape)
     q_rain_t1 = transfer_arrays.asarray(ffi,ptr_q_rain_t1, shape = shape)
     
-    all_fortran_moments = np.concatenate((q_cloud_t0,n_cloud_t0,q_rain_t0,n_rain_t0),axis =-1)
+    all_fortran_moments = np.stack((q_cloud_t0,n_cloud_t0,q_rain_t0,n_rain_t0),axis =-1)
     
     inputs_mean = np.asarray([0.0002621447787797809, 51128093.51524663,
                     0.0003302890736022656, 5194.251154308974,
