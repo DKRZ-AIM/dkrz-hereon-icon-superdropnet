@@ -100,8 +100,54 @@ Check before merging:
 
 ### CFFI bridge
 
-#### Set up Python parameters
+#### Set up Python module
+
+The Python module is located in the repository https://gitlab.dkrz.de/aim/2022-03-hereon-python-fortran-bridges. Update the repository and load the required modules
+
+```bash
+cd ~2022-03-hereon-python-fortran-bridges # change path to git root directory
+
+module load git
+module load python3
+module load intel-oneapi-compilers
+module load openmpi/4.1.2-intel-2021.5.0
+
+git pull # update the python code
+make     # compiles the python code to shared library
+```
+
+This creates a dynamic library in `~2022-03-hereon-python-fortran-bridges/lib/cffi_plugin.so`.
 
 #### Set up Fortran code
 
-#### Before running the program
+The ICON-AES code is located in the repository https://gitlab.dkrz.de/k202141/icon-aes. Configure and compile ICON-AES
+
+```bash
+cd ~icon-aes # change path to git root directory
+
+config/dkrz/levante_dev_ml-interface.intel-2021.5.0
+
+make -j8
+```
+
+#### Install Conda environment
+
+Create a conda environment `iconml` with the required packages (TODO: add `environment.yml`).
+
+```bash
+conda create -n iconml
+```
+
+#### Set up paths
+
+Currently you need to configure the `PYTHONPATH` before running ICON with CFFI.
+
+```bash
+export PYTHONPATH="$PYTHONPATH:~2022-03-hereon-python-fortran-bridges/cffi_interface/"
+
+conda activate iconml
+
+cd ~/icon-aes/run
+
+sbatch -A ka1176 --partition=compute exp.atm_mlbridges_warm_bubble_cffi.run
+```
