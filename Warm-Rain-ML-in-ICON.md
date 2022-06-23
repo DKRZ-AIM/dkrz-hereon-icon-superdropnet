@@ -1,4 +1,4 @@
-# ML in ICON
+# Machine Learning Inference in ICON: Warm Rain
 
 Third project milestone: Neural network inference with a pretrained model to replace the warm rain processes at runtime in ICON-AES. 
 
@@ -44,7 +44,13 @@ Currently accepted values (an error is thrown if the bridge is not yet implement
 
 ### In ICON-AES code
 
-In places where a call to a Python program should replace an existing Fortran subroutine, we use `SELECT` statements to allow for flexibility. The original Fortran subroutine should always be preserved. Follow the pattern in `src/config/mo_mlbridges_config`:
+In places where a call to a Python program should replace an existing Fortran subroutine, we use `SELECT` statements to allow for flexibility. The original Fortran subroutine should always be preserved. Include 
+
+```fortran
+USE mo_mlbridges_config,    ONLY : mlbridges_config
+```
+
+in the header of the module and follow the pattern in `src/config/mo_mlbridges_config`:
 
 ```fortran
     ! valid options for the icon-ml bridge include
