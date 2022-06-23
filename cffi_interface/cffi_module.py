@@ -93,11 +93,11 @@ def i_add_emi_echam_ttr(ptr_jg, ptr_jcs, ptr_jce,
 
 @ffi.def_extern()
 def i_warm_rain_nn(ptr_istart, ptr_iend, ptr_kstart, ptr_kend,
-                  ptr_n_cloud_t0, ptr_q_cloud_t0,
-                  ptr_n_rain_t0,  ptr_q_rain_t0,  
-                  ptr_n_cloud_t1, ptr_q_cloud_t1, 
-                  ptr_n_rain_t1,  ptr_q_rain_t1
-):
+                   ptr_n_cloud_t0, ptr_q_cloud_t0,
+                   ptr_n_rain_t0,  ptr_q_rain_t0,  
+                   ptr_n_cloud_t1, ptr_q_cloud_t1, 
+                   ptr_n_rain_t1,  ptr_q_rain_t1
+    ):
     """
     Parameters:
     ik_slice: Spatial information
@@ -106,9 +106,15 @@ def i_warm_rain_nn(ptr_istart, ptr_iend, ptr_kstart, ptr_kend,
     istart = ptr_istart[0]
     iend = ptr_iend[0]
     kstart = ptr_kstart[0]
-    kend = ptr_kend[0]
-    #ik_slice = transfer_arrays.asarray(ffi, ptr_ik_slice,shape = (4,))
-    shape = ((iend-istart),(kend-kstart))
+    kend = ptr_kend[0] 
+    
+    #iend += 1 # python indexing does not include last element
+    #kend += 1
+    istart -= 1
+    kstart -= 1
+
+    #shape = ((iend-istart)+1,(kend-kstart)+1)
+    shape = (32, 70) # hard coded shape for the 70 level torus experiment
     n_cloud_t0 = transfer_arrays.asarray(ffi, ptr_n_cloud_t0, shape = shape)
     q_cloud_t0 = transfer_arrays.asarray(ffi,ptr_q_cloud_t0, shape = shape)
     n_rain_t0 = transfer_arrays.asarray(ffi,ptr_n_rain_t0, shape = shape)
@@ -118,6 +124,12 @@ def i_warm_rain_nn(ptr_istart, ptr_iend, ptr_kstart, ptr_kend,
     q_cloud_t1 = transfer_arrays.asarray(ffi,ptr_q_cloud_t1, shape = shape)
     n_rain_t1 = transfer_arrays.asarray(ffi,ptr_n_rain_t1, shape=shape)
     q_rain_t1 = transfer_arrays.asarray(ffi,ptr_q_rain_t1, shape = shape)
+
+    
+    n_cloud_t0 = n_cloud_t0[istart:iend, kstart:kend]
+    q_cloud_t0 = q_cloud_t0[istart:iend, kstart:kend]
+    q_rain_t0  = q_rain_t0[istart:iend, kstart:kend]
+    n_rain_t0  = n_rain_t0[istart:iend, kstart:kend]
     
     all_fortran_moments = np.stack((q_cloud_t0,n_cloud_t0,q_rain_t0,n_rain_t0),axis =-1)
     
@@ -146,20 +158,37 @@ def i_warm_rain_nn(ptr_istart, ptr_iend, ptr_kstart, ptr_kend,
     hard_coded_path = '/work/ka1176/caroline/gitlab/2022-03-hereon-python-fortran-bridges/cffi_interface'
     trained_model = pl_model.load_from_checkpoint(hard_coded_path + "/trained_models/best_model.ckpt")
 
-    #Loop starts here 
-    for i in range (0,shape[0]):
-        for k in range (0,shape[1]):
-            fortran_moments = all_fortran_moments[i,k,:]  
-            #Solver class initalized and new moment calculated
-            new_forecast = simulation_forecast(
-        fortran_moments, trained_model,inputs_mean, inputs_std
-        )
-            new_forecast.test()
+    q_cloud_t1[:,:] = 0.0
+    n_cloud_t1[:,:] = 0.0
+    q_rain_t1[:,:]  = 0.0
+    n_rain_t1[:,:]  = 0.0
 
-            q_cloud_t1[i,k] = new_forecast.moments_out[0, 0]
-            n_cloud_t1[i,k] = new_forecast.moments_out[0, 1]
-            q_rain_t1[i,k]  = new_forecast.moments_out[0, 2]
-            n_rain_t1[i,k]  = new_forecast.moments_out[0, 3]
+    #Loop starts here 
+    for i in range (istart, iend):
+        for k in range (kstart, kend):
+            # indexing issue
+            # fortran_moments = all_fortran_moments[i,k - kstart,:]  
+
+            fortran_moments = all_fortran_moments[i, 0, :]
+
+            # ML inference only if input moments are non zero
+            if np.all(fortran_moments == 0.0):
+                q_cloud_t1[i,k] = 0.0
+                n_cloud_t1[i,k] = 0.0
+                q_rain_t1[i,k]  = 0.0
+                n_rain_t1[i,k]  = 0.0
+
+            else:
+                #Solver class initalized and new moment calculated
+                new_forecast = simulation_forecast(
+            fortran_moments, trained_model,inputs_mean, inputs_std
+            )
+                new_forecast.test()
+
+                q_cloud_t1[i,k] = new_forecast.moments_out[0, 0]
+                n_cloud_t1[i,k] = new_forecast.moments_out[0, 1]
+                q_rain_t1[i,k]  = new_forecast.moments_out[0, 2]
+                n_rain_t1[i,k]  = new_forecast.moments_out[0, 3]
            
            
 
