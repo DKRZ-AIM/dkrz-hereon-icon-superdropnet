@@ -74,6 +74,8 @@ class simulation_forecast:
         self.inputs = self.calc_mean(inputs, self.inputs_mean, self.inputs_std)
         
         self.inputs = np.float32(self.inputs)
+        self.inputs_mean = np.float32(self.inputs_mean)
+        self.inputs_std  = np.float32(self.inputs_std)
         # dataset =  self.my_dataset(self.inputs)
 
         # train_loader = DataLoader(dataset,shuffle=False,batch_size=inputs.shape[0])
@@ -97,7 +99,7 @@ class simulation_forecast:
         # if self.moments_out[0, 3] < 0:
         #     self.moments_out[0, 3] = 0
 
-        self.moments_out[:, 0] = self.lo_arr - self.moments_out[:, 2]
+        self.moments_out[:, 0] = torch.from_numpy(self.lo_arr) - self.moments_out[:, 2]
 
   
         
