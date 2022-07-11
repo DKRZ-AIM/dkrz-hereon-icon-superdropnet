@@ -92,29 +92,51 @@ def i_add_emi_echam_ttr(ptr_jg, ptr_jcs, ptr_jce,
     dxdt[jcs:jce][~cond] = 0.0
 
 @ffi.def_extern()
-def i_warm_rain_nn(ptr_istart, ptr_iend, ptr_kstart, ptr_kend,
+def i_warm_rain_nn(ptr_ncells, ptr_nlevels, 
+                   ptr_istart, ptr_iend, ptr_kstart, ptr_kend,
                    ptr_n_cloud_t0, ptr_q_cloud_t0,
                    ptr_n_rain_t0,  ptr_q_rain_t0,  
                    ptr_n_cloud_t1, ptr_q_cloud_t1, 
                    ptr_n_rain_t1,  ptr_q_rain_t1
     ):
     """
+    Call the pretrained warm rain network for inference for a given ikslice
+    and time step. Calculates the new moments for cloud and rain.
+
     Parameters:
-    ik_slice: Spatial information
-    all_fortran_moments: Should contain the value of two moments with dimensions [i,k,4]
+
+    ptr_ncells : number of cells
+    ptr_nlevels : number of levels
+    ptr_istart : start of ikslice along cell dimension
+    ptr_iend    : end of ikslice along cell dimension
+    ptr_kstart  : start of ikslice along level dimension
+    ptr_kend    : end of ikslice along level dimension
+
+    ptr_n_cloud_t0 : cloud % n at previous time step
+    ptr_q_cloud_t0 : cloud % q at previous time step
+    ptr_n_rain_t0  : rain % n at previous time step
+    ptr_q_rain_t0  : rain % q at previous time step
+    ptr_n_cloud_t1 : cloud % n at next time step
+    ptr_q_cloud_t1 : cloud % q at next time step
+    ptr_n_rain_t1  : rain % n at next time step
+    ptr_q_rain_t1  : rain % q at next time step
+
+    Updates:
+    ptr_n_cloud_t1, ptr_q_cloud_t1, ptr_n_rain_t1, ptr_q_rain_t1
     """
+
+    ncells = ptr_ncells[0]
+    nlevels = ptr_nlevels[0]
     istart = ptr_istart[0]
     iend = ptr_iend[0]
     kstart = ptr_kstart[0]
     kend = ptr_kend[0] 
     
-    #iend += 1 # python indexing does not include last element
-    #kend += 1
+    # python indexing does not include last element
     istart -= 1
     kstart -= 1
 
-    #shape = ((iend-istart)+1,(kend-kstart)+1)
-    shape = (32, 70) # hard coded shape for the 70 level torus experiment
+    shape = (ncells, nlevels)
     n_cloud_t0 = transfer_arrays.asarray(ffi, ptr_n_cloud_t0, shape = shape)
     q_cloud_t0 = transfer_arrays.asarray(ffi,ptr_q_cloud_t0, shape = shape)
     n_rain_t0 = transfer_arrays.asarray(ffi,ptr_n_rain_t0, shape = shape)
@@ -124,7 +146,6 @@ def i_warm_rain_nn(ptr_istart, ptr_iend, ptr_kstart, ptr_kend,
     q_cloud_t1 = transfer_arrays.asarray(ffi,ptr_q_cloud_t1, shape = shape)
     n_rain_t1 = transfer_arrays.asarray(ffi,ptr_n_rain_t1, shape=shape)
     q_rain_t1 = transfer_arrays.asarray(ffi,ptr_q_rain_t1, shape = shape)
-
     
     n_cloud_t0 = n_cloud_t0[istart:iend, kstart:kend]
     q_cloud_t0 = q_cloud_t0[istart:iend, kstart:kend]
