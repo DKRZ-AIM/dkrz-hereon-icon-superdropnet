@@ -97,7 +97,8 @@ def i_warm_rain_nn(ptr_ncells, ptr_nlevels,
                    ptr_n_cloud_t0, ptr_q_cloud_t0,
                    ptr_n_rain_t0,  ptr_q_rain_t0,  
                    ptr_n_cloud_t1, ptr_q_cloud_t1, 
-                   ptr_n_rain_t1,  ptr_q_rain_t1
+                   ptr_n_rain_t1,  ptr_q_rain_t1,
+                   ptr_istate
     ):
     """
     Call the pretrained warm rain network for inference for a given ikslice
@@ -121,8 +122,14 @@ def i_warm_rain_nn(ptr_ncells, ptr_nlevels,
     ptr_n_rain_t1  : rain % n at next time step
     ptr_q_rain_t1  : rain % q at next time step
 
+    ptr_istate : flag to indicate state
+       0 : nothing happened
+       1 : input moments were zero, no update
+       2 : ML inference update
+       3 : error code (TODO)
+
     Updates:
-    ptr_n_cloud_t1, ptr_q_cloud_t1, ptr_n_rain_t1, ptr_q_rain_t1
+    ptr_n_cloud_t1, ptr_q_cloud_t1, ptr_n_rain_t1, ptr_q_rain_t1, ptr_istate
     """
 
     ncells = ptr_ncells[0]
@@ -131,21 +138,22 @@ def i_warm_rain_nn(ptr_ncells, ptr_nlevels,
     iend = ptr_iend[0]
     kstart = ptr_kstart[0]
     kend = ptr_kend[0] 
+    istate = ptr_istate[0]
     
     # python indexing does not include last element
     istart -= 1
     kstart -= 1
 
     shape = (ncells, nlevels)
-    n_cloud_t0 = transfer_arrays.asarray(ffi, ptr_n_cloud_t0, shape = shape)
-    q_cloud_t0 = transfer_arrays.asarray(ffi,ptr_q_cloud_t0, shape = shape)
-    n_rain_t0 = transfer_arrays.asarray(ffi,ptr_n_rain_t0, shape = shape)
-    q_rain_t0 = transfer_arrays.asarray(ffi,ptr_q_rain_t0, shape = shape)
+    n_cloud_t0 = transfer_arrays.asarray(ffi, ptr_n_cloud_t0, shape=shape)
+    q_cloud_t0 = transfer_arrays.asarray(ffi, ptr_q_cloud_t0, shape=shape)
+    n_rain_t0 = transfer_arrays.asarray(ffi, ptr_n_rain_t0, shape=shape)
+    q_rain_t0 = transfer_arrays.asarray(ffi, ptr_q_rain_t0, shape=shape)
 
-    n_cloud_t1 = transfer_arrays.asarray(ffi,ptr_n_cloud_t1, shape=shape)
-    q_cloud_t1 = transfer_arrays.asarray(ffi,ptr_q_cloud_t1, shape = shape)
-    n_rain_t1 = transfer_arrays.asarray(ffi,ptr_n_rain_t1, shape=shape)
-    q_rain_t1 = transfer_arrays.asarray(ffi,ptr_q_rain_t1, shape = shape)
+    n_cloud_t1 = transfer_arrays.asarray(ffi, ptr_n_cloud_t1, shape=shape)
+    q_cloud_t1 = transfer_arrays.asarray(ffi, ptr_q_cloud_t1, shape=shape)
+    n_rain_t1 = transfer_arrays.asarray(ffi, ptr_n_rain_t1, shape=shape)
+    q_rain_t1 = transfer_arrays.asarray(ffi, ptr_q_rain_t1, shape=shape)
     
     n_cloud_t0 = n_cloud_t0[istart:iend, kstart:kend]
     q_cloud_t0 = q_cloud_t0[istart:iend, kstart:kend]
@@ -153,7 +161,7 @@ def i_warm_rain_nn(ptr_ncells, ptr_nlevels,
     n_rain_t0  = n_rain_t0[istart:iend, kstart:kend]
     
     all_fortran_moments = np.stack((q_cloud_t0,n_cloud_t0,q_rain_t0,n_rain_t0),axis =-1)
-    
+
     inputs_mean = np.asarray([[0.0002621447787797809, 51128093.51524663,
                     0.0003302890736022656, 5194.251154308974,
                     0.5566250557023539, 4.8690682855354596e-12,
@@ -184,6 +192,7 @@ def i_warm_rain_nn(ptr_ncells, ptr_nlevels,
     q_rain_t1[:,:]  = 0.0
     n_rain_t1[:,:]  = 0.0
 
+
     #Loop starts here 
     for i in range (istart, iend):
         for k in range (kstart, kend):
@@ -198,6 +207,7 @@ def i_warm_rain_nn(ptr_ncells, ptr_nlevels,
                 n_cloud_t1[i,k] = 0.0
                 q_rain_t1[i,k]  = 0.0
                 n_rain_t1[i,k]  = 0.0
+                ptr_istate[0] = 1
 
             else:
                 #Solver class initalized and new moment calculated
@@ -210,6 +220,7 @@ def i_warm_rain_nn(ptr_ncells, ptr_nlevels,
                 n_cloud_t1[i,k] = new_forecast.moments_out[0, 1]
                 q_rain_t1[i,k]  = new_forecast.moments_out[0, 2]
                 n_rain_t1[i,k]  = new_forecast.moments_out[0, 3]
+                ptr_istate[0] = 2
            
            
 
