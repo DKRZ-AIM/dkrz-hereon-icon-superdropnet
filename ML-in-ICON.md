@@ -52,4 +52,12 @@ Checklist:
 
 ## Usage information
 
-Stub
+### CFFI
+
+Before job submission, for now with conda environment and explicit path
+
+```bash
+source ~/.bashrc
+conda activate iconml
+export PYTHONPATH="$PYTHONPATH:/work/ka1176/caroline/gitlab/2022-03-hereon-python-fortran-bridges/cffi_interface/"
+```
