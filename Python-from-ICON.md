@@ -81,16 +81,7 @@ If any of the external components are missing (like `yaxt`) etc, copy them from 
 ```bash
 cd icon-aes-fork
 
-rsync -rvtul /work/ka1176/caroline/gitlab/icon-aes-fork/externals/ ./externals
-```
-
-Also, some include files are missing; copy or rsync them from Caroline's repo above:
-
-```
-/work/ka1176/caroline/gitlab/icon-aes-fork/src/atm_phy_psrad/psrad_fastmath.inc
-/work/ka1176/caroline/gitlab/icon-aes-fork/src/include/*
-/work/ka1176/caroline/gitlab/icon-aes-fork/src/atm_phy_schemes/*.inc
-/work/ka1176/caroline/gitlab/icon-aes-fork/src/shr_horizontal/intp_functions.inc
+rsync -rvtu /work/ka1176/caroline/gitlab/icon-aes-fork/externals/ ./externals
 ```
 
 ### Configure ICON-AES
