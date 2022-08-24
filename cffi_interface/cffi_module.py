@@ -92,7 +92,8 @@ def i_add_emi_echam_ttr(ptr_jg, ptr_jcs, ptr_jce,
     dxdt[jcs:jce][~cond] = 0.0
 
 @ffi.def_extern()
-def i_warm_rain_nn(ptr_n_moments, ptr_current_moments, ptr_new_moments,
+def i_warm_rain_nn(ptr_dim_i, ptr_dim_k, ptr_n_moments, 
+                   ptr_current_moments, ptr_new_moments,
                    ptr_istate):
     """
     Call the pretrained warm rain network for inference for a given ikslice
@@ -100,6 +101,8 @@ def i_warm_rain_nn(ptr_n_moments, ptr_current_moments, ptr_new_moments,
 
     Parameters:
 
+    ptr_dim_i           : dimension along i (of ikslice)
+    ptr_dim_k           : dimension along k (of ikslice)
     ptr_n_moments       : number of moments (4 for warm rain)
     ptr_current_moments : current moments in the order of 
       cloud%q, cloud%n, rain%q, rain%n
@@ -113,13 +116,15 @@ def i_warm_rain_nn(ptr_n_moments, ptr_current_moments, ptr_new_moments,
 
     """
 
+    dim_i = ptr_dim_i[0]
+    dim_k = ptr_dim_k[0]
     n_moments = ptr_n_moments[0]
-    shape = (n_moments,)
+    shape = (dim_i, dim_k, n_moments)
 
     current_moments = transfer_arrays.asarray(ffi, ptr_current_moments, shape=shape)
     new_moments     = transfer_arrays.asarray(ffi, ptr_new_moments, shape=shape)
 
-    new_moments[:] = 0.0
+    new_moments[:,:,:] = 0.0
     
     inputs_mean = np.asarray([[0.0002621447787797809, 51128093.51524663,
                     0.0003302890736022656, 5194.251154308974,
@@ -148,7 +153,7 @@ def i_warm_rain_nn(ptr_n_moments, ptr_current_moments, ptr_new_moments,
 
     # ML inference only if input moments are non zero
     if np.all(current_moments == 0.0):
-        new_moments[:] = 0.0
+        new_moments[:,:,:] = 0.0
         ptr_istate[0] = 1
 
     else:
@@ -158,6 +163,6 @@ def i_warm_rain_nn(ptr_n_moments, ptr_current_moments, ptr_new_moments,
         )
         new_forecast.test()
 
-        new_moments[:] = new_forecast.moments_out[0,:]
+        new_moments[:, :, :] = new_forecast.moments_out[0, :, :, :]
 
         ptr_istate[0] = 2
