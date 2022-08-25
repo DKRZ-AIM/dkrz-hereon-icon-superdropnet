@@ -157,12 +157,19 @@ def i_warm_rain_nn(ptr_dim_i, ptr_dim_k, ptr_n_moments,
         ptr_istate[0] = 1
 
     else:
-        #Solver class initalized and new moment calculated
-        new_forecast = simulation_forecast(
-          current_moments, trained_model,inputs_mean, inputs_std
-        )
-        new_forecast.test()
+        # TODO use batch prediction here
+        for i in range(dim_i):
+            for k in range(dim_k):
+                
 
-        new_moments[:, :, :] = new_forecast.moments_out[0, :, :, :]
+                #Solver class initalized and new moment calculated
+                new_forecast = simulation_forecast(
+                  current_moments[i,k], trained_model,inputs_mean, inputs_std
+                )
+                new_forecast.test()
+
+                new_moments[i, k, :] = new_forecast.moments_out[0, :]
+
+        #new_moments[:, :, :] = new_forecast.moments_out[0, :, :, :]
 
         ptr_istate[0] = 2
