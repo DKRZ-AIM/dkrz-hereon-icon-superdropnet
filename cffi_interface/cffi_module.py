@@ -173,3 +173,37 @@ def i_warm_rain_nn(ptr_dim_i, ptr_dim_k, ptr_n_moments,
         #new_moments[:, :, :] = new_forecast.moments_out[0, :, :, :]
 
         ptr_istate[0] = 2
+
+@ffi.def_extern()
+def i_warm_rain_py(ptr_dim_i, ptr_dim_k, ptr_n_moments, 
+                   ptr_current_moments, ptr_new_moments,
+                   ptr_istate):
+    """
+    Classic warm rain process code translated to Fortran.
+    Use only for debugging.
+
+    Parameters:
+
+    ptr_dim_i           : dimension along i (of ikslice)
+    ptr_dim_k           : dimension along k (of ikslice)
+    ptr_n_moments       : number of moments (4 for warm rain)
+    ptr_current_moments : current moments in the order of 
+      cloud%q, cloud%n, rain%q, rain%n
+    ptr_new_moments     : new moments
+
+    ptr_istate : flag to indicate state
+       0 : nothing happened
+       4 : successful classic code
+       5 : not successful classic code
+
+    """
+
+    dim_i = ptr_dim_i[0]
+    dim_k = ptr_dim_k[0]
+    n_moments = ptr_n_moments[0]
+    shape = (dim_i, dim_k, n_moments)
+
+    current_moments = transfer_arrays.asarray(ffi, ptr_current_moments, shape=shape)
+    new_moments     = transfer_arrays.asarray(ffi, ptr_new_moments, shape=shape)
+
+    ptr_istate[0] = 5 # TODO change to 4 after implementing warm rain processes
