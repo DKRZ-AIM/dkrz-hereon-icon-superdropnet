@@ -88,6 +88,8 @@ def i_add_emi_echam_ttr(ptr_jg, ptr_jcs, ptr_jce,
 
     cond = (emi_lat_s <= clat[jcs:jce]) & (clat[jcs:jce] <= emi_lat_n)
 
+    # Use [:] notation to copy data into the buffer
+    # https://cffi.readthedocs.io/en/latest/ref.html?highlight=ffi.buffer#ffi-buffer-ffi-from-buffer
     dxdt[jcs:jce][cond] = emi_flux / air_mass[jcs:jce][cond]
     dxdt[jcs:jce][~cond] = 0.0
 
@@ -119,7 +121,11 @@ def i_warm_rain_nn(ptr_dim_i, ptr_dim_k, ptr_n_moments,
     dim_i = ptr_dim_i[0]
     dim_k = ptr_dim_k[0]
     n_moments = ptr_n_moments[0]
-    shape = (dim_i, dim_k, n_moments)
+
+    # Shape takes into account that C reads row major
+    # while the array is saved in Fortran column major
+    # memory layout
+    shape = (n_moments, dim_k, dim_i) 
 
     current_moments = transfer_arrays.asarray(ffi, ptr_current_moments, shape=shape)
     new_moments     = transfer_arrays.asarray(ffi, ptr_new_moments, shape=shape)
@@ -157,20 +163,20 @@ def i_warm_rain_nn(ptr_dim_i, ptr_dim_k, ptr_n_moments,
         ptr_istate[0] = 1
 
     else:
-        # TODO use batch prediction here
+        # TODO use batch prediction here instead of the nested loop
+        # new_moments[:, :, :] = new_forecast.moments_out[0, :, :, :]
+
         for i in range(dim_i):
             for k in range(dim_k):
                 
 
                 #Solver class initalized and new moment calculated
                 new_forecast = simulation_forecast(
-                  current_moments[i,k], trained_model,inputs_mean, inputs_std
+                  current_moments[:, k, i], trained_model,inputs_mean, inputs_std
                 )
                 new_forecast.test()
 
-                new_moments[i, k, :] = new_forecast.moments_out[0, :]
-
-        #new_moments[:, :, :] = new_forecast.moments_out[0, :, :, :]
+                new_moments[:, k, i] = new_forecast.moments_out[0, :]
 
         ptr_istate[0] = 2
 
@@ -179,8 +185,8 @@ def i_warm_rain_py(ptr_dim_i, ptr_dim_k, ptr_n_moments,
                    ptr_current_moments, ptr_new_moments,
                    ptr_istate):
     """
-    Classic warm rain process code translated to Fortran.
-    Use only for debugging.
+    Python code that depends on index orders.
+    Use only for debugging the row vs column major issue.
 
     Parameters:
 
@@ -198,12 +204,23 @@ def i_warm_rain_py(ptr_dim_i, ptr_dim_k, ptr_n_moments,
 
     """
 
+    ptr_istate[0] = 5 # default
+
     dim_i = ptr_dim_i[0]
     dim_k = ptr_dim_k[0]
     n_moments = ptr_n_moments[0]
-    shape = (dim_i, dim_k, n_moments)
+
+    # Shape takes into account that C reads row major
+    # while the array is saved in Fortran column major
+    # memory layout
+    shape = (n_moments, dim_k, dim_i) 
 
     current_moments = transfer_arrays.asarray(ffi, ptr_current_moments, shape=shape)
     new_moments     = transfer_arrays.asarray(ffi, ptr_new_moments, shape=shape)
 
-    ptr_istate[0] = 5 # TODO change to 4 after implementing warm rain processes
+    for i in range(dim_i):
+        for k in range(dim_k):
+            for l in range(n_moments):
+                new_moments[l, k, i] = 100 * i + 10 * k + 1 * l
+
+    ptr_istate[0] = 4
