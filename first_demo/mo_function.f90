@@ -15,7 +15,11 @@ CONTAINS
     INTEGER :: i
     REAL :: dx
 
-    dx = (xmax - xmin) / (nx - 1.0)
+    IF (nx .EQ. 1) THEN
+      dx = 0
+    ELSE
+      dx = (xmax - xmin) / (nx - 1.0)
+    ENDIF
 
     DO i=1,nx
       x(i) = xmin + (i-1.0)*dx

@@ -307,8 +307,8 @@ PROGRAM routine
   ! (5) print to stdout
   PRINT *, '   2D scalar field (head)'
   PRINT *, '     (X1)', '          (X2)', '    Fortran (PHI)', '  Py-cffi (PHI)', ' Py-pipes (PHI)'
-  DO i=1, 3
-    DO j=1, 3
+  DO i=1, MIN(nx1,3)
+    DO j=1, MIN(nx2,3)
       PRINT *, sf_2d_fo % x1(i, j), sf_2d_fo % x2(i, j), sf_2d_fo % phi(i, j), sf_2d_py % phi(i, j), sf_2d_pipes % phi(i, j)
     END DO
   END DO
@@ -348,8 +348,8 @@ PROGRAM routine
   PRINT *, '--------------------------------------------'
 
   ! (2) set default values
-  x3min = -7.0
-  x3max = +5.0
+  x3min = -1.5
+  x3max = +1.5
 
   ! (3) initialize the arrays
   sf_3d_fo % k1 = nx1
@@ -400,9 +400,9 @@ PROGRAM routine
   ! (5) print to stdout
   PRINT *, '   3D scalar field (head)'
   PRINT *, '     (X1)', '          (X2)',  '        (x3)', '    Fortran (PHI)', '  Py-cffi (PHI)'
-  DO k=1, 3
-  DO i=1, 3
-    DO j=1, 3
+  DO k=1, MIN(nx3,3)
+  DO j=1, MIN(nx2,3)
+    DO i=1, MIN(nx1,3)
       PRINT *, sf_3d_fo % x1(i,j,k), sf_3d_fo % x2(i,j,k), sf_3d_fo % x3(i,j,k), sf_3d_fo % phi(i,j,k), sf_3d_py % phi(i,j,k)
     END DO
   END DO
@@ -410,11 +410,20 @@ PROGRAM routine
 
   ! (6) check the arrays are equal
   IF(ALL(sf_3d_fo % phi .EQ. sf_3d_py % phi)) THEN
-    PRINT *, ' Fortran and Py-cffi 2D scalar field are equal'
+    PRINT *, ' Fortran and Py-cffi 3D scalar field are equal'
   ELSE
-    PRINT *, ' Fortran and Py-cffi 2D scalar field are **NOT** equal'
+    PRINT *, ' Fortran and Py-cffi 3D scalar field are **NOT** equal'
   ENDIF
 
+  DO k=1,nx3
+    DO j=1,nx2
+      DO i=1,nx1
+        IF ((sf_3d_fo % phi(i,j,k) .NE. sf_3d_py % phi(i,j,k) )) THEN
+          PRINT *, sf_3d_fo % x1(i,j,k), sf_3d_fo % x2(i,j,k), sf_3d_fo % x3(i,j,k), sf_3d_fo % phi(i,j,k), sf_3d_py % phi(i,j,k)
+        ENDIF
+      ENDDO
+    ENDDO
+  ENDDO
 
   ! (7) deallocate
   DEALLOCATE(sf_3d_fo % x1)
@@ -423,7 +432,6 @@ PROGRAM routine
   DEALLOCATE(sf_3d_py % x1)
   DEALLOCATE(sf_3d_py % x2)
   DEALLOCATE(sf_3d_py % phi)
-  
   
   ! stop worker and close pipe
   !CALL ip_close_pipes()
