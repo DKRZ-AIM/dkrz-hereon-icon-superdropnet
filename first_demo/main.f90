@@ -5,7 +5,8 @@ PROGRAM routine
   USE mo_type, ONLY: t_scalar_field_1d, t_scalar_field_2d, t_scalar_field_3d
   USE mo_function, ONLY: f_scalar_field_1d, f_linspace, &
   &                      f_scalar_field_2d, f_meshgrid, &
-  &                      f_scalar_field_3d, f_spacegrid
+  &                      f_scalar_field_3d, f_spacegrid, &
+  &                      f_scalar_field_index_3d
   
   USE mo_pipes, ONLY: ip_init_pipes, ip_close_pipes, ip_scalar_field_1d, ip_scalar_field_2d
 
@@ -47,6 +48,12 @@ PROGRAM routine
       REAL(c_float)  :: phi(nx1, nx2, nx3)
     END SUBROUTINE i_scalar_field_3d
     
+    SUBROUTINE i_scalar_field_index_3d(nx1, nx2, nx3, x1, x2, x3, phi) bind(c)
+      USE iso_c_binding
+      INTEGER(c_int) :: nx1, nx2, nx3
+      REAL(c_float)  :: x1(nx1, nx2, nx3), x2(nx1, nx2, nx3), x3(nx1, nx2, nx3)
+      REAL(c_float)  :: phi(nx1, nx2, nx3)
+    END SUBROUTINE i_scalar_field_index_3d
   END INTERFACE
   ! -----------------------------------------------------------------
 
@@ -84,6 +91,8 @@ PROGRAM routine
 
   TYPE(t_scalar_field_3d) :: sf_3d_fo    ! fortran
   TYPE(t_scalar_field_3d) :: sf_3d_py    ! python cffi
+  TYPE(t_scalar_field_3d) :: sf_i3d_fo    ! fortran
+  TYPE(t_scalar_field_3d) :: sf_i3d_py    ! python cffi
 
   ! get command line arguments
   PRINT *, '------------------------------'
@@ -201,7 +210,7 @@ PROGRAM routine
   !END DO
   !CALL system_clock(count=ic2, count_rate=crate, count_max=cmax)
 
-  PRINT *, 'Time per Py-pipes function call (seconds)', (ic2 - ic1) /crate  / repeats
+  !PRINT *, 'Time per Py-pipes function call (seconds)', (ic2 - ic1) /crate  / repeats
 
   ! (5) print to stdout
   PRINT *, '   1D scalar field (head)'
@@ -216,11 +225,11 @@ PROGRAM routine
   ELSE
     PRINT *, ' Fortran and Py-cffi scalar field are **NOT** equal'
   ENDIF
-  IF(ALL(sf_1d_fo % phi .EQ. sf_1d_pipes % phi)) THEN
-    PRINT *, ' Fortran and Py-pipes scalar field are equal'
-  ELSE
-    PRINT *, ' Fortran and Py-pipes scalar field are **NOT** equal'
-  ENDIF
+  !IF(ALL(sf_1d_fo % phi .EQ. sf_1d_pipes % phi)) THEN
+  !  PRINT *, ' Fortran and Py-pipes scalar field are equal'
+  !ELSE
+  !  PRINT *, ' Fortran and Py-pipes scalar field are **NOT** equal'
+  !ENDIF
 
 
   ! (7) deallocate
@@ -302,7 +311,7 @@ PROGRAM routine
   !END DO
   !CALL system_clock(count=ic2, count_rate=crate, count_max=cmax)
 
-  PRINT *, 'Time per Py-pipes function call (seconds)', (ic2 - ic1) /crate  / repeats
+  !PRINT *, 'Time per Py-pipes function call (seconds)', (ic2 - ic1) /crate  / repeats
 
   ! (5) print to stdout
   PRINT *, '   2D scalar field (head)'
@@ -319,11 +328,11 @@ PROGRAM routine
   ELSE
     PRINT *, ' Fortran and Py-cffi 2D scalar field are **NOT** equal'
   ENDIF
-  IF(ALL(sf_2d_fo % phi .EQ. sf_2d_pipes % phi)) THEN
-    PRINT *, ' Fortran and Py-pipes 2D scalar field are equal'
-  ELSE
-    PRINT *, ' Fortran and Py-pipes 2D scalar field are **NOT** equal'
-  ENDIF
+  !IF(ALL(sf_2d_fo % phi .EQ. sf_2d_pipes % phi)) THEN
+  !  PRINT *, ' Fortran and Py-pipes 2D scalar field are equal'
+  !ELSE
+  !  PRINT *, ' Fortran and Py-pipes 2D scalar field are **NOT** equal'
+  !ENDIF
 
 
   ! (7) deallocate
@@ -432,6 +441,102 @@ PROGRAM routine
   DEALLOCATE(sf_3d_py % x1)
   DEALLOCATE(sf_3d_py % x2)
   DEALLOCATE(sf_3d_py % phi)
+
+  ! ------------------------------------------------------------
+  !
+  ! Demo: 3D scalar field to test array orders
+  !
+  ! ------------------------------------------------------------
+  
+  PRINT *, '--------------------------------------------'
+  PRINT *, '       DEMO 3D Scalar Field (Index Edition) ' 
+  PRINT *, '--------------------------------------------'
+
+  ! (2) set default values (dummy here)
+  x3min = -1.5
+  x3max = +1.5
+
+  ! (3) initialize the arrays
+  sf_i3d_fo % k1 = nx1
+  sf_i3d_fo % k2 = nx2
+  sf_i3d_fo % k3 = nx3
+  sf_i3d_py % k1 = nx1
+  sf_i3d_py % k2 = nx2
+  sf_i3d_py % k3 = nx3
+
+  ! allocate them here
+  ! later we want to have allocated arrays to
+  ! share with the python routines
+  ALLOCATE(sf_i3d_fo % x1(nx1, nx2, nx3))
+  ALLOCATE(sf_i3d_fo % x2(nx1, nx2, nx3))
+  ALLOCATE(sf_i3d_fo % x3(nx1, nx2, nx3))
+  ALLOCATE(sf_i3d_fo % phi(nx1, nx2, nx3))
+  ALLOCATE(sf_i3d_py % x1(nx1, nx2, nx3))
+  ALLOCATE(sf_i3d_py % x2(nx1, nx2, nx3))
+  ALLOCATE(sf_i3d_py % x3(nx1, nx2, nx3))
+  ALLOCATE(sf_i3d_py % phi(nx1, nx2, nx3))
+
+
+  CALL f_spacegrid(nx1, nx2, nx3, x1min, x1max, x2min, x2max, x3min, x3max, &
+  &               sf_i3d_fo % x1, sf_i3d_fo % x2, sf_i3d_fo % x3)
+  CALL f_spacegrid(nx1, nx2, nx3, x1min, x1max, x2min, x2max, x3min, x3max, &
+  &               sf_i3d_py % x1, sf_i3d_py % x2, sf_i3d_py % x3)
+
+  ! (4) calculate the field value by a function
+  ! (4A) Fortran implementation
+  CALL system_clock(count=ic1, count_rate=crate, count_max=cmax)
+  DO i=1, repeats
+    CALL f_scalar_field_index_3d(nx1, nx2, nx3, sf_i3d_fo % x1, sf_i3d_fo % x2, sf_i3d_fo % x3, sf_i3d_fo % phi)
+  END DO
+  CALL system_clock(count=ic2, count_rate=crate, count_max=cmax)
+
+  PRINT *, 'Time per Fortran  function call (seconds)', (ic2 - ic1) /crate  / repeats
+
+  ! (4B) Python cffi implementation
+  sf_i3d_py % phi(:, :, :) = 0.0 ! initialize to zero
+  CALL system_clock(count=ic1, count_rate=crate, count_max=cmax)
+  DO i=1, repeats
+    CALL i_scalar_field_index_3d(nx1, nx2, nx3, sf_i3d_py % x1, sf_i3d_py % x2, sf_i3d_py % x3, sf_i3d_py % phi)
+  END DO
+  CALL system_clock(count=ic2, count_rate=crate, count_max=cmax)
+
+  PRINT *, 'Time per Py-cffi  function call (seconds)', (ic2 - ic1) /crate  / repeats
+
+  ! (5) print to stdout
+  PRINT *, '   3D scalar field (head)'
+  PRINT *, '     (i)', '          (j)',  '        (k)', '    Fortran (PHI)', '  Py-cffi (PHI)'
+  DO k=1, MIN(nx3,3)
+  DO j=1, MIN(nx2,3)
+    DO i=1, MIN(nx1,3)
+      PRINT *, i, j, k, sf_i3d_fo % phi(i,j,k), sf_i3d_py % phi(i,j,k)
+    END DO
+  END DO
+  END DO
+
+  ! (6) check the arrays are equal
+  IF(ALL(sf_i3d_fo % phi .EQ. sf_i3d_py % phi)) THEN
+    PRINT *, ' Fortran and Py-cffi 3D scalar field are equal'
+  ELSE
+    PRINT *, ' Fortran and Py-cffi 3D scalar field are **NOT** equal'
+  ENDIF
+
+  DO k=1,nx3
+    DO j=1,nx2
+      DO i=1,nx1
+        IF ((sf_i3d_fo % phi(i,j,k) .NE. sf_i3d_py % phi(i,j,k) )) THEN
+          PRINT *, i, j, k, sf_i3d_fo % phi(i,j,k), sf_i3d_py % phi(i,j,k)
+        ENDIF
+      ENDDO
+    ENDDO
+  ENDDO
+
+  ! (7) deallocate
+  DEALLOCATE(sf_i3d_fo % x1)
+  DEALLOCATE(sf_i3d_fo % x2)
+  DEALLOCATE(sf_i3d_fo % phi)
+  DEALLOCATE(sf_i3d_py % x1)
+  DEALLOCATE(sf_i3d_py % x2)
+  DEALLOCATE(sf_i3d_py % phi)
   
   ! stop worker and close pipe
   !CALL ip_close_pipes()

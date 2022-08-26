@@ -139,5 +139,27 @@ CONTAINS
 
   END SUBROUTINE f_scalar_field_3d
 
+  SUBROUTINE f_scalar_field_index_3d(nx1, nx2, nx3, x1, x2, x3, phi)
+    ! calculate a 3d scalar field
+    ! given by the function
+    !   phi(x) = 0.5 * (x-1)**2 + y**2 + 2 * y + 7 * z
+
+    INTEGER, INTENT(in) :: nx1, nx2, nx3                    ! grid size
+    REAL, INTENT(in)    :: x1(nx1, nx2, nx3), x2(nx1, nx2, nx3), x3(nx1, nx2, nx3)  ! coordinates
+    REAL, INTENT(out)   :: phi(nx1, nx2, nx3)               ! scalar field
+    
+    INTEGER :: i, j, k
+
+    phi(:,:,:) = 0.0
+
+    DO k=1, nx3
+      DO j=1, nx2
+        DO i=1, nx1
+          phi(i,j,k) = 100 * i + 10 * j + 1 * k
+        END DO
+      END DO
+    END DO
+
+  END SUBROUTINE f_scalar_field_index_3d
 
 END MODULE mo_function 
