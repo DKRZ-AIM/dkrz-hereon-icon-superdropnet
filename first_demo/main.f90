@@ -2,9 +2,10 @@ PROGRAM routine
 
   USE, INTRINSIC :: iso_c_binding ! for cffi
 
-  USE mo_type, ONLY: t_scalar_field_1d, t_scalar_field_2d
+  USE mo_type, ONLY: t_scalar_field_1d, t_scalar_field_2d, t_scalar_field_3d
   USE mo_function, ONLY: f_scalar_field_1d, f_linspace, &
-  &                      f_scalar_field_2d, f_meshgrid
+  &                      f_scalar_field_2d, f_meshgrid, &
+  &                      f_scalar_field_3d, f_spacegrid
   
   USE mo_pipes, ONLY: ip_init_pipes, ip_close_pipes, ip_scalar_field_1d, ip_scalar_field_2d
 
@@ -38,6 +39,13 @@ PROGRAM routine
       INTEGER(c_int) :: nx1, nx2
       REAL(c_float) :: x1(nx1, nx2), x2(nx1, nx2), phi(nx1, nx2) 
     END SUBROUTINE i_scalar_field_2d
+
+    SUBROUTINE i_scalar_field_3d(nx1, nx2, nx3, x1, x2, x3, phi) bind(c)
+      USE iso_c_binding
+      INTEGER(c_int) :: nx1, nx2, nx3
+      REAL(c_float)  :: x1(nx1, nx2, nx3), x2(nx1, nx2, nx3), x3(nx1, nx2, nx3)
+      REAL(c_float)  :: phi(nx1, nx2, nx3)
+    END SUBROUTINE i_scalar_field_3d
     
   END INTERFACE
   ! -----------------------------------------------------------------
@@ -53,10 +61,11 @@ PROGRAM routine
   !   calculates something based on the variables
   ! - later replace this function by a python routine
 
-  INTEGER        :: i, j  ! loop idxs
-  INTEGER        :: nx1, nx2    ! grid dimension # TODO check
+  INTEGER        :: i, j, k  ! loop idxs
+  INTEGER        :: nx1, nx2, nx3    ! grid dimension # TODO check
   REAL           :: x1min, x1max ! grid limits
   REAL           :: x2min, x2max
+  REAL           :: x3min, x3max
   ! wall-time measurements
   INTEGER        :: ic1, ic2, cmax ! system clock
   REAL           :: crate
@@ -73,11 +82,14 @@ PROGRAM routine
   TYPE(t_scalar_field_2d) :: sf_2d_py    ! python cffi
   TYPE(t_scalar_field_2d) :: sf_2d_pipes ! python pipes
 
+  TYPE(t_scalar_field_3d) :: sf_3d_fo    ! fortran
+  TYPE(t_scalar_field_3d) :: sf_3d_py    ! python cffi
+
   ! get command line arguments
   PRINT *, '------------------------------'
   PRINT *, ' Processing command line args '
   PRINT *, '  pass them as                '
-  PRINT *, '   ./my_demo nx1 nx2          '
+  PRINT *, '   ./my_demo nx1 nx2 nx3      '
   PRINT *, ' WARNING any unintended usage '
   PRINT *, '  may result in unpredictable behaviour'
   PRINT *, '------------------------------'
@@ -87,9 +99,13 @@ PROGRAM routine
   IF (COMMAND_ARGUMENT_COUNT() .EQ. 0) THEN 
     nx1 = 100 ! default for nx1
     nx2 = 100 ! default for nx2
+    nx3 = 100 ! default for nx3
   ELSEIF (COMMAND_ARGUMENT_COUNT() .EQ. 1) THEN
     nx2 = 100 ! default for nx2
-  ELSEIF (COMMAND_ARGUMENT_COUNT() .GT. 2) THEN
+    nx3 = 100 ! default for nx3
+  ELSEIF (COMMAND_ARGUMENT_COUNT() .EQ. 2) THEN
+    nx3 = 100 ! default for nx3
+  ELSEIF (COMMAND_ARGUMENT_COUNT() .GT. 3) THEN
     PRINT *, 'Too many command line arguments'
     STOP
   ENDIF
@@ -102,6 +118,8 @@ PROGRAM routine
       READ(arg,*)nx1
     ELSEIF (i.EQ.2) THEN
       READ(arg,*)nx2
+    ELSEIF (i.EQ.3) THEN
+      READ(arg,*)nx3
     ENDIF
 
   ENDDO
@@ -125,7 +143,7 @@ PROGRAM routine
   CALL i_hello_world()
   
   ! open pipe
-  CALL ip_init_pipes(0, 1)
+  !CALL ip_init_pipes(0, 1)
   
   ! (2) set default values
   x1min = -5.0
@@ -176,12 +194,12 @@ PROGRAM routine
   PRINT *, 'Time per Py-cffi  function call (seconds)', (ic2 - ic1) /crate  / repeats
 
   ! (4C) Python pipes implementation
-  sf_1d_pipes % phi(:) = 0.0 ! initialize to zero
-  CALL system_clock(count=ic1, count_rate=crate, count_max=cmax)
-  DO i=1, repeats
-    CALL ip_scalar_field_1d(nx1, sf_1d_pipes % x, sf_1d_pipes % phi)
-  END DO
-  CALL system_clock(count=ic2, count_rate=crate, count_max=cmax)
+  !sf_1d_pipes % phi(:) = 0.0 ! initialize to zero
+  !CALL system_clock(count=ic1, count_rate=crate, count_max=cmax)
+  !DO i=1, repeats
+  !  CALL ip_scalar_field_1d(nx1, sf_1d_pipes % x, sf_1d_pipes % phi)
+  !END DO
+  !CALL system_clock(count=ic2, count_rate=crate, count_max=cmax)
 
   PRINT *, 'Time per Py-pipes function call (seconds)', (ic2 - ic1) /crate  / repeats
 
@@ -277,12 +295,12 @@ PROGRAM routine
   PRINT *, 'Time per Py-cffi  function call (seconds)', (ic2 - ic1) /crate  / repeats
 
   ! (4C) Python pipes implementation
-  sf_2d_pipes % phi(:, :) = 0.0 ! initialize to zero
-  CALL system_clock(count=ic1, count_rate=crate, count_max=cmax)
-  DO i=1, repeats
-    CALL ip_scalar_field_2d(nx1, nx2, sf_2d_pipes % x1, sf_2d_pipes % x2, sf_2d_pipes % phi)
-  END DO
-  CALL system_clock(count=ic2, count_rate=crate, count_max=cmax)
+  !sf_2d_pipes % phi(:, :) = 0.0 ! initialize to zero
+  !CALL system_clock(count=ic1, count_rate=crate, count_max=cmax)
+  !DO i=1, repeats
+  !  CALL ip_scalar_field_2d(nx1, nx2, sf_2d_pipes % x1, sf_2d_pipes % x2, sf_2d_pipes % phi)
+  !END DO
+  !CALL system_clock(count=ic2, count_rate=crate, count_max=cmax)
 
   PRINT *, 'Time per Py-pipes function call (seconds)', (ic2 - ic1) /crate  / repeats
 
@@ -318,8 +336,96 @@ PROGRAM routine
   DEALLOCATE(sf_2d_pipes % x1)
   DEALLOCATE(sf_2d_pipes % x2)
   DEALLOCATE(sf_2d_pipes % phi)
+
+  ! ------------------------------------------------------------
+  !
+  ! Demo: 3D scalar field
+  !
+  ! ------------------------------------------------------------
+  
+  PRINT *, '--------------------------------------------'
+  PRINT *, '       DEMO 3D Scalar Field                 '
+  PRINT *, '--------------------------------------------'
+
+  ! (2) set default values
+  x3min = -7.0
+  x3max = +5.0
+
+  ! (3) initialize the arrays
+  sf_3d_fo % k1 = nx1
+  sf_3d_fo % k2 = nx2
+  sf_3d_fo % k3 = nx3
+  sf_3d_py % k1 = nx1
+  sf_3d_py % k2 = nx2
+  sf_3d_py % k3 = nx3
+
+  ! allocate them here
+  ! later we want to have allocated arrays to
+  ! share with the python routines
+  ALLOCATE(sf_3d_fo % x1(nx1, nx2, nx3))
+  ALLOCATE(sf_3d_fo % x2(nx1, nx2, nx3))
+  ALLOCATE(sf_3d_fo % x3(nx1, nx2, nx3))
+  ALLOCATE(sf_3d_fo % phi(nx1, nx2, nx3))
+  ALLOCATE(sf_3d_py % x1(nx1, nx2, nx3))
+  ALLOCATE(sf_3d_py % x2(nx1, nx2, nx3))
+  ALLOCATE(sf_3d_py % x3(nx1, nx2, nx3))
+  ALLOCATE(sf_3d_py % phi(nx1, nx2, nx3))
+
+
+  CALL f_spacegrid(nx1, nx2, nx3, x1min, x1max, x2min, x2max, x3min, x3max, &
+  &               sf_3d_fo % x1, sf_3d_fo % x2, sf_3d_fo % x3)
+  CALL f_spacegrid(nx1, nx2, nx3, x1min, x1max, x2min, x2max, x3min, x3max, &
+  &               sf_3d_py % x1, sf_3d_py % x2, sf_3d_py % x3)
+
+  ! (4) calculate the field value by a function
+  ! (4A) Fortran implementation
+  CALL system_clock(count=ic1, count_rate=crate, count_max=cmax)
+  DO i=1, repeats
+    CALL f_scalar_field_3d(nx1, nx2, nx3, sf_3d_fo % x1, sf_3d_fo % x2, sf_3d_fo % x3, sf_3d_fo % phi)
+  END DO
+  CALL system_clock(count=ic2, count_rate=crate, count_max=cmax)
+
+  PRINT *, 'Time per Fortran  function call (seconds)', (ic2 - ic1) /crate  / repeats
+
+  ! (4B) Python cffi implementation
+  sf_3d_py % phi(:, :, :) = 0.0 ! initialize to zero
+  CALL system_clock(count=ic1, count_rate=crate, count_max=cmax)
+  DO i=1, repeats
+    CALL i_scalar_field_3d(nx1, nx2, nx3, sf_3d_py % x1, sf_3d_py % x2, sf_3d_py % x3, sf_3d_py % phi)
+  END DO
+  CALL system_clock(count=ic2, count_rate=crate, count_max=cmax)
+
+  PRINT *, 'Time per Py-cffi  function call (seconds)', (ic2 - ic1) /crate  / repeats
+
+  ! (5) print to stdout
+  PRINT *, '   3D scalar field (head)'
+  PRINT *, '     (X1)', '          (X2)',  '        (x3)', '    Fortran (PHI)', '  Py-cffi (PHI)'
+  DO k=1, 3
+  DO i=1, 3
+    DO j=1, 3
+      PRINT *, sf_3d_fo % x1(i,j,k), sf_3d_fo % x2(i,j,k), sf_3d_fo % x3(i,j,k), sf_3d_fo % phi(i,j,k), sf_3d_py % phi(i,j,k)
+    END DO
+  END DO
+  END DO
+
+  ! (6) check the arrays are equal
+  IF(ALL(sf_3d_fo % phi .EQ. sf_3d_py % phi)) THEN
+    PRINT *, ' Fortran and Py-cffi 2D scalar field are equal'
+  ELSE
+    PRINT *, ' Fortran and Py-cffi 2D scalar field are **NOT** equal'
+  ENDIF
+
+
+  ! (7) deallocate
+  DEALLOCATE(sf_3d_fo % x1)
+  DEALLOCATE(sf_3d_fo % x2)
+  DEALLOCATE(sf_3d_fo % phi)
+  DEALLOCATE(sf_3d_py % x1)
+  DEALLOCATE(sf_3d_py % x2)
+  DEALLOCATE(sf_3d_py % phi)
+  
   
   ! stop worker and close pipe
-  CALL ip_close_pipes()
+  !CALL ip_close_pipes()
 
 END PROGRAM routine
