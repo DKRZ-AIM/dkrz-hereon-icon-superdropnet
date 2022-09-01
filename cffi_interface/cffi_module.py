@@ -2,7 +2,7 @@
 # contents of this file are written in builder.py
 # as argument of ffibuilder.embedding_init_code
 
-from cffi_plugin import ffi
+from libcffi import ffi
 import numpy as np
 import os
 import transfer_arrays

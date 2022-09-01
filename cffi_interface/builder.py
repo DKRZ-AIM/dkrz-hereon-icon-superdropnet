@@ -17,11 +17,11 @@ with open("plugin.h", "w") as f:
     f.write(header)
 
 ffibuilder.embedding_api(header)
-ffibuilder.set_source("cffi_plugin", r'''
+ffibuilder.set_source("libcffi", r'''
     #include "plugin.h"
 ''')
 
 module = open('cffi_module.py', 'r').read()
 
 ffibuilder.embedding_init_code(module)
-ffibuilder.compile(target="../lib/cffi_plugin.so", verbose=True)
+ffibuilder.compile(target="../lib/libcffi.so", verbose=True)
