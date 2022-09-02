@@ -2,6 +2,7 @@
 # contents of this file are written in builder.py
 # as argument of ffibuilder.embedding_init_code
 
+import libcffi
 from libcffi import ffi
 import numpy as np
 import os
@@ -9,18 +10,22 @@ import transfer_arrays
 import pytorch_lightning as pl
 
 import sys
-sys.path.append('/work/ka1176/caroline/gitlab/2022-03-hereon-python-fortran-bridges/cffi_interface')
 from solvers.moment_solver import simulation_forecast
-sys.path.append('/work/ka1176/caroline/gitlab/2022-03-hereon-python-fortran-bridges/cffi_interface/models')
-sys.path.append('/work/ka1176/caroline/gitlab/2022-03-hereon-python-fortran-bridges/cffi_interface')
 
 import models.plModel as plm
 
 
 @ffi.def_extern()
-def i_check_interface():
-    '''function to check the interface functionality (stub)'''
-    print("Check interface")
+def i_check_interface(ptr_istate):
+    '''
+    Check if the interface is working
+
+    Pass istate parameter back and forth
+
+    Assign non zero value here, to be
+    checked on the Fortran side
+    '''
+    ptr_istate[0] = 1
 
 @ffi.def_extern()
 def i_get_emi_number(n):
@@ -96,6 +101,7 @@ def i_add_emi_echam_ttr(ptr_jg, ptr_jcs, ptr_jce,
 @ffi.def_extern()
 def i_warm_rain_nn(ptr_dim_i, ptr_dim_k, ptr_n_moments, 
                    ptr_current_moments, ptr_new_moments,
+                   ptr_trained_model_path,
                    ptr_istate):
     """
     Call the pretrained warm rain network for inference for a given ikslice
@@ -154,8 +160,8 @@ def i_warm_rain_nn(ptr_dim_i, ptr_dim_k, ptr_n_moments,
     pl_model = plm.LightningModel(inputs_mean=inputs_mean, inputs_std=inputs_std,
                             updates_mean=updates_mean, updates_std=updates_std) 
 
-    hard_coded_path = '/work/ka1176/caroline/gitlab/2022-03-hereon-python-fortran-bridges/cffi_interface'
-    trained_model = pl_model.load_from_checkpoint(hard_coded_path + "/trained_models/best_model.ckpt")
+    model_path = ffi.string(ptr_trained_model_path).decode("UTF-8")
+    trained_model = pl_model.load_from_checkpoint(model_path)
 
     # ML inference only if input moments are non zero
     if np.all(current_moments == 0.0):
