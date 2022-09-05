@@ -51,7 +51,6 @@ cd ~icon-aes # the ICON AES git root dir
 source ~/.bashrc
 conda activate iconml
 
-export LD_LIBRARY_PATH=${PWD}/externals/mlbridges/lib
 export PYTHONPATH=${PWD}/externals/mlbridges/cffi_interface
 ```
 
