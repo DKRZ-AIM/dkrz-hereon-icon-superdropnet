@@ -2,13 +2,58 @@
 
 Third project milestone: Neural network inference with a pretrained model at runtime in ICON-AES. 
 
-## Developer information
-
-Collection of notes for developers of ICON Python bridges in the context of the voucher. See below for Usage.
+## Usage information
 
 ### ICON-AES branch
 
-We forked the ICON-AES master and created a new branch called `icon-aes-ml-bridges`.
+We forked the ICON-AES master and created a new branch called `icon-aes-ml-bridges`. Obtain the code here:
+
+```bash
+git clone --recursive git@gitlab.dkrz.de:k202141/icon-aes.git
+git checkout icon-aes-ml-bridges
+```
+
+Configure ICON to use the ML bridge as an external module:
+
+```bash
+./config/dkrz/levante.intel-2021.5.0 --enable-mlbridges
+```
+
+Compile ICON executable:
+
+```bash
+make -j8
+```
+
+### Conda environment
+
+Install a conda environment `iconml`:
+
+```bash
+conda env create --file docker/kernel-env-cuda11.yaml
+```
+
+[05.09.22] Because of ongoing problems installing the ML libraries using the yml, additionally run
+
+```bash
+conda activate iconml
+pip install pytorch_lightning
+pip install torch==1.10.1+cu113
+```
+
+### Use embedded Python (CFFI) bridge
+
+Before job submission, make sure you activate the conda environment and set the python path correctly. 
+
+```bash
+source ~/.bashrc
+conda activate iconml
+export PYTHONPATH="$PYTHONPATH:~icon/externals/mlbridges/cffi_interface"
+```
+
+## Developer information
+
+Collection of notes for developers of ICON Python bridges in the context of the voucher.
 
 ### New namelist
 
@@ -48,16 +93,4 @@ Checklist:
 - Add your bridge to the config in `src/configure_model/mo_mlbridges_config.f90`
 - In places where different bridges are selected, add a select case with your bridge TODO add example
 - Create an experiment script that uses the bridge
-- Document **all** additional changes to paths, runscripts, config files, ... that are necessary to run the bridge below in the Usage information
-
-## Usage information
-
-### CFFI
-
-Before job submission, for now with conda environment and explicit path
-
-```bash
-source ~/.bashrc
-conda activate iconml
-export PYTHONPATH="$PYTHONPATH:/work/ka1176/caroline/gitlab/2022-03-hereon-python-fortran-bridges/cffi_interface/"
-```
+- Document **all** additional changes to paths, runscripts, config files, ... that are necessary to run the bridge
