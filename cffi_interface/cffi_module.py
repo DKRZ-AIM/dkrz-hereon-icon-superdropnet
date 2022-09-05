@@ -174,7 +174,12 @@ def i_warm_rain_nn(ptr_dim_i, ptr_dim_k, ptr_n_moments,
 
         for i in range(dim_i):
             for k in range(dim_k):
-                
+
+                # If only one of the batch elements is all zero
+                # still need to assign the new moments to zero
+                if np.allclose(current_moments[:,k,i], 0.0):
+                    new_moments[:,k,i] = 0.0
+                    continue
 
                 #Solver class initalized and new moment calculated
                 new_forecast = simulation_forecast(
