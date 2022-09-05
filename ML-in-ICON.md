@@ -46,9 +46,13 @@ pip install torch==1.10.1+cu113
 Before job submission, make sure you activate the conda environment and set the python path correctly. 
 
 ```bash
+cd ~icon-aes # the ICON AES git root dir
+
 source ~/.bashrc
 conda activate iconml
-export PYTHONPATH="$PYTHONPATH:~icon/externals/mlbridges/cffi_interface"
+
+export LD_LIBRARY_PATH=${PWD}/externals/mlbridges/lib
+export PYTHONPATH=${PWD}/externals/mlbridges/cffi_interface
 ```
 
 ## Developer information
