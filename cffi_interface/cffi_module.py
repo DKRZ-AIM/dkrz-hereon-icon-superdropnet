@@ -7,7 +7,6 @@ from libcffi import ffi
 import numpy as np
 import os
 import transfer_arrays
-import pytorch_lightning as pl
 
 import sys
 from solvers.moment_solver import simulation_forecast
