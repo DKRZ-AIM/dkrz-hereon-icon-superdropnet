@@ -120,7 +120,7 @@ def i_warm_rain_nn(ptr_dim_i, ptr_dim_k, ptr_n_moments,
        0 : nothing happened
        1 : input moments were zero, no update
        2 : ML inference update
-       3 : error code (TODO)
+       3 : error code (encountered None value in current moments)
 
     """
 
@@ -168,26 +168,25 @@ def i_warm_rain_nn(ptr_dim_i, ptr_dim_k, ptr_n_moments,
         new_moments[:,:,:] = 0.0
         ptr_istate[0] = 1
 
+    # Catch NONE moments here and stop evaluation on Fortran side
+    elif np.any(np.isnan(current_moments)):
+        ptr_istate[0] = 3
+
     else:
-        # TODO use batch prediction here instead of the nested loop
+        # current_moments shape: moments x dim_k x dim_i
+        # solver expects:        dim_ik  x moments
+        moments_shape = current_moments.shape
+        swapped_moments = np.swapaxes(current_moments.reshape(4,-1), 0, 1)
         # new_moments[:, :, :] = new_forecast.moments_out[0, :, :, :]
 
-        for i in range(dim_i):
-            for k in range(dim_k):
+        new_forecast = simulation_forecast(swapped_moments, trained_model,
+                                           inputs_mean, inputs_std)
+        new_forecast.test()
 
-                # If only one of the batch elements is all zero
-                # still need to assign the new moments to zero
-                if np.allclose(current_moments[:,k,i], 0.0):
-                    new_moments[:,k,i] = 0.0
-                    continue
+        fc_moments = np.swapaxes(new_forecast.moments_out, 0, 1)
+        fc_moments = fc_moments.reshape(moments_shape)
 
-                #Solver class initalized and new moment calculated
-                new_forecast = simulation_forecast(
-                  current_moments[:, k, i], trained_model,inputs_mean, inputs_std
-                )
-                new_forecast.test()
-
-                new_moments[:, k, i] = new_forecast.moments_out[0, :]
+        new_moments[:, :, :] = fc_moments
 
         ptr_istate[0] = 2
 

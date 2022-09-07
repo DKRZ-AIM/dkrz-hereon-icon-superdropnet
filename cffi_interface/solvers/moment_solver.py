@@ -50,7 +50,8 @@ class simulation_forecast:
 
     # For creation of inputs
     def create_input(self):
-        tau = self.all_moments_in[:,2] / (self.all_moments_in[:,2] + self.all_moments_in[:,0])
+        divisor = self.all_moments_in[:,2] + self.all_moments_in[:,0]
+        tau = np.divide( self.all_moments_in[:,2], divisor, where=divisor!=0 )
 
         xc = self.all_moments_in[:,0] / (self.all_moments_in[:,1] + 1e-8)
         self.lo_arr = self.all_moments_in[:,2] + self.all_moments_in[:,0]
