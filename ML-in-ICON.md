@@ -54,6 +54,24 @@ conda activate iconml
 export PYTHONPATH=${PWD}/externals/mlbridges/cffi_interface
 ```
 
+### Standalone usage
+
+To create the library for usage outside of ICON:
+
+```bash
+autoreconf
+./configure
+make
+```
+
+The compiled library can be imported in python like a regular module
+
+```python
+from libcffi import ffi, lib
+```
+
+For examples, see notebook `DebugCFFI.ipynb`.
+
 ## Developer information
 
 Collection of notes for developers of ICON Python bridges in the context of the voucher.
