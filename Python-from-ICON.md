@@ -38,9 +38,48 @@ c_binding.d: icon.mk
 
 You need to run configuration and then make again to have it added.
 
-### MPI
+### MPI via YAC
 
-TODO
+[Started by CA 13.09.22]
+
+Compile external `yaxt` v0.9.3.1:
+
+```bash
+./configure \
+--prefix="/work/ka1176/caroline/gitlab/yaxt" \
+FC=/sw/spack-levante/openmpi-4.1.2-yfwe6t/bin/mpif90 \
+CC=/sw/spack-levante/openmpi-4.1.2-yfwe6t/bin/mpicc  \
+CFLAGS='-g -O2' \
+FCFLAGS='-g -O2' \
+MPI_LAUNCH=/sw/spack-levante/openmpi-4.1.2-yfwe6t/bin/mpiexec
+```
+
+Compile external `yac`:
+
+```bash
+./configure \
+--prefix="/work/ka1176/caroline/gitlab/yac" \
+--disable-mpi-checks \
+--with-yaxt-root="/work/ka1176/caroline/gitlab/yaxt" \
+--with-yaxt-include="/work/ka1176/caroline/gitlab/yaxt/inst_headers" \
+--with-yaxt-lib="/work/ka1176/caroline/gitlab/yaxt/src/.libs" \
+--with-xml2-include=/usr/include/libxml2 \
+--enable-python-bindings \
+FC=/sw/spack-levante/openmpi-4.1.2-yfwe6t/bin/mpif90 \
+CC=/sw/spack-levante/openmpi-4.1.2-yfwe6t/bin/mpicc  \
+CFLAGS='-g -O2' \
+FCFLAGS='-g -O2' \
+MPI_LAUNCH=/sw/spack-levante/openmpi-4.1.2-yfwe6t/bin/mpiexec
+```
+
+Install python bindings - for me the check suite was completed when I used my own conda environment (including `mpi4py, cython`) and ran
+
+```bash
+cd ~yac/python
+python setup.py install
+make check
+```
+
 
 ## Prepare the Fortran code (ICON-AES)
 
