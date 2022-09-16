@@ -233,9 +233,12 @@ def i_warm_rain_nn(ptr_dim_i, ptr_dim_k, ptr_n_moments,
     else:
         # current_moments shape: moments x dim_k x dim_i
         # solver expects:        dim_ik  x moments
+        # Solver gives (fc_moments): dim_ik x moments
+        #We change output to the correct shape and save in new_moments
+        
         moments_shape = current_moments.shape
-        swapped_moments = np.swapaxes(current_moments.reshape(4,-1), 0, 1)
-
+        swapped_moments = swapped_moments = np.swapaxes(current_moments,0, 2).reshape(-1,9)
+        
         new_forecast = simulation_forecast(swapped_moments, trained_model,
                                            inputs_mean, inputs_std)
         new_forecast.test()
