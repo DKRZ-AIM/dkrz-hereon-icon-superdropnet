@@ -10,6 +10,8 @@ class simulation_forecast:
         new_model,
         inputs_mean,
         inputs_std,
+        updates_mean,
+        updates_std
         
     ):
         self.all_moments_in = all_moments_in
@@ -17,6 +19,8 @@ class simulation_forecast:
         as Lc, Nc,Lr, Nr """
         self.inputs_mean = inputs_mean
         self.inputs_std = inputs_std
+        self.updates_mean = updates_mean
+        self.updates_std = updates_std
         self.model = new_model
         self.moments_out = None
     
@@ -34,13 +38,7 @@ class simulation_forecast:
         self.create_input()
         predictions_updates = self.model.test_step(torch.from_numpy(self.inputs))
         self.moment_calc(predictions_updates)
-        # self.moments_out = (
-        #     self.preds * self.inputs_std[:, :4]
-        # ) + self.inputs_mean[:, :4]
-        
-        self.check_preds()
 
-        self.moments_out = self.moments_out.numpy()
         self.moments_out = self.moments_out.astype(np.float64)
 
     # For Calculation of Moments
@@ -83,42 +81,17 @@ class simulation_forecast:
         # train_loader = DataLoader(dataset,shuffle=False,batch_size=inputs.shape[0])
 
     def check_preds(self):
+
+        self.moments_out[:, 0] = (self.lo_arr) - self.moments_out[:, 2]
         self.moments_out[self.moments_out<0] = 0
         
-        # if self.moments_out[0, 0] < 0:
-        #     self.moments_out[0, 0] = 0
-
-        # if self.moments_out[0, 2] < 0:
-        #     self.moments_out[0, 2] = 0
-
-        
-        # if self.moments_out[0, 2] > self.model_params[0]:
-        #     self.moments_out[0, 2] = self.model_params[0]
-
-        # if self.moments_out[0, 1] < 0:
-        #     self.moments_out[0, 1] = 0
-
-        # if self.moments_out[0, 3] < 0:
-        #     self.moments_out[0, 3] = 0
-
-        self.moments_out[:, 0] = torch.from_numpy(self.lo_arr) - self.moments_out[:, 2]
 
     
     def moment_calc(self, predictions_updates):
         self.updates = (
             predictions_updates.detach().numpy() * self.updates_std
         ) + self.updates_mean
-        self.check_updates()
         
-        self.preds = (self.sim_data[0:4] + (self.updates * 20))
+        self.moments_out = (self.all_moments_in[:,0:4] + (self.updates[:,:] * 20))
         self.check_preds()
         
-        # print(self.updates)
-        self.moment_preds.append(self.preds)
-        self.sim_data = self.preds.reshape(
-            -1,
-        )
-        self.updates_prev = self.updates
-        
-        
-
