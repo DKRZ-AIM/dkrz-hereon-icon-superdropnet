@@ -32,10 +32,11 @@ class simulation_forecast:
     def test(self):
         self.setup()
         self.create_input()
-        self.preds = self.model.test_step(torch.from_numpy(self.inputs))
-        self.moments_out = (
-            self.preds * self.inputs_std[:, :4]
-        ) + self.inputs_mean[:, :4]
+        predictions_updates = self.model.test_step(torch.from_numpy(self.inputs))
+        self.moment_calc(predictions_updates)
+        # self.moments_out = (
+        #     self.preds * self.inputs_std[:, :4]
+        # ) + self.inputs_mean[:, :4]
         
         self.check_preds()
 
@@ -102,6 +103,22 @@ class simulation_forecast:
 
         self.moments_out[:, 0] = torch.from_numpy(self.lo_arr) - self.moments_out[:, 2]
 
-  
+    
+    def moment_calc(self, predictions_updates):
+        self.updates = (
+            predictions_updates.detach().numpy() * self.updates_std
+        ) + self.updates_mean
+        self.check_updates()
+        
+        self.preds = (self.sim_data[0:4] + (self.updates * 20))
+        self.check_preds()
+        
+        # print(self.updates)
+        self.moment_preds.append(self.preds)
+        self.sim_data = self.preds.reshape(
+            -1,
+        )
+        self.updates_prev = self.updates
+        
         
 
