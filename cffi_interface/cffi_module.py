@@ -237,10 +237,11 @@ def i_warm_rain_nn(ptr_dim_i, ptr_dim_k, ptr_n_moments,
         #We change output to the correct shape and save in new_moments
         
         moments_shape = current_moments.shape
-        swapped_moments = swapped_moments = np.swapaxes(current_moments,0, 2).reshape(-1,9)
+        swapped_moments = swapped_moments = np.swapaxes(current_moments,0, 2).reshape(-1, 4)
         
         new_forecast = simulation_forecast(swapped_moments, trained_model,
-                                           inputs_mean, inputs_std)
+                                           inputs_mean, inputs_std,
+                                           updates_mean, updates_std)
         new_forecast.test()
 
         fc_moments = np.swapaxes(new_forecast.moments_out, 0, 1)
@@ -249,6 +250,9 @@ def i_warm_rain_nn(ptr_dim_i, ptr_dim_k, ptr_n_moments,
         new_moments[:, :, :] = fc_moments
 
         ptr_istate[0] = 2
+
+        if np.any(np.isnan(new_moments)):
+            ptr_istate[0] = 3
 
 @ffi.def_extern()
 def i_checksum(ptr_dim_i, ptr_dim_k, ptr_n_moments, 
