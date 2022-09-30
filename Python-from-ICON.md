@@ -70,16 +70,26 @@ CC=/sw/spack-levante/openmpi-4.1.2-yfwe6t/bin/mpicc  \
 CFLAGS='-g -O2' \
 FCFLAGS='-g -O2' \
 MPI_LAUNCH=/sw/spack-levante/openmpi-4.1.2-yfwe6t/bin/mpiexec
+
+make
 ```
 
 Install python bindings - for me the check suite was completed when I used my own conda environment (including `mpi4py, cython`) and ran
 
 ```bash
+conda activate iconml
 cd ~yac/python
 python setup.py install
 make check
 ```
 
+Hello world example
+
+```bash
+cd ~yac/python/examples/ex4_f_py_hello_world
+mpiifort -O2 -I/work/ka1176/caroline/gitlab/yac/src/ helloworld.f90
+sh run.sh
+```
 
 ## Prepare the Fortran code (ICON-AES)
 
