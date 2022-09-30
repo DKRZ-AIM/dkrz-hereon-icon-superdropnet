@@ -83,13 +83,7 @@ python setup.py install
 make check
 ```
 
-Hello world example
-
-```bash
-cd ~yac/python/examples/ex4_f_py_hello_world
-mpiifort -O2 -I/work/ka1176/caroline/gitlab/yac/src/ helloworld.f90
-sh run.sh
-```
+Hello world example in `~/first_demo/ex4_f_py_hello_world`.
 
 ## Prepare the Fortran code (ICON-AES)
 
