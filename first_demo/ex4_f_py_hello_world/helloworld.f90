@@ -30,14 +30,14 @@ PROGRAM hello_world
 
   INTEGER :: local_comm, npes, rank
 
-  WRITE ( 6 , * ) "Hello world (Fortran side)"
+  WRITE ( 6 , * ) "Hello world, I am Fortran"
 
   CALL mpi_init (ierror)
 
-!  ! Initialise the coupler
-!  xml_filename = "dummy_coupling.xml"
-!  xsd_filename = "coupling.xsd"
-!  CALL yac_finit ( xml_filename, xsd_filename )
+  ! Initialise the coupler
+  xml_filename = "dummy_coupling.xml"
+  xsd_filename = "coupling.xsd"
+  CALL yac_finit ( xml_filename, xsd_filename )
 !
 !  ! Inform the coupler about what we are
 !  comp_name = "hello_world"
