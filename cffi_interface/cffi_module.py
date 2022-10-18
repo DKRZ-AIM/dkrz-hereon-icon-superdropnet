@@ -251,7 +251,7 @@ def i_warm_rain_nn(ptr_dim_i, ptr_dim_k, ptr_n_moments,
 
         ptr_istate[0] = 2
 
-        if np.any(np.isnan(new_moments)):
+        if np.any(np.isnan(new_moments)) or np.any(new_moments>1e20):
             ptr_istate[0] = 3
 
 @ffi.def_extern()
