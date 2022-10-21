@@ -13,6 +13,8 @@ git clone --recursive git@gitlab.dkrz.de:k202141/icon-aes.git
 git checkout icon-aes-ml-bridges
 ```
 
+[2022-10-21] TODO: `autoconf` tools were missing from subrepository 
+
 Configure ICON to use the ML bridge as an external module:
 
 ```bash
