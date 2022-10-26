@@ -9,8 +9,7 @@ Third project milestone: Neural network inference with a pretrained model at run
 We forked the ICON-AES master and created a new branch called `icon-aes-ml-bridges`. Obtain the code here:
 
 ```bash
-git clone --recursive git@gitlab.dkrz.de:k202141/icon-aes.git
-git checkout icon-aes-ml-bridges
+git clone --recursive -b icon-aes-ml-bridges git@gitlab.dkrz.de:k202141/icon-aes.git
 ```
 
 [2022-10-21] TODO: `autoconf` tools were missing from subrepository 
