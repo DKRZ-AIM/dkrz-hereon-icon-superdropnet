@@ -94,8 +94,8 @@ src/configure_model/mo_mlbridges_config.f90   # configuration
 The example script to run the warm bubble experiment with a bridge is located in 
 
 ```bash
-run/exp.atm_mlbridges_warm_bubble_fortran # for the fortran case
-run/exp.atm_mlbridges_warm_bubble_cffi    # for the cffi case
+run/exp.aes_bubble_2mom_fortran # for the fortran case
+run/exp.aes_bubble_2mom_cffi    # for the cffi case
 ```
 
 Choose the bridge:
