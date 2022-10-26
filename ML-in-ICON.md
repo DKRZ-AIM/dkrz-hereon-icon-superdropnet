@@ -40,7 +40,7 @@ conda env create --file docker/kernel-env-cuda11.yaml
 ```bash
 conda activate iconml
 pip install pytorch_lightning
-conda install pytorch==1.10.0 torchvision==0.11.0 torchaudio==0.10.0 cudatoolkit=11.3 -c pytorch -c conda-forge
+pip install torch==1.11.0 torchvision==0.12.0 torchaudio==0.11.0
 ```
 
 Fallback: install current stable version with CUDA toolkit 11.3 from https://pytorch.org/get-started/locally/.
