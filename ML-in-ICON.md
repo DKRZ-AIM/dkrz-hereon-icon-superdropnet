@@ -12,7 +12,12 @@ We forked the ICON-AES master and created a new branch called `icon-aes-ml-bridg
 git clone --recursive -b icon-aes-ml-bridges git@gitlab.dkrz.de:k202141/icon-aes.git
 ```
 
-[2022-10-21] TODO: `autoconf` tools were missing from subrepository 
+[2022-10-21] TODO: `autoconf` tools were missing from subrepository. Add them here:
+
+````bash
+cd externals/mlbridges
+automake --add-missing
+```
 
 Configure ICON to use the ML bridge as an external module:
 
@@ -55,6 +60,15 @@ source ~/.bashrc
 conda activate iconml
 
 export PYTHONPATH=${PWD}/externals/mlbridges/cffi_interface
+```
+
+### Test 
+
+To see whether your installation was successful, run the bubble experiments:
+
+```bash
+./make_runscripts aes_bubble_2mom_fortran
+./make_runscripts aes_bubble_2mom_cffi
 ```
 
 ### Standalone usage
