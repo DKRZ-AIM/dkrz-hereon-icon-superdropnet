@@ -14,7 +14,7 @@ git clone --recursive -b icon-aes-ml-bridges git@gitlab.dkrz.de:k202141/icon-aes
 
 [2022-10-21] TODO: `autoconf` tools were missing from subrepository. Add them here:
 
-````bash
+```bash
 cd externals/mlbridges
 automake --add-missing
 ```
