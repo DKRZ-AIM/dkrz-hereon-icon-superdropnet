@@ -1,10 +1,12 @@
-PYTHON=/sw/spack-levante/mambaforge-4.11.0-0-Linux-x86_64-sobz6z/bin/python
+CFLAGS= -fPIC -g
+LDFLAGS= -shared -O3
+CC=mpiicc
 
 all: ../lib/libpipes.so
 
 ../lib/libpipes.so: mo_pipes_c.c
+	$(CC) $(CFLAGS) mo_pipes_c.c -o $@ $(LDFLAGS)
 
 clean:
 	-rm ../lib/libpipes.so
 	-rm libpipes.o
-	-rm -rf __pycache__
