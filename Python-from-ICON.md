@@ -42,6 +42,8 @@ You need to run configuration and then make again to have it added.
 
 [Started by CA 13.09.22]
 
+#### Standalone YAC with python bindings
+
 Compile external `yaxt` v0.9.3.1:
 
 ```bash
@@ -83,7 +85,15 @@ python setup.py install
 make check
 ```
 
-Hello world example in `~/first_demo/ex4_f_py_hello_world`.
+#### Usage in ICON-AES
+
+Before submitting the runscript:
+
+```bash
+module load python
+LD_LIBRARY_PATH="/work/ka1176/caroline/gitlab/yaxt/src/.libs:$LD_LIBRARY_PATH"; export LD_LIBRARY_PATH;
+PYTHONPATH="/work/ka1176/caroline/gitlab/yac/python:$PYTHONPATH"; export PYTHONPATH;
+```
 
 ## Prepare the Fortran code (ICON-AES)
 
