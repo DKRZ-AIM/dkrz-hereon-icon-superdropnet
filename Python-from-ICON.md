@@ -85,7 +85,7 @@ python setup.py install
 make check
 ```
 
-#### Usage in ICON-AES
+#### YAC usage in ICON-AES
 
 Before submitting the runscript:
 
@@ -93,6 +93,19 @@ Before submitting the runscript:
 module load python
 LD_LIBRARY_PATH="/work/ka1176/caroline/gitlab/yaxt/src/.libs:$LD_LIBRARY_PATH"; export LD_LIBRARY_PATH;
 PYTHONPATH="/work/ka1176/caroline/gitlab/yac/python:$PYTHONPATH"; export PYTHONPATH;
+```
+
+There is a test setup, currently in `~icon-aes/run` that couples two python scripts.
+
+```
+--- Dummy-ICON ----- Python
+--- PUT ic2py  ----- GET ic2py -> v
+---     |      ----- v' = f(v)
+--- GET py2ic  ----- PUT py2ic(v')
+```
+
+```bash
+ /sw/spack-levante/openmpi-4.1.2-yfwe6t/bin/mpiexec -n 1 python3 yac_caroline_dummy.py : -n 1 python3 yac_caroline_test.py
 ```
 
 ## Prepare the Fortran code (ICON-AES)
