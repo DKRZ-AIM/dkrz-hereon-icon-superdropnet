@@ -40,8 +40,6 @@ You need to run configuration and then make again to have it added.
 
 ### MPI via YAC
 
-[Started by CA 13.09.22]
-
 #### Standalone YAC with python bindings
 
 Compile external `yaxt` v0.9.3.1:
@@ -85,15 +83,22 @@ python setup.py install
 make check
 ```
 
-#### Test YAC standalone
+#### YAC usage in ICON-AES
 
-Before submitting the runscript:
+Configure ICON, you may need to provide `-fPIC` as well. The keyword `--enable-python-bindings` is passed to `yac`.
 
 ```bash
-module load python
-LD_LIBRARY_PATH="/work/ka1176/caroline/gitlab/yaxt/src/.libs:$LD_LIBRARY_PATH"; export LD_LIBRARY_PATH;
-PYTHONPATH="/work/ka1176/caroline/gitlab/yac/python:$PYTHONPATH"; export PYTHONPATH;
+conda activate iconml
+./config/dkrz/levante.intel-2021.5.0 --enable-mlbridges --enable-coupling --enable-python-bindings
 ```
+
+Set the paths as follows [TODO: with ICON root dir]
+
+```bash
+PYTHONPATH="~icon-aes/externals/yac/python:$PYTHONPATH"; export PYTHONPATH;
+LD_LIBRARY_PATH="~icon-aes/externals/yaxt/src/.libs:$LD_LIBRARY_PATH"; export LD_LIBRARY_PATH;
+```
+##### Test setup
 
 There is a test setup, currently in `~icon-aes/run` that couples two python scripts.
 
@@ -108,13 +113,12 @@ There is a test setup, currently in `~icon-aes/run` that couples two python scri
  /sw/spack-levante/openmpi-4.1.2-yfwe6t/bin/mpiexec -n 1 python3 yac_caroline_dummy.py : -n 1 python3 yac_caroline_test.py
 ```
 
-#### YAC usage in ICON-AES
+##### ICON-Python coupled run setup
 
-Configure ICON the following way:
+Start the python component by explicitly configuring the `srun` command to 
 
 ```bash
-conda activate iconml
-./config/dkrz/levante.intel-2021.5.0 --enable-mlbridges --enable-coupling --enable-python-bindings
+${START} ${MODEL} : -n 1 python <my-python-program.py>
 ```
 
 ## Prepare the Fortran code (ICON-AES)
