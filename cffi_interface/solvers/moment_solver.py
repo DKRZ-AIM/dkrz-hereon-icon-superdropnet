@@ -36,6 +36,7 @@ class simulation_forecast:
     def test(self):
         self.setup()
         self.create_input()
+        self.model.eval()
         predictions_updates = self.model.test_step(torch.from_numpy(self.inputs))
         self.moment_calc(predictions_updates)
 
