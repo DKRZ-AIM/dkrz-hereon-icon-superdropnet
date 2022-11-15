@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<coupling
+        xmlns="http://www.w3schools.com"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.w3schools.com coupling.xsd">
+
+        <redirect redirect_of_root="false" redirect_stdout="false"/>
+
+        <components>
+	  <component id="1">
+	    <name>atmo</name>
+	    <model>ICON</model>
+            <simulated>atmosphere</simulated>
+            <transient_grid_refs>
+	      <transient_grid_ref id="1" transient_ref="1" grid_ref="1" collection_size="1" />
+	      <transient_grid_ref id="2" transient_ref="2" grid_ref="1" collection_size="1" />
+	    </transient_grid_refs>
+	  </component>
+
+	  <component id="2">
+	    <name>WarmRainML</name>
+	    <model></model>
+            <simulated></simulated>
+            <transient_grid_refs>
+	      <transient_grid_ref id="1" transient_ref="1" grid_ref="2" collection_size="1" />
+	      <transient_grid_ref id="2" transient_ref="2" grid_ref="2" collection_size="1" />
+	    </transient_grid_refs>
+	  </component>
+	</components>
+
+	<transients>
+          <transient id="1"  transient_standard_name="example_field_icon_to_python" />
+          <transient id="2"  transient_standard_name="example_field_python_to_icon" />
+	</transients>
+
+	<grids>
+          <grid id="1" alias_name="icon_atmos_grid" />
+	      <grid id="2" alias_name="warm_rain_grid" />
+	</grids>
+
+	<dates>
+          <start_date>2008-01-01T00:00:00</start_date>
+          <end_date>2008-01-01T02:00:00</end_date>
+          <calendar>360d</calendar>
+        </dates>
+        <timestep_unit>second</timestep_unit>
+
+	<couples>
+	  <couple>
+	    <component1 component_id="1" />
+        <component2 component_id="2" />
+
+	    <transient_couple transient_id="1">
+              <source component_ref="1" transient_grid_ref="1" />
+              <target                   transient_grid_ref="1" />
+              <timestep>
+                <source>20</source>
+                <target>20</target>
+                <coupling_period operation="average">20</coupling_period>
+                <source_timelag>0</source_timelag>
+                <target_timelag>0</target_timelag>
+              </timestep>
+              <mapping_on_source>true</mapping_on_source>
+              <interpolation_requirements>
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE" />
+                   <interpolation method="fixed_value" user_value="-666"/>
+              </interpolation_requirements>
+              <enforce_write_weight_file filename="">false</enforce_write_weight_file>
+        </transient_couple>
+	    <transient_couple transient_id="2">
+              <source component_ref="2" transient_grid_ref="2" />
+              <target                   transient_grid_ref="2" />
+              <timestep>
+                <source>20</source>
+                <target>20</target>
+                <coupling_period operation="average">20</coupling_period>
+                <source_timelag>0</source_timelag>
+                <target_timelag>0</target_timelag>
+              </timestep>
+              <mapping_on_source>true</mapping_on_source>
+              <interpolation_requirements>
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE" />
+                   <interpolation method="fixed_value" user_value="-666"/>
+              </interpolation_requirements>
+              <enforce_write_weight_file filename="">false</enforce_write_weight_file>
+        </transient_couple>
+	  </couple>
+	</couples>
+</coupling>
