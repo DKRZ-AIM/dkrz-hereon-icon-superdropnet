@@ -83,6 +83,18 @@ python setup.py install
 make check
 ```
 
+There is a test setup that couples two python scripts.
+
+```bash
+--- Dummy-ICON ----- Python
+--- PUT ic2py  ----- GET ic2py -> v
+---     |      ----- v' = f(v)
+--- GET py2ic  ----- PUT py2ic(v')
+
+cd ~2022-03-hereon-python-fortran-bridges/yac_standalone_demo
+sh run.sh
+```
+
 #### YAC usage in ICON-AES
 
 Configure ICON, you may need to provide `-fPIC` as well. The keyword `--enable-python-bindings` is passed to `yac`.
@@ -92,32 +104,18 @@ conda activate iconml
 ./config/dkrz/levante.intel-2021.5.0 --enable-mlbridges --enable-coupling --enable-python-bindings
 ```
 
-Set the paths as follows [TODO: with ICON root dir]
+Set the paths as follows (expand `~icon-aes` to your root directory)
 
 ```bash
 PYTHONPATH="~icon-aes/externals/yac/python:$PYTHONPATH"; export PYTHONPATH;
 LD_LIBRARY_PATH="~icon-aes/externals/yaxt/src/.libs:$LD_LIBRARY_PATH"; export LD_LIBRARY_PATH;
 
 # i needed to add these as well
-(iconml) [k202141@levante5 run]$ LD_LIBRARY_PATH="/sw/spack-levante/mambaforge-4.11.0-0-Linux-x86_64-sobz6z/lib/:$LD_LIBRARY_PATH"; export LD_LIBRARY_PATH;
-(iconml) [k202141@levante5 run]$ LD_LIBRARY_PATH="/sw/spack-levante/eccodes-2.26.0-o6jniw/lib64/:$LD_LIBRARY_PATH"; export LD_LIBRARY_PATH;
-```
-##### Test setup
-
-There is a test setup, currently in `~icon-aes/run` that couples two python scripts.
-
-```
---- Dummy-ICON ----- Python
---- PUT ic2py  ----- GET ic2py -> v
----     |      ----- v' = f(v)
---- GET py2ic  ----- PUT py2ic(v')
+LD_LIBRARY_PATH="/sw/spack-levante/mambaforge-4.11.0-0-Linux-x86_64-sobz6z/lib/:$LD_LIBRARY_PATH"; export LD_LIBRARY_PATH;
+LD_LIBRARY_PATH="/sw/spack-levante/eccodes-2.26.0-o6jniw/lib64/:$LD_LIBRARY_PATH"; export LD_LIBRARY_PATH;
 ```
 
-```bash
- /sw/spack-levante/openmpi-4.1.2-yfwe6t/bin/mpiexec -n 1 python3 yac_caroline_dummy.py : -n 1 python3 yac_caroline_test.py
-```
-
-##### ICON-Python coupled run setup
+#### ICON-Python coupled run setup
 
 Start the python component by explicitly configuring the `srun` command to 
 
