@@ -85,7 +85,7 @@ python setup.py install
 make check
 ```
 
-#### YAC usage in ICON-AES
+#### Test YAC standalone
 
 Before submitting the runscript:
 
@@ -106,6 +106,15 @@ There is a test setup, currently in `~icon-aes/run` that couples two python scri
 
 ```bash
  /sw/spack-levante/openmpi-4.1.2-yfwe6t/bin/mpiexec -n 1 python3 yac_caroline_dummy.py : -n 1 python3 yac_caroline_test.py
+```
+
+#### YAC usage in ICON-AES
+
+Configure ICON the following way:
+
+```bash
+conda activate iconml
+./config/dkrz/levante.intel-2021.5.0 --enable-mlbridges --enable-coupling --enable-python-bindings
 ```
 
 ## Prepare the Fortran code (ICON-AES)
