@@ -97,6 +97,10 @@ Set the paths as follows [TODO: with ICON root dir]
 ```bash
 PYTHONPATH="~icon-aes/externals/yac/python:$PYTHONPATH"; export PYTHONPATH;
 LD_LIBRARY_PATH="~icon-aes/externals/yaxt/src/.libs:$LD_LIBRARY_PATH"; export LD_LIBRARY_PATH;
+
+# i needed to add these as well
+(iconml) [k202141@levante5 run]$ LD_LIBRARY_PATH="/sw/spack-levante/mambaforge-4.11.0-0-Linux-x86_64-sobz6z/lib/:$LD_LIBRARY_PATH"; export LD_LIBRARY_PATH;
+(iconml) [k202141@levante5 run]$ LD_LIBRARY_PATH="/sw/spack-levante/eccodes-2.26.0-o6jniw/lib64/:$LD_LIBRARY_PATH"; export LD_LIBRARY_PATH;
 ```
 ##### Test setup
 
