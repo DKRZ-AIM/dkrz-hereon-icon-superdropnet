@@ -9,8 +9,14 @@ Third project milestone: Neural network inference with a pretrained model at run
 We forked the ICON-AES master and created a new branch called `icon-aes-ml-bridges`. Obtain the code here:
 
 ```bash
-git clone --recursive git@gitlab.dkrz.de:k202141/icon-aes.git
-git checkout icon-aes-ml-bridges
+git clone --recursive -b icon-aes-ml-bridges git@gitlab.dkrz.de:k202141/icon-aes.git
+```
+
+[2022-10-21] TODO: `autoconf` tools were missing from subrepository. Add them here:
+
+```bash
+cd externals/mlbridges
+automake --add-missing
 ```
 
 Configure ICON to use the ML bridge as an external module:
@@ -38,8 +44,10 @@ conda env create --file docker/kernel-env-cuda11.yaml
 ```bash
 conda activate iconml
 pip install pytorch_lightning
-pip install torch==1.10.1+cu113
+pip install torch==1.11.0 torchvision==0.12.0 torchaudio==0.11.0
 ```
+
+Fallback: install current stable version with CUDA toolkit 11.3 from https://pytorch.org/get-started/locally/.
 
 ### Use embedded Python (CFFI) bridge
 
@@ -52,6 +60,15 @@ source ~/.bashrc
 conda activate iconml
 
 export PYTHONPATH=${PWD}/externals/mlbridges/cffi_interface
+```
+
+### Test 
+
+To see whether your installation was successful, run the bubble experiments:
+
+```bash
+./make_runscripts aes_bubble_2mom_fortran
+./make_runscripts aes_bubble_2mom_cffi
 ```
 
 ### Standalone usage
@@ -90,8 +107,8 @@ src/configure_model/mo_mlbridges_config.f90   # configuration
 The example script to run the warm bubble experiment with a bridge is located in 
 
 ```bash
-run/exp.atm_mlbridges_warm_bubble_fortran # for the fortran case
-run/exp.atm_mlbridges_warm_bubble_cffi    # for the cffi case
+run/exp.aes_bubble_2mom_fortran # for the fortran case
+run/exp.aes_bubble_2mom_cffi    # for the cffi case
 ```
 
 Choose the bridge:
