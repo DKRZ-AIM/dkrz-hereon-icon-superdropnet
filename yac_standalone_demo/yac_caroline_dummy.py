@@ -50,6 +50,9 @@ print(f'{routine:s} Field size py2ic: {field_py2ic.size}')
 print(f'{routine:s} Collection size ic2py: {field_ic2py.collection_size}')
 print(f'{routine:s} Collection size py2ic: {field_py2ic.collection_size}')
 
+print(f'{routine:s} Field ID field_ic2py: {field_ic2py.field_id}')
+print(f'{routine:s} Field ID field_py2ic: {field_py2ic.field_id}')
+
 info = -1
 
 time = yac.start_datetime

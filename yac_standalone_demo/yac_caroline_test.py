@@ -40,6 +40,9 @@ field_py2ic = Field.create("example_field_python_to_icon", comp, points)
 
 print(f'{routine:s}: Created fields for YAC')
 
+print(f'{routine:s} Field ID field_ic2py: {field_ic2py.field_id}')
+print(f'{routine:s} Field ID field_py2ic: {field_py2ic.field_id}')
+
 yac.search()
 
 print(f'{routine:s}: Finished YAC search')
