@@ -2,7 +2,7 @@
 
 <coupling
         xmlns="http://www.w3schools.com"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:xsi="http://www.w3.org/2/XMLSchema-instance"
         xsi:schemaLocation="http://www.w3schools.com coupling.xsd">
 
         <redirect redirect_of_root="false" redirect_stdout="false"/>
@@ -63,14 +63,13 @@
               <timestep>
                 <source>20</source>
                 <target>20</target>
-                <coupling_period operation="average">20</coupling_period>
+                <coupling_period operation="none">20</coupling_period>
                 <source_timelag>0</source_timelag>
                 <target_timelag>0</target_timelag>
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE" />
-                   <interpolation method="fixed_value" user_value="-666"/>
+		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -80,14 +79,13 @@
               <timestep>
                 <source>20</source>
                 <target>20</target>
-                <coupling_period operation="average">20</coupling_period>
+                <coupling_period operation="none">20</coupling_period>
                 <source_timelag>0</source_timelag>
                 <target_timelag>0</target_timelag>
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE" />
-                   <interpolation method="fixed_value" user_value="-666"/>
+		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -97,14 +95,13 @@
               <timestep>
                 <source>20</source>
                 <target>20</target>
-                <coupling_period operation="average">20</coupling_period>
-                <source_timelag>0</source_timelag>
-                <target_timelag>0</target_timelag>
+                <coupling_period operation="none">20</coupling_period>
+                <source_timelag></source_timelag>
+                <target_timelag></target_timelag>
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE" />
-                   <interpolation method="fixed_value" user_value="-666"/>
+		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -114,14 +111,13 @@
               <timestep>
                 <source>20</source>
                 <target>20</target>
-                <coupling_period operation="average">20</coupling_period>
-                <source_timelag>0</source_timelag>
-                <target_timelag>0</target_timelag>
+                <coupling_period operation="none">20</coupling_period>
+                <source_timelag></source_timelag>
+                <target_timelag></target_timelag>
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE" />
-                   <interpolation method="fixed_value" user_value="-666"/>
+		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
