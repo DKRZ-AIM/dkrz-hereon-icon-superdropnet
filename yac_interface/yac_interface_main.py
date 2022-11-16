@@ -1,72 +1,141 @@
 #!/usr/bin/env python3
 
 '''
-Test setup for coupling a Python routine to ICON 
-via YAC
+Main python program for running ICON-Atmo and
+the ML component in coupled mode via yac
 
 Fields:
 (1) example_field_icon_to_python (here: get)
 (2) example_field_python_to_icon (here: put)
+(3) moments_ic2py
+(4) moments_py2ic
 '''
 
 from yac import YAC, Field, UnstructuredGrid, Location
 import xarray as xr
 import numpy as np
 import time
+import sys
 
-routine = '*** PYTHON yac_caroline_test'
+from datetime import datetime, timedelta
 
-yac = YAC("coupling_aes_bubble_2mom_yac.xml", "coupling_aes_bubble_2mom_yac.xsd")
-comp = yac.def_comp(f"WarmRainML")
+# ICON logs to stderr
+sys.stdout = sys.stderr
 
-f = xr.open_dataset('/pool/data/ICON/grids/public/mpim/Torus_Triangles_20x22_5000m/Torus_Triangles_20x22_5000m.nc')
+import torch
 
-vertices_per_cell = f.dims["nv"]
-nbr_cells = f.dims["cell"]
+'''
+YAC events (info) from yac
+'''
+yac_action_type = dict(
+  NONE               = 0,
+  COUPLING           = 1,
+  RESTART            = 2,
+  GET_FOR_RESTART    = 3,
+  PUT_FOR_RESTART    = 4,
+  GET_FOR_CHECKPOINT = 5,
+  PUT_FOR_CHECKPOINT = 6,
+  OUT_OF_BOUND       = 7,
+)
 
-vtx = np.array([f["clon_vertices"].values.ravel(), f["clat_vertices"].values.ravel()])
-vtx, cellidx = np.unique(vtx, return_inverse=True, axis=1)
+def main(args):
+    routine = 'yac_interface_main.py'
+    print(f'{routine:s} starts execution')
+    
+    yac = YAC("coupling.xml", "coupling.xsd")
+    comp = yac.def_comp(f"WarmRainML")
+    
+    f = xr.open_dataset('/pool/data/ICON/grids/public/mpim/Torus_Triangles_20x22_5000m/Torus_Triangles_20x22_5000m.nc')
 
-grid = UnstructuredGrid("warm_rain_grid", np.ones(nbr_cells)*vertices_per_cell,
-                        vtx[0,:], vtx[1,:], cellidx)
+    print(f'{routine:s} Torch CUDA is available:', torch.cuda.is_available())
+    
+    vertices_per_cell = f.dims["nv"]
+    nbr_cells = f.dims["cell"]
+    
+    vtx = np.array([f["clon_vertices"].values.ravel(), f["clat_vertices"].values.ravel()])
+    vtx, cellidx = np.unique(vtx, return_inverse=True, axis=1)
+    
+    grid = UnstructuredGrid("warm_rain_grid", np.ones(nbr_cells)*vertices_per_cell,
+                            vtx[0,:], vtx[1,:], cellidx)
+    
+    
+    points = grid.def_points(Location.CELL, f["clon"], f["clat"])
+    
+    print(f'{routine:s}: Created grid points for YAC')
+    
+    example_field_ic2py = Field.create("example_field_icon_to_python", comp, points)
+    example_field_py2ic = Field.create("example_field_python_to_icon", comp, points)
+    moments_ic2py = Field.create("moments_ic2py", comp, points)
+    moments_py2ic = Field.create("moments_py2ic", comp, points)
 
+    for f in [example_field_ic2py, example_field_py2ic, moments_ic2py, moments_py2ic]:
+        print(f'{routine:s} Field {f.name} with ID {f.field_id}')
+    
+    yac.search()
+    
+    print(f'{routine:s}: Finished YAC search')
+    
+    info = -1
+    
+    test_buffer = np.zeros([1, example_field_ic2py.size])
+    test_buffer -= 1
+    
+    test_buffer, info = example_field_ic2py.get(test_buffer)
+    
+    assert np.sum(test_buffer) == 880 * 879 / 2
+    
+    test_buffer += 1.0
+    
+    assert np.sum(test_buffer) == 880 * 881 / 2
+    
+    example_field_py2ic.put(test_buffer)
+    
+    print(f'{routine:s}: Done with put/get example field exchange. Info = {info}')
 
-points = grid.def_points(Location.CELL, f["clon"], f["clat"])
+    # TODO pass number of steps in coupling config
+    # Calculation
+    # -----------
+    # Grid cells are divided in blocks of nproma
+    # --> number of horizontal slices is ngrid // nproma + 1
+    # where the last slice may have < nproma entries
+    #
+    # Horizontally, the ikslice contains one single level
+    # 70 levels, no call in the level 1
+    #
+    # --> n_ikslice steps in each time step
+    nproma = 32
+    ngrid  = 880
+    nlev   = 70
+    n_ikslice = (ngrid // nproma + 1) * (nlev - 1)
 
-print(f'{routine:s}: Created grid points for YAC')
+    # TODO pass the numer of time loop steps in coupling config
+    # Calculation
+    # -----------
+    # From tstart, add tstep until > tend
 
-field_ic2py = Field.create("example_field_icon_to_python", comp, points)
-field_py2ic = Field.create("example_field_python_to_icon", comp, points)
+    print(f'{routine:s}: Start date {yac.start_datetime} / End date {yac.end_datetime}')
 
-print(f'{routine:s}: Created fields for YAC')
+    st0 = yac.start_datetime
+    stn = yac.end_datetime
+    
+    # numeric values
+    nt0 = datetime.fromisoformat(st0)
+    ntn = datetime.fromisoformat(stn)
 
-yac.search()
+    ndt = timedelta(seconds=20)
+    print(f'{routine:s} Hard coded time delta {ndt}')
 
-print(f'{routine:s}: Finished YAC search')
+    nti = nt0 # loop time
 
-info = -1
+    while nti < ntn:
+        for i in range(n_ikslice):
+            mom_buffer, info = moments_ic2py.get()
+            print(f'{routine:s} mom_buffer.shape = ', mom_buffer.shape, info)
+            assert info != yac_action_type['OUT_OF_BOUND'], print("out-of-bound-event")
+            moments_py2ic.put(mom_buffer)
+        nti = nti+ ndt
+        print(f'{routine:s} ml component time step {nti}')
 
-received_values = np.zeros([1, field_ic2py.size])
-received_values -= 1
+if __name__=='__main__':
+    main(sys.argv[1:])
 
-received_values, info = field_ic2py.get(received_values)
-#received_values, info = field_ic2py.get()
-print(f'{routine:s}: ic2py get values done - shape: {received_values.shape}')
-time.sleep(10)
-
-print(routine, str(received_values[-10:,-1]))
-
-assert np.sum(received_values) == 880 * 879 / 2
-
-print(f'{routine:s}: mimic python code execution - sleep(3)')
-
-time.sleep(3)
-
-received_values += 1.0
-
-assert np.sum(received_values) == 880 * 881 / 2
-
-field_py2ic.put(received_values)
-print(f'{routine:s}: py2ic put values done - shape: {received_values.shape}')
-
-print(f'{routine:s}: Done with info = {info}')
