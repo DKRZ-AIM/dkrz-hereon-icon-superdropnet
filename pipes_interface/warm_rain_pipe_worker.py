@@ -4,6 +4,8 @@ import argparse
 import subprocess
 import socket
 
+from warm_rain import i_warm_rain_nn
+
 pipe_in_name_prefix = "/tmp/esmdemopipe_out" 
 pipe_out_name_prefix = "/tmp/esmdemopipe_in" 
 
@@ -113,25 +115,18 @@ class PipeContext(object):
     """
 
     def exec_warm_rain(self):
-        # TODO: implement NN here
-        return
-        
         # read
-        jg = int.from_bytes(self.pipe_in.read(4), sys.byteorder)
-        jcs = int.from_bytes(self.pipe_in.read(4), sys.byteorder)
-        jce = int.from_bytes(self.pipe_in.read(4), sys.byteorder)
-        kbdim = int.from_bytes(self.pipe_in.read(4), sys.byteorder)
-        air_mass = np.frombuffer(self.pipe_in.read(kbdim*8), dtype="float64")
-        clat = np.frombuffer(self.pipe_in.read(kbdim*8), dtype="float64")
+        dim_i = int.from_bytes(self.pipe_in.read(4), sys.byteorder)
+        dim_k = int.from_bytes(self.pipe_in.read(4), sys.byteorder)
+        n_moments = int.from_bytes(self.pipe_in.read(4), sys.byteorder)
+        current_moments = np.frombuffer(self.pipe_in.read(dim_i*dim_k*n_moments*8), dtype="float64")
+        current_moments = current_moments.reshape(dim_i, dim_k, n_moments)
         # calculate
-        jcs -= 1
-        cond = (self.emi_lat_s <= clat[jcs:jce]) & (clat[jcs:jce] <= self.emi_lat_n)
-        dxdt = np.empty_like(air_mass)
-        dxdt[jcs:jce][cond] = self.emi_flux / air_mass[jcs:jce][cond]
-        dxdt[jcs:jce][~cond] = 0.0
+        new_moments, return_state = i_warm_rain_nn(dim_i, dim_k, n_moments, current_moments)
         # write
-        raw_out = dxdt.tobytes()
+        raw_out = new_moments.tobytes()
         self.pipe_out.write(raw_out)
+        self.pipe_out.write(return_state.to_bytes(4, byteorder=sys.byteorder))
         self.pipe_out.flush()
 
 

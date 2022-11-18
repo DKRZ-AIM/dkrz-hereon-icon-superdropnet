@@ -5,7 +5,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <stdlib.h>
-#include <mpi.h>
+//#include <mpi.h>
 #include <errno.h>
 #include <stdbool.h>
 
@@ -30,9 +30,10 @@ void ip_init_pipes(int* shm_rank, int* shm_size) {
 		printf("This rank will send the stop command later.\n");
 		send_terminate = true;
 		printf("This rank also launches the worker. Launching now...\n");
-		snprintf(cmd, 200, "python ${basedir}/src/atm_phy_echam/pipe_worker.py -s %s -n %i --create-pipes --remove-pipes&", job_id, *shm_size);
+		snprintf(cmd, 200, "python ${basedir}/externals/mlbridges/pipes_interface/warm_rain_pipe_worker.py -s %s -n %i --create-pipes --remove-pipes&", job_id, *shm_size);
 		printf("worker launch command: %s\n", cmd);
 		system(cmd); 
+		sleep(2);
 	}
 	// create file (fifo) names from SLURM JOB ID
 	snprintf(pipe_in_fn, 200, "%s_%s_%i.tmp", PIPE_IN_PATH_PREFIX, job_id, *shm_rank);
@@ -64,6 +65,8 @@ void ip_init_pipes(int* shm_rank, int* shm_size) {
 		printf("Pipe_in open failed for pipes %i with errno %i\n", *shm_rank, errno);
 	}
 	printf("Pipes %i opened in ICON. pipe_out: %i, pipe_in: %i\n", *shm_rank, pipe_out, pipe_in);
+	
+	
 	printf("Sending ping through pipe %i\n", *shm_rank);
 	// send a ping back and forth to test communication
 	int s_command = 10;
@@ -103,7 +106,18 @@ void ip_config_pipes(double* emi_flux, double* emi_lat_n, double* emi_lat_s) {
 */
 
 void ip_warm_rain_pipes_nn (int* dim_i, int* dim_k, int* n_moments, double* current_moments, double* new_moments, char* trained_model_path, int* pipes_return_state) {
-  // TODO: implement
+	// TODO: implement
+	// current moments and new moments:
+	// new_moments(dim_i, dim_k, dim_m)
+	int n = 1;
+	write(pipe_out, &n, 4);  // case indicator
+	write(pipe_out, dim_i, 4); 
+	write(pipe_out, dim_k, 4);
+	write(pipe_out, n_moments, 4);
+	write(pipe_out, current_moments, *dim_i**dim_k**n_moments*8);
+	// new_moments and return_state will be returned
+	n = read(pipe_in, new_moments, *dim_i**dim_k**n_moments*8);
+	n = read(pipe_in, pipes_return_state, 4);
 }
 
 /*
