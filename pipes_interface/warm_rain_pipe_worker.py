@@ -115,14 +115,24 @@ class PipeContext(object):
     """
 
     def exec_warm_rain(self):
+        #print_it = False
         # read
         dim_i = int.from_bytes(self.pipe_in.read(4), sys.byteorder)
         dim_k = int.from_bytes(self.pipe_in.read(4), sys.byteorder)
         n_moments = int.from_bytes(self.pipe_in.read(4), sys.byteorder)
         current_moments = np.frombuffer(self.pipe_in.read(dim_i*dim_k*n_moments*8), dtype="float64")
-        current_moments = current_moments.reshape(dim_i, dim_k, n_moments)
+        current_moments = current_moments.reshape(n_moments, dim_k, dim_i)
         # calculate
+        #if current_moments.any():
+        #    print_it = True
+        #if print_it:
+        #    print("Current moments, pipe_index %s: %s" % (self.pipe_index, current_moments))
+        #moments_shape = current_moments.shape
+        #print("PWK: moments_shape: %s" % (moments_shape,))
         new_moments, return_state = i_warm_rain_nn(dim_i, dim_k, n_moments, current_moments)
+        #print("PWK: new_moments_shape: %s" % (new_moments.shape,))
+        #if print_it:
+        #    print("New moments, pipe_index %s: %s" % (self.pipe_index, new_moments))
         # write
         raw_out = new_moments.tobytes()
         self.pipe_out.write(raw_out)

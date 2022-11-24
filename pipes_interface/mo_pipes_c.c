@@ -105,18 +105,34 @@ void ip_config_pipes(double* emi_flux, double* emi_lat_n, double* emi_lat_s) {
 }
 */
 
-void ip_warm_rain_pipes_nn (int* dim_i, int* dim_k, int* n_moments, double* current_moments, double* new_moments, char* trained_model_path, int* pipes_return_state) {
-	// TODO: implement
+void ip_warm_rain_pipes_nn (int *dim_i, int *dim_k, int *n_moments, double current_moments[*n_moments][*dim_k][*dim_i], double new_moments[*n_moments][*dim_k][*dim_i], char *trained_model_path, int *pipes_return_state) {
 	// current moments and new moments:
 	// new_moments(dim_i, dim_k, dim_m)
 	int n = 1;
+	
 	write(pipe_out, &n, 4);  // case indicator
 	write(pipe_out, dim_i, 4); 
 	write(pipe_out, dim_k, 4);
 	write(pipe_out, n_moments, 4);
-	write(pipe_out, current_moments, *dim_i**dim_k**n_moments*8);
+	
+	// typical values: n_moments is 4; dim_k is 1; dim_i is 7 or 8
+
+	// write out current_moments according to lecture; avoids possible F->C memory fragmentation issues
+	int i, k, j;
+	for (j = 0; j < *n_moments; j++) {
+		for (k = 0; k < *dim_k; k++) {
+			write(pipe_out, current_moments[j][k], *dim_i*8);
+		}
+	}
+	
 	// new_moments and return_state will be returned
-	n = read(pipe_in, new_moments, *dim_i**dim_k**n_moments*8);
+	//n = read(pipe_in, new_moments, *dim_i**dim_k**n_moments*8);
+
+	for (j = 0; j < *n_moments; j++) {
+		for (k = 0; k < *dim_k; k++) {
+			n = read(pipe_in, new_moments[j][k], *dim_i*8);
+		}
+	}
 	n = read(pipe_in, pipes_return_state, 4);
 }
 
