@@ -51,7 +51,7 @@ void ip_init_pipes(int* shm_rank, int* shm_size) {
 			if (errno != 2) {
 				printf("Pipe_out open failed for pipes %i with errno %i\n", *shm_rank, errno);
 			}
-			printf("Pipe %i not ready yet - waiting...\n", *shm_rank);
+			// printf("Pipe %i not ready yet - waiting...\n", *shm_rank);
 			sleep(1);
 		}
 		else {
