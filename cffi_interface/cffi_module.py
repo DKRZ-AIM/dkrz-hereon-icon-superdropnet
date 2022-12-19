@@ -13,6 +13,32 @@ from solvers.moment_solver import simulation_forecast
 
 import models.plModel as plm
 
+# initialization code
+# TODO execute this in the load_pretrained_model function
+inputs_mean = np.asarray([[0.0002621447787797809, 51128093.51524663,
+                0.0003302890736022656, 5194.251154308974,
+                0.5566250557023539, 4.8690682855354596e-12,
+                0.0005924338523807814, 1.0848856769219835e-05,
+                2.0193905073168525]])
+
+inputs_std = np.asarray([[0.0003865559774857862, 86503916.13808665,
+                0.00041369562655559327, 19127.947970150628,
+                0.46107363560819126, 3.873092422358367e-12,
+                0.00042887039563850967, 1.920461805101116e-06,
+                1.3098055608321857]])
+
+updates_mean = np.asarray([[-8.527820407019667e-08, -13961.459867976775,
+                8.527678028525988e-08, 0.010221931180955181]])
+
+updates_std = np.asarray([[3.600841676033818e-07, 55095.904252313965,
+                3.6008419243808887e-07, 68.6678997504877]])
+
+pl_model = plm.LightningModel(inputs_mean=inputs_mean, inputs_std=inputs_std,
+                            updates_mean=updates_mean, updates_std=updates_std) 
+
+model_path = '/work/ka1176/caroline/gitlab/icon-aes/externals/mlbridges/cffi_interface/trained_models/best_model.ckpt'
+trained_model = pl_model.load_from_checkpoint(model_path)
+# end of initialization code
 
 @ffi.def_extern()
 def i_check_interface(ptr_istate):
@@ -25,11 +51,6 @@ def i_check_interface(ptr_istate):
     checked on the Fortran side
     '''
     ptr_istate[0] = 1
-
-@ffi.def_extern()
-def i_check_interface():
-    '''function to check the interface functionality (stub)'''
-    print("Check interface")
 
 @ffi.def_extern()
 def i_get_emi_number(n):
@@ -103,6 +124,60 @@ def i_add_emi_echam_ttr(ptr_jg, ptr_jcs, ptr_jce,
     dxdt[jcs:jce][~cond] = 0.0
 
 @ffi.def_extern()
+def i_load_pretrained_model(ptr_handle, ptr_trained_model_path):
+    """
+    Load a pretrained model and attach it to a handle
+    to keep it alive throughout execution
+
+    Parameters:
+    ptr_handle : the handle
+    ptr_trained_model_path : absolute path to trained model (str)
+    """
+
+    inputs_mean = np.asarray([[0.0002621447787797809, 51128093.51524663,
+                    0.0003302890736022656, 5194.251154308974,
+                    0.5566250557023539, 4.8690682855354596e-12,
+                    0.0005924338523807814, 1.0848856769219835e-05,
+                    2.0193905073168525]])
+
+    inputs_std = np.asarray([[0.0003865559774857862, 86503916.13808665,
+                    0.00041369562655559327, 19127.947970150628,
+                    0.46107363560819126, 3.873092422358367e-12,
+                    0.00042887039563850967, 1.920461805101116e-06,
+                    1.3098055608321857]])
+
+    updates_mean = np.asarray([[-8.527820407019667e-08, -13961.459867976775,
+                    8.527678028525988e-08, 0.010221931180955181]])
+
+    updates_std = np.asarray([[3.600841676033818e-07, 55095.904252313965,
+                    3.6008419243808887e-07, 68.6678997504877]])
+
+
+    #NN Model initalization
+    pl_model = plm.LightningModel(inputs_mean=inputs_mean, inputs_std=inputs_std,
+                            updates_mean=updates_mean, updates_std=updates_std) 
+
+    model_path = ffi.string(ptr_trained_model_path).decode("UTF-8")
+    trained_model = pl_model.load_from_checkpoint(model_path)
+
+    handle = ffi.new_handle(trained_model)
+    #ptr_handle[:] = ffi.new_handle(trained_model)
+
+@ffi.def_extern()
+def i_retrieve_model_from_handle(ptr_handle):
+    """
+    Test function to retrieve an already loaded pretrained
+    model from handle
+
+    Parameters:
+    ptr_handle : the handle
+    """
+
+    retrieved_model = ffi.from_handle(ptr_handle[:])
+
+
+
+@ffi.def_extern()
 def i_warm_rain_nn(ptr_dim_i, ptr_dim_k, ptr_n_moments, 
                    ptr_current_moments, ptr_new_moments,
                    ptr_trained_model_path,
@@ -124,7 +199,8 @@ def i_warm_rain_nn(ptr_dim_i, ptr_dim_k, ptr_n_moments,
        0 : nothing happened
        1 : input moments were zero, no update
        2 : ML inference update
-       3 : error code (encountered None value in current moments)
+       3 : error code (encountered None value in input moments)
+       4 : error code (encountered None value in output moments)
 
     """
 
@@ -141,31 +217,10 @@ def i_warm_rain_nn(ptr_dim_i, ptr_dim_k, ptr_n_moments,
     new_moments     = transfer_arrays.asarray(ffi, ptr_new_moments, shape=shape)
 
     new_moments[:,:,:] = 0.0
-    
-    inputs_mean = np.asarray([[0.0002621447787797809, 51128093.51524663,
-                    0.0003302890736022656, 5194.251154308974,
-                    0.5566250557023539, 4.8690682855354596e-12,
-                    0.0005924338523807814, 1.0848856769219835e-05,
-                    2.0193905073168525]])
 
-    inputs_std = np.asarray([[0.0003865559774857862, 86503916.13808665,
-                    0.00041369562655559327, 19127.947970150628,
-                    0.46107363560819126, 3.873092422358367e-12,
-                    0.00042887039563850967, 1.920461805101116e-06,
-                    1.3098055608321857]])
-
-    updates_mean = np.asarray([[-8.527820407019667e-08, -13961.459867976775,
-                    8.527678028525988e-08, 0.010221931180955181]])
-
-    updates_std = np.asarray([[3.600841676033818e-07, 55095.904252313965,
-                    3.6008419243808887e-07, 68.6678997504877]])
-
-    #NN Model initalization
-    pl_model = plm.LightningModel(inputs_mean=inputs_mean, inputs_std=inputs_std,
-                            updates_mean=updates_mean, updates_std=updates_std) 
-
-    model_path = ffi.string(ptr_trained_model_path).decode("UTF-8")
-    trained_model = pl_model.load_from_checkpoint(model_path)
+    # TODO retrieve trained_model from handle
+    # currently it is initialized at the top of the module
+    # and persists
 
     # ML inference only if input moments are non zero
     if np.all(current_moments == 0.0):
@@ -179,12 +234,15 @@ def i_warm_rain_nn(ptr_dim_i, ptr_dim_k, ptr_n_moments,
     else:
         # current_moments shape: moments x dim_k x dim_i
         # solver expects:        dim_ik  x moments
+        # Solver gives (fc_moments): dim_ik x moments
+        #We change output to the correct shape and save in new_moments
+        
         moments_shape = current_moments.shape
-        swapped_moments = np.swapaxes(current_moments.reshape(4,-1), 0, 1)
-        # new_moments[:, :, :] = new_forecast.moments_out[0, :, :, :]
-
+        swapped_moments = np.swapaxes(current_moments,0, 2).reshape(-1, 4)
+        
         new_forecast = simulation_forecast(swapped_moments, trained_model,
-                                           inputs_mean, inputs_std)
+                                           inputs_mean, inputs_std,
+                                           updates_mean, updates_std)
         new_forecast.test()
 
         fc_moments = np.swapaxes(new_forecast.moments_out, 0, 1)
@@ -194,8 +252,11 @@ def i_warm_rain_nn(ptr_dim_i, ptr_dim_k, ptr_n_moments,
 
         ptr_istate[0] = 2
 
+        if np.any(np.isnan(new_moments)) or np.any(new_moments>1e20):
+            ptr_istate[0] = 4
+
 @ffi.def_extern()
-def i_warm_rain_py(ptr_dim_i, ptr_dim_k, ptr_n_moments, 
+def i_checksum(ptr_dim_i, ptr_dim_k, ptr_n_moments, 
                    ptr_current_moments, ptr_new_moments,
                    ptr_istate):
     """
@@ -213,8 +274,8 @@ def i_warm_rain_py(ptr_dim_i, ptr_dim_k, ptr_n_moments,
 
     ptr_istate : flag to indicate state
        0 : nothing happened
-       4 : successful classic code
-       5 : not successful classic code
+       4 : successful checksum code
+       5 : not successful checksum code
 
     """
 

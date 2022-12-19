@@ -38,9 +38,90 @@ c_binding.d: icon.mk
 
 You need to run configuration and then make again to have it added.
 
-### MPI
+### MPI via YAC
 
-TODO
+#### Standalone YAC with python bindings
+
+Compile external `yaxt` v0.9.3.1:
+
+```bash
+./configure \
+--prefix="/work/ka1176/caroline/gitlab/yaxt" \
+FC=/sw/spack-levante/openmpi-4.1.2-yfwe6t/bin/mpif90 \
+CC=/sw/spack-levante/openmpi-4.1.2-yfwe6t/bin/mpicc  \
+CFLAGS='-g -O2' \
+FCFLAGS='-g -O2' \
+MPI_LAUNCH=/sw/spack-levante/openmpi-4.1.2-yfwe6t/bin/mpiexec
+```
+
+Compile external `yac`:
+
+```bash
+./configure \
+--prefix="/work/ka1176/caroline/gitlab/yac" \
+--disable-mpi-checks \
+--with-yaxt-root="/work/ka1176/caroline/gitlab/yaxt" \
+--with-yaxt-include="/work/ka1176/caroline/gitlab/yaxt/inst_headers" \
+--with-yaxt-lib="/work/ka1176/caroline/gitlab/yaxt/src/.libs" \
+--with-xml2-include=/usr/include/libxml2 \
+--enable-python-bindings \
+FC=/sw/spack-levante/openmpi-4.1.2-yfwe6t/bin/mpif90 \
+CC=/sw/spack-levante/openmpi-4.1.2-yfwe6t/bin/mpicc  \
+CFLAGS='-g -O2' \
+FCFLAGS='-g -O2' \
+MPI_LAUNCH=/sw/spack-levante/openmpi-4.1.2-yfwe6t/bin/mpiexec
+
+make
+```
+
+Install python bindings - for me the check suite was completed when I used my own conda environment (including `mpi4py, cython`) and ran
+
+```bash
+conda activate iconml
+cd ~yac/python
+python setup.py install
+make check
+```
+
+There is a test setup that couples two python scripts.
+
+```bash
+--- Dummy-ICON ----- Python
+--- PUT ic2py  ----- GET ic2py -> v
+---     |      ----- v' = f(v)
+--- GET py2ic  ----- PUT py2ic(v')
+
+cd ~2022-03-hereon-python-fortran-bridges/yac_standalone_demo
+sh run.sh
+```
+
+#### YAC usage in ICON-AES
+
+Configure ICON, you may need to provide `-fPIC` as well. The keyword `--enable-python-bindings` is passed to `yac`.
+
+```bash
+conda activate iconml
+./config/dkrz/levante.intel-2021.5.0 --enable-mlbridges --enable-coupling --enable-python-bindings
+```
+
+Set the paths as follows (expand `~icon-aes` to your root directory)
+
+```bash
+PYTHONPATH="~icon-aes/externals/yac/python:$PYTHONPATH"; export PYTHONPATH;
+LD_LIBRARY_PATH="~icon-aes/externals/yaxt/src/.libs:$LD_LIBRARY_PATH"; export LD_LIBRARY_PATH;
+
+# i needed to add these as well
+LD_LIBRARY_PATH="/sw/spack-levante/mambaforge-4.11.0-0-Linux-x86_64-sobz6z/lib/:$LD_LIBRARY_PATH"; export LD_LIBRARY_PATH;
+LD_LIBRARY_PATH="/sw/spack-levante/eccodes-2.26.0-o6jniw/lib64/:$LD_LIBRARY_PATH"; export LD_LIBRARY_PATH;
+```
+
+#### ICON-Python coupled run setup
+
+Start the python component by explicitly configuring the `srun` command to 
+
+```bash
+${START} ${MODEL} : -n 1 python <my-python-program.py>
+```
 
 ## Prepare the Fortran code (ICON-AES)
 
