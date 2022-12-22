@@ -208,6 +208,7 @@ def i_warm_rain_nn(dim_i, dim_k, n_moments,
     # TODO retrieve trained_model from handle
     # currently it is initialized at the top of the module
     # and persists
+    return_state = 0
 
     # ML inference only if input moments are non zero
     if np.all(current_moments == 0.0):
