@@ -69,7 +69,7 @@ def main(args):
     moments_py2ic = Field.create("moments_py2ic", comp, points)
 
     for f in [example_field_ic2py, example_field_py2ic, moments_ic2py, moments_py2ic]:
-        print(f'{routine:s} Field {f.name} with ID {f.field_id}')
+        print(f'{routine:s} Field {f.name} with ID {f.field_id} and size {f.size}')
     
     yac.search()
     
@@ -96,17 +96,22 @@ def main(args):
     # Calculation
     # -----------
     # Grid cells are divided in blocks of nproma
-    # --> number of horizontal slices is ngrid // nproma + 1
+    # --> number of horizontal slices is ceil(ngrid / nproma)
     # where the last slice may have < nproma entries
     #
     # Horizontally, the ikslice contains one single level
     # 70 levels, no call in the level 1
     #
     # --> n_ikslice steps in each time step
-    nproma = 32
+    nproma = 880
     ngrid  = 880
-    nlev   = 70
-    n_ikslice = (ngrid // nproma + 1) * (nlev - 1)
+    nlev   = 2 # ! 70
+    n_ikslice = int(np.ceil(ngrid / nproma) * (nlev - 1))
+
+    print(f'{routine:s}: nproma = {nproma}')
+    print(f'{routine:s}: ngrid = {ngrid}')
+    print(f'{routine:s}: nlev = {nlev}')
+    print(f'{routine:s}: n_ikslice = {n_ikslice}')
 
     # TODO pass the numer of time loop steps in coupling config
     # Calculation
@@ -128,13 +133,18 @@ def main(args):
     nti = nt0 # loop time
 
     while nti < ntn:
+        print(f'{routine:s}: starting ml component time step {nti}')
+
         for i in range(n_ikslice):
             mom_buffer, info = moments_ic2py.get()
-            print(f'{routine:s} mom_buffer.shape = ', mom_buffer.shape, info)
-            assert info != yac_action_type['OUT_OF_BOUND'], print("out-of-bound-event")
+            print(f'{routine:s}: pydebug - get')
+            print(f'{routine:s}: i = {i}, mom_buffer.shape = ', mom_buffer.shape, info)
+            #assert info != yac_action_type['OUT_OF_BOUND'], print("out-of-bound-event")
             moments_py2ic.put(mom_buffer)
+            print(f'{routine:s}: pydebug - put')
+
+        print(f'{routine:s}: finished ml component time step {nti}')
         nti = nti+ ndt
-        print(f'{routine:s} ml component time step {nti}')
 
 if __name__=='__main__':
     main(sys.argv[1:])

@@ -2,7 +2,7 @@
 
 <coupling
         xmlns="http://www.w3schools.com"
-        xmlns:xsi="http://www.w3.org/2/XMLSchema-instance"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.w3schools.com coupling.xsd">
 
         <redirect redirect_of_root="false" redirect_stdout="false"/>
@@ -15,8 +15,8 @@
             <transient_grid_refs>
 	      <transient_grid_ref id="1" transient_ref="1" grid_ref="1" collection_size="1" />
 	      <transient_grid_ref id="2" transient_ref="2" grid_ref="1" collection_size="1" />
-          <transient_grid_ref id="3" transient_ref="3" grid_ref="1" collection_size="1" />
-          <transient_grid_ref id="4" transient_ref="4" grid_ref="1" collection_size="1" />
+          <transient_grid_ref id="3" transient_ref="3" grid_ref="1" collection_size="4" />
+          <transient_grid_ref id="4" transient_ref="4" grid_ref="1" collection_size="4" />
 	    </transient_grid_refs>
 	  </component>
 
@@ -27,8 +27,8 @@
             <transient_grid_refs>
 	      <transient_grid_ref id="1" transient_ref="1" grid_ref="2" collection_size="1" />
 	      <transient_grid_ref id="2" transient_ref="2" grid_ref="2" collection_size="1" />
-          <transient_grid_ref id="3" transient_ref="3" grid_ref="2" collection_size="1" />
-          <transient_grid_ref id="4" transient_ref="4" grid_ref="2" collection_size="1" />
+          <transient_grid_ref id="3" transient_ref="3" grid_ref="2" collection_size="4" />
+          <transient_grid_ref id="4" transient_ref="4" grid_ref="2" collection_size="4" />
 	    </transient_grid_refs>
 	  </component>
 	</components>
@@ -47,7 +47,7 @@
 
 	<dates>
           <start_date>2008-01-01T00:00:00</start_date>
-          <end_date>2008-01-01T00:02:00</end_date>
+          <end_date>2008-01-01T00:00:20</end_date>
           <calendar>360d</calendar>
         </dates>
         <timestep_unit>second</timestep_unit>
@@ -96,8 +96,8 @@
                 <source>20</source>
                 <target>20</target>
                 <coupling_period operation="none">20</coupling_period>
-                <source_timelag></source_timelag>
-                <target_timelag></target_timelag>
+                <source_timelag>0</source_timelag>
+                <target_timelag>0</target_timelag>
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
@@ -112,8 +112,8 @@
                 <source>20</source>
                 <target>20</target>
                 <coupling_period operation="none">20</coupling_period>
-                <source_timelag></source_timelag>
-                <target_timelag></target_timelag>
+                <source_timelag>0</source_timelag>
+                <target_timelag>0</target_timelag>
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
