@@ -16,6 +16,36 @@ import xarray as xr
 import numpy as np
 import time
 import sys
+from solvers.moment_solver import simulation_forecast
+
+import models.plModel as plm
+
+# initialization code
+# TODO execute this in the load_pretrained_model function
+inputs_mean = np.asarray([[0.0002621447787797809, 51128093.51524663,
+                0.0003302890736022656, 5194.251154308974,
+                0.5566250557023539, 4.8690682855354596e-12,
+                0.0005924338523807814, 1.0848856769219835e-05,
+                2.0193905073168525]])
+
+inputs_std = np.asarray([[0.0003865559774857862, 86503916.13808665,
+                0.00041369562655559327, 19127.947970150628,
+                0.46107363560819126, 3.873092422358367e-12,
+                0.00042887039563850967, 1.920461805101116e-06,
+                1.3098055608321857]])
+
+updates_mean = np.asarray([[-8.527820407019667e-08, -13961.459867976775,
+                8.527678028525988e-08, 0.010221931180955181]])
+
+updates_std = np.asarray([[3.600841676033818e-07, 55095.904252313965,
+                3.6008419243808887e-07, 68.6678997504877]])
+
+pl_model = plm.LightningModel(inputs_mean=inputs_mean, inputs_std=inputs_std,
+                            updates_mean=updates_mean, updates_std=updates_std) 
+
+model_path = '/work/ka1176/caroline/gitlab/icon-aes/externals/mlbridges/cffi_interface/trained_models/best_model.ckpt'
+trained_model = pl_model.load_from_checkpoint(model_path)
+# end of initialization code
 
 from datetime import datetime, timedelta
 
@@ -68,19 +98,20 @@ def main(args):
     moments_ic2py = Field.create("moments_ic2py", comp, points)
     moments_py2ic = Field.create("moments_py2ic", comp, points)
 
-    for f in [example_field_ic2py, example_field_py2ic, moments_ic2py, moments_py2ic]:
-        print(f'{routine:s} Field {f.name} with ID {f.field_id} and size {f.size}')
+    for ff in [example_field_ic2py, example_field_py2ic, moments_ic2py, moments_py2ic]:
+        print(f'{routine:s} Field {ff.name} with ID {ff.field_id}, collection size {ff.collection_size} and size {ff.size}')
     
     yac.search()
     
     print(f'{routine:s}: Finished YAC search')
     
     info = -1
-    
+
     test_buffer = np.zeros([1, example_field_ic2py.size])
     test_buffer -= 1
     
     test_buffer, info = example_field_ic2py.get(test_buffer)
+    print(f'{routine:s}: max(test_buffer) = {np.max(test_buffer)}')
     
     assert np.sum(test_buffer) == 880 * 879 / 2
     
@@ -105,7 +136,7 @@ def main(args):
     # --> n_ikslice steps in each time step
     nproma = 880
     ngrid  = 880
-    nlev   = 2 # ! 70
+    nlev   = 70
     n_ikslice = int(np.ceil(ngrid / nproma) * (nlev - 1))
 
     print(f'{routine:s}: nproma = {nproma}')
@@ -139,8 +170,44 @@ def main(args):
             mom_buffer, info = moments_ic2py.get()
             print(f'{routine:s}: pydebug - get')
             print(f'{routine:s}: i = {i}, mom_buffer.shape = ', mom_buffer.shape, info)
+            new_mom_buffer = np.empty(mom_buffer.shape)
             #assert info != yac_action_type['OUT_OF_BOUND'], print("out-of-bound-event")
-            moments_py2ic.put(mom_buffer)
+            #
+
+            # ML inference only if input moments are non zero
+            if np.allclose(mom_buffer, 0.0):
+                print(f'{routine:s}: all moments zero - no network applied. max = {np.max(np.abs(mom_buffer))}')
+                new_mom_buffer[:,:] = 0.0
+
+            # Catch NONE moments here and stop evaluation on Fortran side
+            elif np.any(np.isnan(mom_buffer)):
+                print(f'{routine:s}: nan in moments - all set to -1.0')
+                new_mom_buffer[:,:] = -1.0
+
+            else:
+                print(f'{routine:s}: moments non zero - network applied. max = {np.max(np.abs(mom_buffer))}')
+                # current_moments shape: moments x dim_ik
+                # solver expects:        dim_ik  x moments
+                # Solver gives (fc_moments): dim_ik x moments
+                #We change output to the correct shape and save in new_moments
+                print(f'{routine:s}: {mom_buffer[:,0]}')
+        
+                moments_shape = mom_buffer.shape
+                swapped_moments = np.swapaxes(mom_buffer, 0, 1)
+        
+                new_forecast = simulation_forecast(swapped_moments, trained_model,
+                                                   inputs_mean, inputs_std,
+                                                   updates_mean, updates_std)
+                new_forecast.test()
+
+                fc_moments = np.swapaxes(new_forecast.moments_out, 0, 1)
+                fc_moments = fc_moments.reshape(moments_shape)
+
+                new_mom_buffer[:, :] = fc_moments
+                print(f'{routine:s}: {new_mom_buffer[:,0]}')
+
+            #
+            moments_py2ic.put(new_mom_buffer)
             print(f'{routine:s}: pydebug - put')
 
         print(f'{routine:s}: finished ml component time step {nti}')
