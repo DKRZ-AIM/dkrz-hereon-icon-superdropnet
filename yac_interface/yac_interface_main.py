@@ -71,6 +71,27 @@ yac_action_type = dict(
 def main(args):
     routine = 'yac_interface_main.py'
     print(f'{routine:s} starts execution')
+
+    # Calculation
+    # -----------
+    # Grid cells are divided in blocks of nproma
+    # --> number of horizontal slices is ceil(ngrid / nproma)
+    # where the last slice may have < nproma entries
+    #
+    # Horizontally, the ikslice contains one single level
+    # 70 levels, no call in the level 1
+    #
+    # --> n_ikslice steps in each time step
+    nproma = 880
+    ngrid  = 880
+    nlev   = 70
+    n_ikslice = int(np.ceil(ngrid / nproma) * (nlev - 1))
+
+    print(f'{routine:s}: nproma = {nproma}')
+    print(f'{routine:s}: ngrid = {ngrid}')
+    print(f'{routine:s}: nlev = {nlev}')
+    print(f'{routine:s}: n_ikslice = {n_ikslice}')
+
     
     yac = YAC("coupling.xml", "coupling.xsd")
     comp = yac.def_comp(f"WarmRainML")
@@ -95,11 +116,22 @@ def main(args):
     
     example_field_ic2py = Field.create("example_field_icon_to_python", comp, points)
     example_field_py2ic = Field.create("example_field_python_to_icon", comp, points)
-    moments_ic2py = Field.create("moments_ic2py", comp, points)
-    moments_py2ic = Field.create("moments_py2ic", comp, points)
 
-    for ff in [example_field_ic2py, example_field_py2ic, moments_ic2py, moments_py2ic]:
+    all_moments_ic2py = []
+    all_moments_py2ic = []
+
+    for zlev in range(1, nlev):
+        print(f'{routine:s}: Registering fields for zlev {zlev}')
+        moments_ic2py = Field.create(f"moments_ic2py_zlev_{zlev}", comp, points)
+        moments_py2ic = Field.create(f"moments_py2ic_zlev_{zlev}", comp, points)
+
+        all_moments_ic2py.append(moments_ic2py)
+        all_moments_py2ic.append(moments_py2ic)
+
+    for ff in [example_field_ic2py, example_field_py2ic] + all_moments_ic2py + all_moments_py2ic:
         print(f'{routine:s} Field {ff.name} with ID {ff.field_id}, collection size {ff.collection_size} and size {ff.size}')
+
+    print(f'{routine:s} Starting YAC search')
     
     yac.search()
     
@@ -123,27 +155,6 @@ def main(args):
     
     print(f'{routine:s}: Done with put/get example field exchange. Info = {info}')
 
-    # TODO pass number of steps in coupling config
-    # Calculation
-    # -----------
-    # Grid cells are divided in blocks of nproma
-    # --> number of horizontal slices is ceil(ngrid / nproma)
-    # where the last slice may have < nproma entries
-    #
-    # Horizontally, the ikslice contains one single level
-    # 70 levels, no call in the level 1
-    #
-    # --> n_ikslice steps in each time step
-    nproma = 880
-    ngrid  = 880
-    nlev   = 70
-    n_ikslice = int(np.ceil(ngrid / nproma) * (nlev - 1))
-
-    print(f'{routine:s}: nproma = {nproma}')
-    print(f'{routine:s}: ngrid = {ngrid}')
-    print(f'{routine:s}: nlev = {nlev}')
-    print(f'{routine:s}: n_ikslice = {n_ikslice}')
-
     # TODO pass the numer of time loop steps in coupling config
     # Calculation
     # -----------
@@ -166,13 +177,12 @@ def main(args):
     while nti < ntn:
         print(f'{routine:s}: starting ml component time step {nti}')
 
-        for i in range(n_ikslice):
-            mom_buffer, info = moments_ic2py.get()
+        for iz, zlev in enumerate(range(1, nlev)):
+            mom_buffer, info = all_moments_ic2py[iz].get()
             print(f'{routine:s}: pydebug - get')
-            print(f'{routine:s}: i = {i}, mom_buffer.shape = ', mom_buffer.shape, info)
+            print(f'{routine:s}: iz = {iz}, zlev = {zlev}, mom_buffer.shape = ', mom_buffer.shape, info)
             new_mom_buffer = np.empty(mom_buffer.shape)
-            #assert info != yac_action_type['OUT_OF_BOUND'], print("out-of-bound-event")
-            #
+            assert info != yac_action_type['OUT_OF_BOUND'], print("out-of-bound-event")
 
             # ML inference only if input moments are non zero
             if np.allclose(mom_buffer, 0.0):
@@ -207,8 +217,11 @@ def main(args):
                 print(f'{routine:s}: {new_mom_buffer[:,0]}')
 
             #
-            moments_py2ic.put(new_mom_buffer)
+            all_moments_py2ic[iz].put(new_mom_buffer)
             print(f'{routine:s}: pydebug - put')
+            for ii in range(mom_buffer.shape[1]):
+                print(f'{routine:s} BEF {mom_buffer[0, ii]:.1e} {mom_buffer[1, ii]:.1e} {mom_buffer[2, ii]:.1e} {mom_buffer[3, ii]:.1e}')
+                print(f'{routine:s} AFT {new_mom_buffer[0, ii]:.1e} {new_mom_buffer[1, ii]:.1e} {new_mom_buffer[2, ii]:.1e} {new_mom_buffer[3, ii]:.1e}')
 
         print(f'{routine:s}: finished ml component time step {nti}')
         nti = nti+ ndt
