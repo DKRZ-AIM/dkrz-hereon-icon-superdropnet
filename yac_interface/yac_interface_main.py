@@ -200,7 +200,6 @@ def main(args):
                 # solver expects:        dim_ik  x moments
                 # Solver gives (fc_moments): dim_ik x moments
                 #We change output to the correct shape and save in new_moments
-                print(f'{routine:s}: {mom_buffer[:,0]}')
         
                 moments_shape = mom_buffer.shape
                 swapped_moments = np.swapaxes(mom_buffer, 0, 1)
@@ -214,14 +213,16 @@ def main(args):
                 fc_moments = fc_moments.reshape(moments_shape)
 
                 new_mom_buffer[:, :] = fc_moments
-                print(f'{routine:s}: {new_mom_buffer[:,0]}')
-
+                if np.any(np.isnan(new_mom_buffer)):
+                    raise ValueError("NaN in calculated moments")
+                if np.any(new_mom_buffer>1e20):
+                    raise ValueError("Calculated moments > 1e20")
             #
             all_moments_py2ic[iz].put(new_mom_buffer)
             print(f'{routine:s}: pydebug - put')
-            for ii in range(mom_buffer.shape[1]):
-                print(f'{routine:s} BEF {mom_buffer[0, ii]:.1e} {mom_buffer[1, ii]:.1e} {mom_buffer[2, ii]:.1e} {mom_buffer[3, ii]:.1e}')
-                print(f'{routine:s} AFT {new_mom_buffer[0, ii]:.1e} {new_mom_buffer[1, ii]:.1e} {new_mom_buffer[2, ii]:.1e} {new_mom_buffer[3, ii]:.1e}')
+            if not np.allclose(mom_buffer, 0):
+                np.save(f'before_{nti}_{zlev}', mom_buffer)
+                np.save(f'after_{nti}_{zlev}', new_mom_buffer)
 
         print(f'{routine:s}: finished ml component time step {nti}')
         nti = nti+ ndt
