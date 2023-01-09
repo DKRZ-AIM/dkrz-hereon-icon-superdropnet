@@ -85,17 +85,11 @@ class simulation_forecast:
 
         self.moments_out[:, 0] = (self.lo_arr) - self.moments_out[:, 2]
         self.moments_out[self.moments_out<0] = 0
-
-        print('*'*10 + str(np.max(self.moments_out)))
-        
-        # manually set the output moments to zero when they are nan
+          
+        # manually set the output moments to zero when input moments were zero
         # TODO check with Shivani
-        #zero_ix = np.where( np.sum(np.isnan(self.moments_out), axis=1) == 4 )
-        self.moments_out[np.isnan(self.moments_out)] = 0
-        # manually set the output moments to zero when they are >1e10
-        zero_ix = np.where( np.max(self.moments_out, axis=1) > 1e10 )[0]
-        self.moments_out[zero_ix] = self.all_moments_in[zero_ix]
-        print('*'*12 + str(np.max(self.moments_out)))
+        zero_ix = np.where( np.sum( np.abs( self.all_moments_in ), axis=1) == 0)[0]
+        self.moments_out[zero_ix] = 0.0
     
     def moment_calc(self, predictions_updates):
         self.updates = (
