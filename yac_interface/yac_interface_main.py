@@ -214,8 +214,12 @@ def main(args):
 
                 new_mom_buffer[:, :] = fc_moments
                 if np.any(np.isnan(new_mom_buffer)):
+                    np.save(f'before_{nti}_{zlev}', mom_buffer)
+                    np.save(f'after_{nti}_{zlev}', new_mom_buffer)
                     raise ValueError("NaN in calculated moments")
                 if np.any(new_mom_buffer>1e20):
+                    np.save(f'before_{nti}_{zlev}', mom_buffer)
+                    np.save(f'after_{nti}_{zlev}', new_mom_buffer)
                     raise ValueError("Calculated moments > 1e20")
             #
             all_moments_py2ic[iz].put(new_mom_buffer)

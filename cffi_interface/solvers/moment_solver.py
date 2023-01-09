@@ -88,7 +88,7 @@ class simulation_forecast:
           
         # manually set the output moments to zero when input moments were zero
         # TODO check with Shivani
-        zero_ix = np.where( np.sum( np.abs( self.all_moments_in ), axis=1) == 0)[0]
+        zero_ix = np.where( np.sum( np.abs( self.all_moments_in ), axis=1) < 1e-8 )[0]
         self.moments_out[zero_ix] = 0.0
     
     def moment_calc(self, predictions_updates):
