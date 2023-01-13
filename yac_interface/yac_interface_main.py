@@ -179,7 +179,7 @@ def main(args):
 
         for iz, zlev in enumerate(range(1, nlev)):
             mom_buffer, info = all_moments_ic2py[iz].get()
-            print(f'{routine:s}: pydebug - get')
+            #print(f'{routine:s}: pydebug - get')
             print(f'{routine:s}: iz = {iz}, zlev = {zlev}, mom_buffer.shape = ', mom_buffer.shape, info)
             new_mom_buffer = np.empty(mom_buffer.shape)
             assert info != yac_action_type['OUT_OF_BOUND'], print("out-of-bound-event")
@@ -214,19 +214,19 @@ def main(args):
 
                 new_mom_buffer[:, :] = fc_moments
                 if np.any(np.isnan(new_mom_buffer)):
-                    np.save(f'before_{nti}_{zlev}', mom_buffer)
-                    np.save(f'after_{nti}_{zlev}', new_mom_buffer)
+                    #np.save(f'before_{nti}_{zlev}', mom_buffer)
+                    #np.save(f'after_{nti}_{zlev}', new_mom_buffer)
                     raise ValueError("NaN in calculated moments")
                 if np.any(new_mom_buffer>1e20):
-                    np.save(f'before_{nti}_{zlev}', mom_buffer)
-                    np.save(f'after_{nti}_{zlev}', new_mom_buffer)
+                    #np.save(f'before_{nti}_{zlev}', mom_buffer)
+                    #np.save(f'after_{nti}_{zlev}', new_mom_buffer)
                     raise ValueError("Calculated moments > 1e20")
             #
             all_moments_py2ic[iz].put(new_mom_buffer)
-            print(f'{routine:s}: pydebug - put')
-            if not np.allclose(mom_buffer, 0):
-                np.save(f'before_{nti}_{zlev}', mom_buffer)
-                np.save(f'after_{nti}_{zlev}', new_mom_buffer)
+            #print(f'{routine:s}: pydebug - put')
+            #if not np.allclose(mom_buffer, 0):
+            #    np.save(f'before_{nti}_{zlev}', mom_buffer)
+            #    np.save(f'after_{nti}_{zlev}', new_mom_buffer)
 
         print(f'{routine:s}: finished ml component time step {nti}')
         nti = nti+ ndt

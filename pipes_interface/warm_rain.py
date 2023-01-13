@@ -34,7 +34,7 @@ updates_std = np.asarray([[3.600841676033818e-07, 55095.904252313965,
 pl_model = plm.LightningModel(inputs_mean=inputs_mean, inputs_std=inputs_std,
                             updates_mean=updates_mean, updates_std=updates_std) 
 
-model_path = '/work/ka1176/tobias/icon-aes/externals/mlbridges/cffi_interface/trained_models/best_model.ckpt'
+model_path = '/work/ka1176/caroline/gitlab/icon-aes/externals/mlbridges/cffi_interface/trained_models/best_model.ckpt'
 trained_model = pl_model.load_from_checkpoint(model_path)
 # end of initialization code
 
