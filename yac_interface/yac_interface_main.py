@@ -143,7 +143,6 @@ def main(args):
     test_buffer -= 1
     
     test_buffer, info = example_field_ic2py.get(test_buffer)
-    print(f'{routine:s}: max(test_buffer) = {np.max(test_buffer)}')
     
     assert np.sum(test_buffer) == 880 * 879 / 2
     
@@ -179,23 +178,22 @@ def main(args):
 
         for iz, zlev in enumerate(range(1, nlev)):
             mom_buffer, info = all_moments_ic2py[iz].get()
-            #print(f'{routine:s}: pydebug - get')
-            print(f'{routine:s}: iz = {iz}, zlev = {zlev}, mom_buffer.shape = ', mom_buffer.shape, info)
+            print(f'{routine:s}: time = {nti}, iz = {iz}, zlev = {zlev}')
             new_mom_buffer = np.empty(mom_buffer.shape)
             assert info != yac_action_type['OUT_OF_BOUND'], print("out-of-bound-event")
 
             # ML inference only if input moments are non zero
             if np.allclose(mom_buffer, 0.0):
-                print(f'{routine:s}: all moments zero - no network applied. max = {np.max(np.abs(mom_buffer))}')
+                #print(f'{routine:s}: all moments zero - no network applied. max = {np.max(np.abs(mom_buffer))}')
                 new_mom_buffer[:,:] = 0.0
 
             # Catch NONE moments here and stop evaluation on Fortran side
             elif np.any(np.isnan(mom_buffer)):
-                print(f'{routine:s}: nan in moments - all set to -1.0')
+                #print(f'{routine:s}: nan in moments - all set to -1.0')
                 new_mom_buffer[:,:] = -1.0
 
             else:
-                print(f'{routine:s}: moments non zero - network applied. max = {np.max(np.abs(mom_buffer))}')
+                #print(f'{routine:s}: moments non zero - network applied. max = {np.max(np.abs(mom_buffer))}')
                 # current_moments shape: moments x dim_ik
                 # solver expects:        dim_ik  x moments
                 # Solver gives (fc_moments): dim_ik x moments

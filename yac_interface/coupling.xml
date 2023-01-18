@@ -477,7 +477,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -493,7 +493,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -509,7 +509,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -525,7 +525,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -541,7 +541,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -557,7 +557,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -573,7 +573,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -589,7 +589,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -605,7 +605,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -621,7 +621,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -637,7 +637,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -653,7 +653,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -669,7 +669,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -685,7 +685,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -701,7 +701,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -717,7 +717,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -733,7 +733,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -749,7 +749,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -765,7 +765,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -781,7 +781,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -797,7 +797,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -813,7 +813,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -829,7 +829,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -845,7 +845,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -861,7 +861,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -877,7 +877,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -893,7 +893,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -909,7 +909,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -925,7 +925,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -941,7 +941,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -957,7 +957,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -973,7 +973,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -989,7 +989,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -1005,7 +1005,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -1021,7 +1021,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -1037,7 +1037,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -1053,7 +1053,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -1069,7 +1069,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -1085,7 +1085,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -1101,7 +1101,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -1117,7 +1117,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -1133,7 +1133,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -1149,7 +1149,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -1165,7 +1165,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -1181,7 +1181,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -1197,7 +1197,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -1213,7 +1213,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -1229,7 +1229,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -1245,7 +1245,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -1261,7 +1261,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -1277,7 +1277,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -1293,7 +1293,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -1309,7 +1309,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -1325,7 +1325,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -1341,7 +1341,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -1357,7 +1357,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -1373,7 +1373,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -1389,7 +1389,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -1405,7 +1405,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -1421,7 +1421,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -1437,7 +1437,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -1453,7 +1453,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -1469,7 +1469,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -1485,7 +1485,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -1501,7 +1501,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -1517,7 +1517,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -1533,7 +1533,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -1549,7 +1549,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -1565,7 +1565,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -1581,7 +1581,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -1597,7 +1597,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -1613,7 +1613,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -1629,7 +1629,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -1645,7 +1645,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -1661,7 +1661,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -1677,7 +1677,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -1693,7 +1693,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -1709,7 +1709,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -1725,7 +1725,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -1741,7 +1741,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -1757,7 +1757,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -1773,7 +1773,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -1789,7 +1789,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -1805,7 +1805,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -1821,7 +1821,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -1837,7 +1837,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -1853,7 +1853,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -1869,7 +1869,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -1885,7 +1885,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -1901,7 +1901,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -1917,7 +1917,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -1933,7 +1933,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -1949,7 +1949,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -1965,7 +1965,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -1981,7 +1981,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -1997,7 +1997,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -2013,7 +2013,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -2029,7 +2029,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -2045,7 +2045,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -2061,7 +2061,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -2077,7 +2077,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -2093,7 +2093,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -2109,7 +2109,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -2125,7 +2125,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -2141,7 +2141,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -2157,7 +2157,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -2173,7 +2173,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -2189,7 +2189,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -2205,7 +2205,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -2221,7 +2221,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -2237,7 +2237,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -2253,7 +2253,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -2269,7 +2269,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -2285,7 +2285,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -2301,7 +2301,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -2317,7 +2317,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -2333,7 +2333,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -2349,7 +2349,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -2365,7 +2365,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -2381,7 +2381,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -2397,7 +2397,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -2413,7 +2413,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -2429,7 +2429,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -2445,7 +2445,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -2461,7 +2461,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -2477,7 +2477,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -2493,7 +2493,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -2509,7 +2509,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -2525,7 +2525,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -2541,7 +2541,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -2557,7 +2557,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -2573,7 +2573,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -2589,7 +2589,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -2605,7 +2605,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -2621,7 +2621,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -2637,7 +2637,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -2653,7 +2653,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -2669,7 +2669,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -2685,7 +2685,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
@@ -2701,7 +2701,7 @@
               </timestep>
               <mapping_on_source>true</mapping_on_source>
               <interpolation_requirements>
-		           <interpolation method="source_to_target_map" spread_distance="0.0"  />
+		           <interpolation method="n-nearest_neighbor" n="1" weighted="ARITHMETIC_AVERAGE"  />
               </interpolation_requirements>
               <enforce_write_weight_file filename="">false</enforce_write_weight_file>
         </transient_couple>
