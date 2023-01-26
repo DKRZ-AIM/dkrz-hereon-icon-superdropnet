@@ -18,3 +18,8 @@ https://www.noahbrenowitz.com/post/calling-fortran-from-python/
 Calling this directly or via make will generate several files, e.g., my_plugin.c and plugin.h. We do not edit these directly and can ignore them.
 
 
+Array ordering
+----------------
+
+Fortran uses column-first ordering, C and Python row-first. This is reflected in my_module.py when calling the transfer_arrays.asarray() method. The shape parameter is given in 'backwards' direction, i.e., (nx3, nx2, nx1). This results in the arrays being reshaped to the right order.
+
