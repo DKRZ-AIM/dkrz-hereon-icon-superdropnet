@@ -1,2 +1,2 @@
 AUTOMAKE_OPTIONS=foreign
-SUBDIRS=cffi_interface
+SUBDIRS=cffi_interface pipes_interface

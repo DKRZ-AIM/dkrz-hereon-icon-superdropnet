@@ -2,8 +2,6 @@
 # contents of this file are written in builder.py
 # as argument of ffibuilder.embedding_init_code
 
-import libcffi
-from libcffi import ffi
 import numpy as np
 import os
 import transfer_arrays
@@ -40,7 +38,6 @@ model_path = '/work/ka1176/caroline/gitlab/icon-aes/externals/mlbridges/cffi_int
 trained_model = pl_model.load_from_checkpoint(model_path)
 # end of initialization code
 
-@ffi.def_extern()
 def i_check_interface(ptr_istate):
     '''
     Check if the interface is working
@@ -52,25 +49,20 @@ def i_check_interface(ptr_istate):
     '''
     ptr_istate[0] = 1
 
-@ffi.def_extern()
 def i_get_emi_number(n):
     n[0] = 17
 
-@ffi.def_extern()
 def i_get_emi_float(n):
     n[0] = 18.3
 
-@ffi.def_extern()
 def i_hello_world():
     print("Hello from the Python World!")
 
-@ffi.def_extern()
 def i_add_one(ptr_nx, ptr_x):
     nx = ptr_nx[0]
     x = transfer_arrays.asarray(ffi, ptr_x, shape=(nx,))
     x[:] += 1.0
 
-@ffi.def_extern()
 def i_add_emi_echam_ttr(ptr_jg, ptr_jcs, ptr_jce,
                         ptr_kbdim, ptr_air_mass,
                         ptr_clat, ptr_emi_flux,
@@ -123,7 +115,6 @@ def i_add_emi_echam_ttr(ptr_jg, ptr_jcs, ptr_jce,
     dxdt[jcs:jce][cond] = emi_flux / air_mass[jcs:jce][cond]
     dxdt[jcs:jce][~cond] = 0.0
 
-@ffi.def_extern()
 def i_load_pretrained_model(ptr_handle, ptr_trained_model_path):
     """
     Load a pretrained model and attach it to a handle
@@ -163,7 +154,6 @@ def i_load_pretrained_model(ptr_handle, ptr_trained_model_path):
     handle = ffi.new_handle(trained_model)
     #ptr_handle[:] = ffi.new_handle(trained_model)
 
-@ffi.def_extern()
 def i_retrieve_model_from_handle(ptr_handle):
     """
     Test function to retrieve an already loaded pretrained
@@ -177,11 +167,8 @@ def i_retrieve_model_from_handle(ptr_handle):
 
 
 
-@ffi.def_extern()
-def i_warm_rain_nn(ptr_dim_i, ptr_dim_k, ptr_n_moments, 
-                   ptr_current_moments, ptr_new_moments,
-                   ptr_trained_model_path,
-                   ptr_istate):
+def i_warm_rain_nn(dim_i, dim_k, n_moments, 
+                   current_moments):
     """
     Call the pretrained warm rain network for inference for a given ikslice
     and time step. Calculates the new moments for cloud and rain.
@@ -201,36 +188,36 @@ def i_warm_rain_nn(ptr_dim_i, ptr_dim_k, ptr_n_moments,
        2 : ML inference update
        3 : error code (encountered None value in input moments)
        4 : error code (encountered None value in output moments)
-       5 : error code (encountered value > 1e20 in output moments)
 
     """
 
-    dim_i = ptr_dim_i[0]
-    dim_k = ptr_dim_k[0]
-    n_moments = ptr_n_moments[0]
+    #dim_i = ptr_dim_i[0]
+    #dim_k = ptr_dim_k[0]
+    #n_moments = ptr_n_moments[0]
 
     # Shape takes into account that C reads row major
     # while the array is saved in Fortran column major
     # memory layout
     shape = (n_moments, dim_k, dim_i) 
 
-    current_moments = transfer_arrays.asarray(ffi, ptr_current_moments, shape=shape)
-    new_moments     = transfer_arrays.asarray(ffi, ptr_new_moments, shape=shape)
+    #current_moments = transfer_arrays.asarray(ffi, ptr_current_moments, shape=shape)
+    new_moments     = np.empty_like(current_moments)
 
     new_moments[:,:,:] = 0.0
-
+    
     # TODO retrieve trained_model from handle
     # currently it is initialized at the top of the module
     # and persists
+    return_state = 0
 
     # ML inference only if input moments are non zero
     if np.all(current_moments == 0.0):
         new_moments[:,:,:] = 0.0
-        ptr_istate[0] = 1
+        return_state = 1
 
     # Catch NONE moments here and stop evaluation on Fortran side
     elif np.any(np.isnan(current_moments)):
-        ptr_istate[0] = 3
+        return_istate = 3
 
     else:
         # current_moments shape: moments x dim_k x dim_i
@@ -239,8 +226,9 @@ def i_warm_rain_nn(ptr_dim_i, ptr_dim_k, ptr_n_moments,
         #We change output to the correct shape and save in new_moments
         
         moments_shape = current_moments.shape
-        swapped_moments = np.swapaxes(current_moments,0, 2).reshape(-1, 4)
         
+        swapped_moments = np.swapaxes(current_moments,0, 2).reshape(-1, 4)
+                
         new_forecast = simulation_forecast(swapped_moments, trained_model,
                                            inputs_mean, inputs_std,
                                            updates_mean, updates_std)
@@ -248,17 +236,16 @@ def i_warm_rain_nn(ptr_dim_i, ptr_dim_k, ptr_n_moments,
 
         fc_moments = np.swapaxes(new_forecast.moments_out, 0, 1)
         fc_moments = fc_moments.reshape(moments_shape)
-
+        
         new_moments[:, :, :] = fc_moments
 
-        ptr_istate[0] = 2
+        return_state = 2
 
-        if np.any(np.isnan(new_moments)):
-            ptr_istate[0] = 4
-        elif np.any(new_moments>1e20):
-            ptr_istate[0] = 5
+        if np.any(np.isnan(new_moments)) or np.any(new_moments>1e20):
+            return_state = 4
+            
+    return new_moments, return_state
 
-@ffi.def_extern()
 def i_checksum(ptr_dim_i, ptr_dim_k, ptr_n_moments, 
                    ptr_current_moments, ptr_new_moments,
                    ptr_istate):
