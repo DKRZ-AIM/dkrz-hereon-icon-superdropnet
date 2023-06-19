@@ -66,9 +66,28 @@ export PYTHONPATH=${PWD}/externals/mlbridges/cffi_interface
 
 To see whether your installation was successful, run the bubble experiments:
 
+#### Change model path
+
+Edit the corresponding line of the experiment script `exp.aes_bubble_2mom_cffi` 
+
+```bash
+&mlbridges_nml
+  mlbridges_config%icon_ml_bridge = 'cffi' ! select the bridge type (fortran: no bridge!)
+  mlbridges_config%isdebug = .FALSE.
+  mlbridges_config%modelpath      = '/work/ka1176/caroline/gitlab/icon-aes/externals/mlbridges/cffi_interface/trained_models/best_model.ckpt' # EDIT THIS LINE
+```
+
+#### Create runscripts
+
 ```bash
 ./make_runscripts aes_bubble_2mom_fortran
 ./make_runscripts aes_bubble_2mom_cffi
+```
+
+#### Submit jobs
+
+```bash
+sbatch -A ka1176 --partition=compute exp.aes_bubble_2mom_cffi.run
 ```
 
 ### Standalone usage
