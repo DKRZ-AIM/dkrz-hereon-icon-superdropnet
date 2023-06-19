@@ -64,7 +64,7 @@ export PYTHONPATH=${PWD}/externals/mlbridges/cffi_interface
 
 ### Test 
 
-To see whether your installation was successful, run the bubble experiments:
+We have created experiment files that build on the warm bubble scenario and incorporate the two-moment scheme for cloud microphysics. To see whether your installation was successful, run:
 
 #### Change model path
 
