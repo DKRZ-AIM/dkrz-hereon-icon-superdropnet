@@ -1,5 +1,11 @@
 # Python Fortran Bridges for SuperdropNet
 
+
+
+[![DOI](https://zenodo.org/badge/687300663.svg)](https://zenodo.org/badge/latestdoi/687300663)
+
+
+
 Coupling code for integrating SuperdropNet in ICON 2.6.5
 
 Developed at Helmholtz AI, Hereon and German Climate Computing Center DKRZ, 2022-2023.
