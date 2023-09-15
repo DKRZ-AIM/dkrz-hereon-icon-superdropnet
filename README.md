@@ -33,3 +33,8 @@ Contents:
 - fortran_coupling:
   - fortran side of coupling
   - pseudo code for integrating into ESM
+- notebooks:
+  - Analysis.ipynb: General analysis notebook to compare and analyze experiments
+  - PaperPlots.ipynb: Contains scripts to reproduce the paper plots
+  - GPU_Inference.ipynb: Measure SuperdropNet GPU inference time
+  - Performance.ipynb: Measure SuperdropNet CPU inference time
